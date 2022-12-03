@@ -1,14 +1,14 @@
 
-1) Run RF_main.py.
+1) Run Main.py.
 
-2) choose your Original and ROI images as nifti file in line 310 and 311.
+2) choose your Original and ROI images as nifti file in section 1: "Selecting the dataset" ( line 50 and 51 ).
 
 for example:
 
-    data_orgina = sitk.ReadImage(r'..\Data\ibsi_1_ct_radiomics_phantom\nifti\image\phantom.nii.gz')
-    Data_RO = sitk.ReadImage(r'..\Data\ibsi_1_ct_radiomics_phantom\nifti\mask\mask.nii.gz')
+    data_orgina = sitk.ReadImage(r'D:\data\IBSI1 Data\ibsi_1_ct_radiomics_phantom\nifti\image\phantom.nii.gz')
+    Data_RO = sitk.ReadImage(r'D:\data\IBSI1 Data\ibsi_1_ct_radiomics_phantom\nifti\mask\mask.nii.gz')
 
-3) choose your hyperparameters as nifti file in line 332 to 357.
+3) choose your hyperparameters in section 2: "Radiomics Framework Settings" ( line 55 to 80 ).
 
 for example:
 
