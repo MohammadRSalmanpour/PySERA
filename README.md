@@ -14,4 +14,10 @@ For free access to SERA, and if you have any questions or feedback, please conta
 
 Instructions:
 
-Please refer to the README file inside the package.
+Please refer to the README file inside the package (SERA folder).
+
+AUTHOR(S): 
+- Saeed Ashrafinia 
+- Mahdi Hosseinzadeh 
+- Mohammad Salmanpoor 
+- Arman Rahmim 
