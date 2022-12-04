@@ -17,7 +17,6 @@ Instructions:
 Please refer to the README file inside the package (SERA folder).
 
 AUTHOR(S): 
-- Saeed Ashrafinia 
+- Mohammad R. Salmanpour 
 - Mahdi Hosseinzadeh 
-- Mohammad Salmanpoor 
 - Arman Rahmim 
