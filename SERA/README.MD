@@ -1,14 +1,14 @@
 
 1) Run Main.py.
 
-2) choose your Original and ROI images as nifti file in section 1: "Selecting the dataset" ( line 50 and 51 ).
+2) Choose your Original and ROI images path in section 1: "Selecting the dataset" ( line 50 and 51 ).
 
 for example:
 
-    data_orgina = sitk.ReadImage(r'D:\data\IBSI1 Data\ibsi_1_ct_radiomics_phantom\nifti\image\phantom.nii.gz')
-    Data_RO = sitk.ReadImage(r'D:\data\IBSI1 Data\ibsi_1_ct_radiomics_phantom\nifti\mask\mask.nii.gz')
+data_orgina_PATH = r'D:\data\IBSI1 Data\ibsi_1_ct_radiomics_phantom\nifti\image\phantom.nii.gz'
+Data_RO_PATH = r'D:\data\IBSI1 Data\ibsi_1_ct_radiomics_phantom\nifti\mask\mask.nii.gz'
 
-3) choose your hyperparameters in section 2: "Radiomics Framework Settings" ( line 55 to 80 ).
+3) Choose your hyperparameters in section 2: "Radiomics Framework Settings" ( line 55 to 80 ).
 
 for example:
 
@@ -39,6 +39,6 @@ for example:
     IVH_DiscCont = 1
     IVH_binSize = 2.5
 
-4) run the code.
+4) Run the code.
 
-5) at the end, in current directory, you must see the excel file with name Extracted_features.xlsx.
+5) At the end, in current directory, you must see the excel file with name Extracted_features.xlsx.
