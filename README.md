@@ -4,7 +4,7 @@
 
 Introduction
 
-The Standardized Environment for Radiomics Analysis (SERA) Package is a Python-based framework developed at British Columbia University that calculates radiomic features based on guidelines from the Image Biomarker Standardization Initiative (IBSI). SERA is capable of processing images from various clinical imaging modalities such as CT, MRI, PET and SPECT. Radiomic features calculated with SERA are standardized and in compliance with IBSI, which ensures their reproducibility.
+The Standardized Environment for Radiomics Analysis (SERA) Package is a Python-based framework developed at BC Cancer Research institute and TECVICO CORP. Company that calculates radiomic features based on guidelines from the Image Biomarker Standardization Initiative (IBSI). SERA is capable of processing images from various clinical imaging modalities such as CT, MRI, PET and SPECT. Radiomic features calculated with SERA are standardized and in compliance with IBSI, which ensures their reproducibility.
 
 Radiomic Features
 
