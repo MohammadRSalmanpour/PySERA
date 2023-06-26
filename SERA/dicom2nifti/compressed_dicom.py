@@ -3,8 +3,8 @@ import os
 import subprocess
 import tempfile
 
-import dicom2nifti.settings as settings
-from dicom2nifti.exceptions import ConversionError
+import PythonCode.dicom2nifti.settings as settings
+from PythonCode.dicom2nifti.exceptions import ConversionError
 
 import pydicom
 
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 def read_file(dicom_file, defer_size=None, stop_before_pixels=False, force=False):
     if _is_compressed(dicom_file, force):
-        # https://github.com/icometrix/dicom2nifti/issues/46 thanks to C-nit
+        # https://github.com/icometrix/PythonCode.dicom2nifti/issues/46 thanks to C-nit
         try:
             with tempfile.NamedTemporaryFile(delete=False) as fp:
                 fp.close()

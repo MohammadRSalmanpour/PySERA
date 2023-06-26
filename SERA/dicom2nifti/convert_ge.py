@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-dicom2nifti
+PythonCode.dicom2nifti
 
 @author: abrys
 """
-from dicom2nifti.exceptions import ConversionError
+from PythonCode.dicom2nifti.exceptions import ConversionError
 
 import itertools
 import os
@@ -16,8 +16,8 @@ import numpy
 
 from pydicom.tag import Tag
 
-import dicom2nifti.common as common
-import dicom2nifti.convert_generic as convert_generic
+import PythonCode.dicom2nifti.common as common
+import PythonCode.dicom2nifti.convert_generic as convert_generic
 
 logger = logging.getLogger(__name__)
 
