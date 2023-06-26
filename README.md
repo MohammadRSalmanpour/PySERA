@@ -18,5 +18,5 @@ Please refer to the README file inside the package (SERA folder).
 
 AUTHOR(S): 
 - Dr. Mohammad R. Salmanpour 
-- Mahdi Hosseinzadeh 
+- Mahdi Hosseinzadeh (github: @mahdi1070 , email: mahdi.107231@gmail.com)
 - Dr. Arman Rahmim 
