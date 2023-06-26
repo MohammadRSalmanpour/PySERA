@@ -17,6 +17,6 @@ Instructions:
 Please refer to the README file inside the package (SERA folder).
 
 AUTHOR(S): 
-- Dr. Mohammad R. Salmanpour 
+- Dr. Mohammad R. Salmanpour (msalman@bccrc.ca, m.salmanpoor66@gmail.com)
 - Mahdi Hosseinzadeh (github: @mahdi1070 , email: mahdi.107231@gmail.com)
-- Dr. Arman Rahmim 
+- Dr. Arman Rahmim (arman.rahmim@ubc.ca)
