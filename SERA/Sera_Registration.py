@@ -98,11 +98,11 @@ def register_simpleITK_array_3D_folder(fixed_PATH, moved_PATH, Num_bin, Sampling
                                     moved.pop(selected_index)
 
                             else:
-                                print('Images must be 3D.')
+                                raise('Images must be 3D.')
                         else:
-                            print('You must use an approprate type of input.')
+                            raise('You must use an approprate type of input.')
                     except Exception as e:
-                        print('Out of Memory or the parameters of registration tool should be selected properly:', e)
+                        raise('Out of Memory or the parameters of registration tool should be selected properly:', e)
                 # else:
                 # print('There is no image with the same name of',co,'in another folder.')
     executor.shutdown(wait=True)
@@ -126,6 +126,7 @@ def register_simpleITK_array_3D_folder_Thread(fixed_img, moved_img, Num_bin,
                                              Sampling_percentage, lRate, num_Iterations, interpolator, registr_method)
     if (moved_img[2] == "Dicom"):
         moved_img[2] = "SDicom"
+        
     convert_modalities(registered[0], registered[1], 'Nifti', moved_img[2], destfolder, moved_img[3],
                        createfolder='False')
 

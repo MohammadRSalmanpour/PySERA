@@ -329,7 +329,7 @@ def bwdistNew(ROIOnly):
     elif nD == 3:
         con = 6 
     else:
-        print('What is going on with the dimenstions?!!! It should be 1, 2 or 3.')
+        raise('What is going on with the dimenstions?!!! It should be 1, 2 or 3.')
       
 
 

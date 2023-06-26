@@ -265,100 +265,113 @@ def readFolder_dicom_2D_recurcive(folder, _types, createfolder, destfolder, suv)
             subdirectories_dicom.append(i)
     thread_list = []
     if len(subdirectories_dicom) == 0:
-        patients = convert_directory(folder, None, compression=True, reorient=True)
-        Headers = patients[0]
-        # filenames = patients[1]
-        filepaths = patients[2]
-        ImagePositionPatients = patients[4]
-        ImageOrientationPatient = patients[5]
-        step = patients[6]
-        PixelSpacing = patients[7]
+        try:
+            patients = convert_directory(folder, None, compression=True, reorient=True)
+            Headers = patients[0]
+            # filenames = patients[1]
+            filepaths = patients[2]
+            ImagePositionPatients = patients[4]
+            ImageOrientationPatient = patients[5]
+            step = patients[6]
+            PixelSpacing = patients[7]
 
-        number = len(Headers)
-        for co in range(0, number):
-            if Headers[co] != None:
-                data = Headers[co].get_fdata()
-                # inType = 'MDicom'   
-                changeinType = 'Nifti'
-                # _filename = filenames[co].replace('.nii.gz', '').replace('.nii', '').replace('.nrrd', '').replace('.dcm', '').replace('.dicom','')
-                _filename = filepaths[co].split('\\')[-2]
-                for _type in _types:
-                    t = threading.Thread(target=convert_modalities, args=(
-                        data, Headers[co], changeinType, _type, destfolder, _filename, createfolder,
-                        ImagePositionPatients[co], ImageOrientationPatient[co], step[co], PixelSpacing[co],
-                        filepaths[co]))
-                    thread_list.append(t)
-                    t.start()
-        for thread in thread_list:
-            thread.join()
-        if suv == True:
-            SUVresult = []
             number = len(Headers)
-            cont = False
             for co in range(0, number):
                 if Headers[co] != None:
-                    try:
-                        data = Headers[co].get_fdata()
-                        _filename = filepaths[co].split('\\')[-2]
-                        # returned_val = compute_suv(data,patients[3])
+                    data = Headers[co].get_fdata()
+                    # inType = 'MDicom'   
+                    changeinType = 'Nifti'
+                    # _filename = filenames[co].replace('.nii.gz', '').replace('.nii', '').replace('.nrrd', '').replace('.dcm', '').replace('.dicom','')
+                    _filename = filepaths[co].split('\\')[-2]
+                    for _type in _types:
+                        t = threading.Thread(target=convert_modalities, args=(
+                            data, Headers[co], changeinType, _type, destfolder, _filename, createfolder,
+                            ImagePositionPatients[co], ImageOrientationPatient[co], step[co], PixelSpacing[co],
+                            filepaths[co]))
+                        thread_list.append(t)
+                        t.start()
+            for thread in thread_list:
+                thread.join()
+            if suv == True:
 
-                        # root = folder
-                        # pet_image_file_list = [os.path.join(root,x) for x in os.listdir(root) if x.endswith('.dcm')]
-                        # pet_image_file_list = sort_by_instance_number(pet_image_file_list)
-                        # data = imread(pet_image_file_list)
-                        # f=pydicom.dcmread(pet_image_file_list[0])
-                        # returned_val = compute_suv(data,f)
+                destfolder2 = os.path.join(destfolder, 'SUV')
+                if os.path.isdir(destfolder2) == False:
+                    os.mkdir(destfolder2)
 
-                        # root = folder
-                        # pet_image_file_list = [os.path.join(root,x) for x in os.listdir(root) if x.endswith('.dcm')]
-                        # pet_image_file_list = sort_by_instance_number(pet_image_file_list)
-                        # # data = imread(pet_image_file_list)
-                        # f=pydicom.dcmread(pet_image_file_list[0])
-                        #      
-                        f = pydicom.dcmread(filepaths[co])
-                        SUV_OBJ = SUVscalingObj(f)
-                        returned_val = SUV_OBJ.get_scale_factor(suv_normalisation="bw", data=data)
+                SUVresult = []
+                number = len(Headers)
+                cont = False
+                for co in range(0, number):
+                    if Headers[co] != None:
+                        try:
+                            data = Headers[co].get_fdata()
+                            _filename = filepaths[co].split('\\')[-2]
+                            # returned_val = compute_suv(data,patients[3])
 
-                        convert_modalities(returned_val[0], Headers[co], 'Nifti', 'Nifti', destfolder,
-                                           _filename + '_SUV_Calculation', createfolder, ImagePositionPatients[co],
-                                           ImageOrientationPatient[co], step[co], PixelSpacing[co], filepaths[co])
+                            # root = folder
+                            # pet_image_file_list = [os.path.join(root,x) for x in os.listdir(root) if x.endswith('.dcm')]
+                            # pet_image_file_list = sort_by_instance_number(pet_image_file_list)
+                            # data = imread(pet_image_file_list)
+                            # f=pydicom.dcmread(pet_image_file_list[0])
+                            # returned_val = compute_suv(data,f)
 
-                        suv_max = np.max(returned_val[0])
-                        suv_mean = np.mean(returned_val[0])
-                        suv_min = np.min(returned_val[0])
-                        suv_std = np.std(returned_val[0])
+                            # root = folder
+                            # pet_image_file_list = [os.path.join(root,x) for x in os.listdir(root) if x.endswith('.dcm')]
+                            # pet_image_file_list = sort_by_instance_number(pet_image_file_list)
+                            # # data = imread(pet_image_file_list)
+                            # f=pydicom.dcmread(pet_image_file_list[0])
+                            #      
+                            f = pydicom.dcmread(filepaths[co])
+                            SUV_OBJ = SUVscalingObj(f)
+                            returned_val = SUV_OBJ.get_scale_factor(suv_normalisation="bw", data=data)
+                            
+                            if returned_val[2] is not None:
+                        
 
-                        SUVresult.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
-                        cont = True
+                                convert_modalities(returned_val[0], Headers[co], 'Nifti', 'Nifti', destfolder2,
+                                                _filename + '_SUV_Calculation', createfolder, ImagePositionPatients[co],
+                                                ImageOrientationPatient[co], step[co], PixelSpacing[co], filepaths[co])
 
-                    except:
-                        data = Headers[co].get_fdata()
-                        _filename = filepaths[co].split('\\')[-2]
-                        f = pydicom.dcmread(filepaths[co])
-                        returned_val = compute_suv(data, f)
+                                suv_max = np.max(returned_val[0])
+                                suv_mean = np.mean(returned_val[0])
+                                suv_min = np.min(returned_val[0])
+                                suv_std = np.std(returned_val[0])
 
-                        convert_modalities(returned_val[0], Headers[co], 'Nifti', 'Nifti', destfolder,
-                                           _filename + '_SUV_Estimation', createfolder, ImagePositionPatients[co],
-                                           ImageOrientationPatient[co], step[co], PixelSpacing[co], filepaths[co])
+                                SUVresult.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
+                                cont = True
+                            else:
+                                raise TypeError('suv_scale_factor is None')
 
-                        suv_max = np.max(returned_val[0])
-                        suv_mean = np.mean(returned_val[0])
-                        suv_min = np.min(returned_val[0])
-                        suv_std = np.std(returned_val[0])
 
-                        SUVresult.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
-                        cont = True
-            if cont == True:
-                SUVresult_arr = np.asarray(SUVresult)
-                col = ['FileName', 'suv_min', 'suv_max', 'suv_mean', 'suv_std', 'estimated']
+                        except:
+                            data = Headers[co].get_fdata()
+                            _filename = filepaths[co].split('\\')[-2]
+                            f = pydicom.dcmread(filepaths[co])
+                            returned_val = compute_suv(data, f)
 
-                SUVresult_df = pd.DataFrame(SUVresult_arr)
-                SUVresult_df.columns = col
+                            convert_modalities(returned_val[0], Headers[co], 'Nifti', 'Nifti', destfolder2,
+                                            _filename + '_SUV_Estimation', createfolder, ImagePositionPatients[co],
+                                            ImageOrientationPatient[co], step[co], PixelSpacing[co], filepaths[co])
 
-                CSVFilename = "SUV_Report_Multi_Dicom.csv"
-                CSVfullpath = os.path.join(destfolder, CSVFilename)
-                SUVresult_df.to_csv(CSVfullpath, index=None)
+                            suv_max = np.max(returned_val[0])
+                            suv_mean = np.mean(returned_val[0])
+                            suv_min = np.min(returned_val[0])
+                            suv_std = np.std(returned_val[0])
 
+                            SUVresult.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
+                            cont = True
+                if cont == True:
+                    SUVresult_arr = np.asarray(SUVresult)
+                    col = ['FileName', 'suv_min', 'suv_max', 'suv_mean', 'suv_std', 'estimated']
+
+                    SUVresult_df = pd.DataFrame(SUVresult_arr)
+                    SUVresult_df.columns = col
+
+                    CSVFilename = "SUV_Report_Multi_Dicom.csv"
+                    CSVfullpath = os.path.join(destfolder2, CSVFilename)
+                    SUVresult_df.to_csv(CSVfullpath, index=None)
+        except:
+            raise 
         return ""
     else:
         sucsessList = []
@@ -377,6 +390,9 @@ def readFolder_dicom_2D_recurcive(folder, _types, createfolder, destfolder, suv)
         executor.shutdown(wait=True)
 
         if len(sucsessList) > 0:
+            destfolder2 = os.path.join(destfolder, 'SUV')
+            if os.path.isdir(destfolder2) == False:
+                os.mkdir(destfolder2)
             col = ['FileName', 'suv_min', 'suv_max', 'suv_mean', 'suv_std', 'estimated']
             SUVresult_arr = np.asarray(sucsessList)
             # SUVresult_arr.flatten()
@@ -385,108 +401,124 @@ def readFolder_dicom_2D_recurcive(folder, _types, createfolder, destfolder, suv)
             SUVresult_df.columns = col
 
             CSVFilename = "SUV_Report_Multi_Dicom.csv"
-            CSVfullpath = os.path.join(destfolder, CSVFilename)
+            CSVfullpath = os.path.join(destfolder2, CSVFilename)
             SUVresult_df.to_csv(CSVfullpath, index=None)
 
         return ''
 
 
 def readFolder_dicom_2D_recurcive_Thread(name, fullpath, _types, createfolder, destfolder, suv, sucsessList):
-    patients = convert_directory(fullpath, None, compression=True, reorient=True)
-    # inType = 'MDicom'   
-    changeinType = 'Nifti'
-    Headers = patients[0]
-    # filenames = patients[1]
-    filepaths = patients[2]
-    ImagePositionPatients = patients[4]
-    ImageOrientationPatient = patients[5]
-    step = patients[6]
-    PixelSpacing = patients[7]
+    try:
+        patients = convert_directory(fullpath, None, compression=True, reorient=True)
+        # inType = 'MDicom'   
+        changeinType = 'Nifti'
+        Headers = patients[0]
+        # filenames = patients[1]
+        filepaths = patients[2]
+        ImagePositionPatients = patients[4]
+        ImageOrientationPatient = patients[5]
+        step = patients[6]
+        PixelSpacing = patients[7]
 
-    thread_list = []
-    number = len(Headers)
-    for co in range(0, number):
-        if Headers[co] != None:
-            data = Headers[co].get_fdata()
-            # _filename = filenames[co].replace('.nii.gz', '').replace('.nii', '').replace('.nrrd', '').replace('.dcm', '').replace('.dicom','')
-            _filename = filepaths[co].split('\\')[-2]
-            destfolder2 = os.path.join(destfolder, name)
-            if os.path.isdir(destfolder2) == False:
-                os.mkdir(destfolder2)
-            for _type in _types:
-                t = threading.Thread(target=convert_modalities, args=(
-                    data, Headers[co], changeinType, _type, destfolder2, _filename, createfolder,
-                    ImagePositionPatients[co],
-                    ImageOrientationPatient[co], step[co], PixelSpacing[co], filepaths[co]))
-                thread_list.append(t)
-                t.start()
-    for thread in thread_list:
-        thread.join()
-
-    if suv == True:
-        # SUVresult = []
+        thread_list = []
         number = len(Headers)
         for co in range(0, number):
             if Headers[co] != None:
-                try:
-                    data = Headers[co].get_fdata()
-                    _filename = filepaths[co].split('\\')[-2]
-                    # returned_val = compute_suv(data,patients[3])
+                data = Headers[co].get_fdata()
+                # _filename = filenames[co].replace('.nii.gz', '').replace('.nii', '').replace('.nrrd', '').replace('.dcm', '').replace('.dicom','')
+                _filename = filepaths[co].split('\\')[-2]
+                # destfolder2 = os.path.join(destfolder, name)
+                # if os.path.isdir(destfolder2) == False:
+                #     os.mkdir(destfolder2)
 
-                    # root = fullpath
-                    # pet_image_file_list = [os.path.join(root,x) for x in os.listdir(root) if x.endswith('.dcm')]
-                    # pet_image_file_list = sort_by_instance_number(pet_image_file_list)
-                    # data = imread(pet_image_file_list)
-                    # f=pydicom.dcmread(pet_image_file_list[0])
-                    # returned_val = compute_suv(data,f)
+                destfolder2 = destfolder
 
-                    # root = fullpath
-                    # pet_image_file_list = [os.path.join(root,x) for x in os.listdir(root) if x.endswith('.dcm')]
-                    # pet_image_file_list = sort_by_instance_number(pet_image_file_list)
-                    # data = imread(pet_image_file_list)
-                    # f=pydicom.dcmread(pet_image_file_list[0])  
-                    # 
-                    f = pydicom.dcmread(filepaths[co])
-                    SUV_OBJ = SUVscalingObj(f)
-                    returned_val = SUV_OBJ.get_scale_factor(suv_normalisation="bw", data=data)
+                for _type in _types:
+                    t = threading.Thread(target=convert_modalities, args=(
+                        data, Headers[co], changeinType, _type, destfolder2, _filename, createfolder,
+                        ImagePositionPatients[co],
+                        ImageOrientationPatient[co], step[co], PixelSpacing[co], filepaths[co]))
+                    thread_list.append(t)
+                    t.start()
+        for thread in thread_list:
+            thread.join()
 
-                    convert_modalities(returned_val[0], Headers[co], 'Nifti', 'Nifti', destfolder2,
-                                       _filename + '_SUV_Calculation', createfolder, ImagePositionPatients[co],
-                                       ImageOrientationPatient[co], step[co], PixelSpacing[co], filepaths[co])
+        if suv == True:
 
-                    suv_max = np.max(returned_val[0])
-                    suv_mean = np.mean(returned_val[0])
-                    suv_min = np.min(returned_val[0])
-                    suv_std = np.std(returned_val[0])
+            destfolder3 = os.path.join(destfolder2, 'SUV')
+            if os.path.isdir(destfolder3) == False:
+                os.mkdir(destfolder3)        
+            # SUVresult = []
+            number = len(Headers)
+            for co in range(0, number):
+                if Headers[co] != None:
+                    try:
+                        data = Headers[co].get_fdata()
+                        _filename = filepaths[co].split('\\')[-2]
+                        # returned_val = compute_suv(data,patients[3])
 
-                    # SUVresult.append([_filename,suv_min,suv_max,suv_mean,suv_std,returned_val[1]])
+                        # root = fullpath
+                        # pet_image_file_list = [os.path.join(root,x) for x in os.listdir(root) if x.endswith('.dcm')]
+                        # pet_image_file_list = sort_by_instance_number(pet_image_file_list)
+                        # data = imread(pet_image_file_list)
+                        # f=pydicom.dcmread(pet_image_file_list[0])
+                        # returned_val = compute_suv(data,f)
 
-                    lock = threading.Lock()
-                    lock.acquire()
-                    # SUVresult_arr = np.asarray(SUVresult) 
-                    sucsessList.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
-                    lock.release()
+                        # root = fullpath
+                        # pet_image_file_list = [os.path.join(root,x) for x in os.listdir(root) if x.endswith('.dcm')]
+                        # pet_image_file_list = sort_by_instance_number(pet_image_file_list)
+                        # data = imread(pet_image_file_list)
+                        # f=pydicom.dcmread(pet_image_file_list[0])  
+                        # 
+                        f = pydicom.dcmread(filepaths[co])
+                        SUV_OBJ = SUVscalingObj(f)
+                        returned_val = SUV_OBJ.get_scale_factor(suv_normalisation="bw", data=data)
 
-                except:
+                        if returned_val[2] is not None:
+                            
 
-                    data = Headers[co].get_fdata()
-                    _filename = filepaths[co].split('\\')[-2]
-                    f = pydicom.dcmread(filepaths[co])
-                    returned_val = compute_suv(data, f)
+                            convert_modalities(returned_val[0], Headers[co], 'Nifti', 'Nifti', destfolder3,
+                                            _filename + '_SUV_Calculation', createfolder, ImagePositionPatients[co],
+                                            ImageOrientationPatient[co], step[co], PixelSpacing[co], filepaths[co])
 
-                    convert_modalities(returned_val[0], Headers[co], 'Nifti', 'Nifti', destfolder2,
-                                       _filename + '_SUV_Estimation', createfolder, ImagePositionPatients[co],
-                                       ImageOrientationPatient[co], step[co], PixelSpacing[co], filepaths[co])
+                            suv_max = np.max(returned_val[0])
+                            suv_mean = np.mean(returned_val[0])
+                            suv_min = np.min(returned_val[0])
+                            suv_std = np.std(returned_val[0])
 
-                    suv_max = np.max(returned_val[0])
-                    suv_mean = np.mean(returned_val[0])
-                    suv_min = np.min(returned_val[0])
-                    suv_std = np.std(returned_val[0])
+                            # SUVresult.append([_filename,suv_min,suv_max,suv_mean,suv_std,returned_val[1]])
 
-                    lock = threading.Lock()
-                    lock.acquire()
-                    sucsessList.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
-                    lock.release()
+                            lock = threading.Lock()
+                            lock.acquire()
+                            # SUVresult_arr = np.asarray(SUVresult) 
+                            sucsessList.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
+                            lock.release()
+                        
+                        else:
+                            raise TypeError('suv_scale_factor is None')
+
+                    except:
+
+                        data = Headers[co].get_fdata()
+                        _filename = filepaths[co].split('\\')[-2]
+                        f = pydicom.dcmread(filepaths[co])
+                        returned_val = compute_suv(data, f)
+
+                        convert_modalities(returned_val[0], Headers[co], 'Nifti', 'Nifti', destfolder3,
+                                        _filename + '_SUV_Estimation', createfolder, ImagePositionPatients[co],
+                                        ImageOrientationPatient[co], step[co], PixelSpacing[co], filepaths[co])
+
+                        suv_max = np.max(returned_val[0])
+                        suv_mean = np.mean(returned_val[0])
+                        suv_min = np.min(returned_val[0])
+                        suv_std = np.std(returned_val[0])
+
+                        lock = threading.Lock()
+                        lock.acquire()
+                        sucsessList.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
+                        lock.release()
+    except:
+        raise
     return ''
 
 
@@ -508,6 +540,10 @@ def readFolder_dicom_nD(folder, _types, createfolder, destfolder, suv):
     executor.shutdown(wait=True)
 
     if len(sucsessList) > 0:
+
+        destfolder2 = os.path.join(destfolder, 'SUV')
+        if os.path.isdir(destfolder2) == False:
+            os.mkdir(destfolder2)
         col = ['FileName', 'suv_min', 'suv_max', 'suv_mean', 'suv_std', 'estimated']
         SUVresult_arr = np.asarray(sucsessList)
         # SUVresult_arr.flatten()
@@ -516,7 +552,7 @@ def readFolder_dicom_nD(folder, _types, createfolder, destfolder, suv):
         SUVresult_df.columns = col
 
         CSVFilename = "SUV_Report_Single_Dicom.csv"
-        CSVfullpath = os.path.join(destfolder, CSVFilename)
+        CSVfullpath = os.path.join(destfolder2, CSVFilename)
         SUVresult_df.to_csv(CSVfullpath, index=None)
 
     return ''
@@ -525,84 +561,103 @@ def readFolder_dicom_nD(folder, _types, createfolder, destfolder, suv):
 def Dicom_read_simpleITK_Thread(name, folder, _types, createfolder, destfolder, suv, sucsessList):
     img = Dicom_read_simpleITK(folder, name)
 
-    inType = 'SDicom'
-    changeinType = 'Nifti'
-    thread_list = []
+    contin = True
+    if str(type(img[1])) == "<class 'SimpleITK.SimpleITK.Image'>":
+        if img[1].GetDimension() == 2:
+            contin = False
+    elif str(type(img[1])) == "<class 'nibabel.nifti1.Nifti1Image'>":
+        if len(img[0].shape) == 2:
+            contin = False
 
-    # file_names = dicomS[3][co].split('\\')[-1]
-    _filename = name.replace('.nii.gz', '').replace('.nii', '').replace('.nrrd', '').replace('.dcm', '').replace(
-        '.dicom', '')
-    print(_filename)
-    for _type in _types:
-        if _type != inType:
-            t = threading.Thread(target=convert_modalities,
-                                 args=(img[0], img[1], changeinType, _type, destfolder, _filename, createfolder))
-            thread_list.append(t)
-            t.start()
+    if contin :
+        inType = 'SDicom'
+        changeinType = 'Nifti'
+        thread_list = []
 
-        if _type == inType:
+        # file_names = dicomS[3][co].split('\\')[-1]
+        _filename = name.replace('.nii.gz', '').replace('.nii', '').replace('.nrrd', '').replace('.dcm', '').replace(
+            '.dicom', '')
+        # print(_filename)
+        for _type in _types:
+            if _type != inType:
+                t = threading.Thread(target=convert_modalities,
+                                    args=(img[0], img[1], changeinType, _type, destfolder, _filename, createfolder))
+                thread_list.append(t)
+                t.start()
 
-            filename = _filename + '_' + inType
-            if createfolder == 'True':
-                create_Folder_path = os.path.join(destfolder, filename)
-                if os.path.isdir(create_Folder_path) == False:
-                    os.mkdir(create_Folder_path)
-                fullpath = os.path.join(create_Folder_path, _filename + '.dcm')
-            else:
-                fullpath = os.path.join(destfolder, _filename + '.dcm')
-            # Fullsouecefile = os.path.join(sourcefolder,d[2][co])
-            shutil.copy(os.path.join(folder, name), fullpath)
-    for thread in thread_list:
-        thread.join()
+            if _type == inType:
 
-    if suv == True:
-        try:
-            data = img[0]
-            header = img[1]
-            Dcmheader = pydicom.dcmread(os.path.join(folder, name))
-            # returned_val = compute_suv(data,Dcmheader)
+                filename = _filename + '_' + inType
+                if createfolder == 'True':
+                    create_Folder_path = os.path.join(destfolder, filename)
+                    if os.path.isdir(create_Folder_path) == False:
+                        os.mkdir(create_Folder_path)
+                    fullpath = os.path.join(create_Folder_path, _filename + '.dcm')
+                else:
+                    fullpath = os.path.join(destfolder, _filename + '.dcm')
+                # Fullsouecefile = os.path.join(sourcefolder,d[2][co])
+                shutil.copy(os.path.join(folder, name), fullpath)
+        for thread in thread_list:
+            thread.join()
 
-            # pet_image_file_list = [os.path.join(folder,name)]
-            # pet_image_file_list = sort_by_instance_number(pet_image_file_list)
-            # data = imread(pet_image_file_list)
-            # returned_val = compute_suv(data,Dcmheader)
+        if suv == True:
+            destfolder2 = os.path.join(destfolder, 'SUV')
+            if os.path.isdir(destfolder2) == False:
+                os.mkdir(destfolder2)
 
-            # pet_image_file_list = [os.path.join(folder,name)]
-            # pet_image_file_list = sort_by_instance_number(pet_image_file_list)
-            # data = imread(pet_image_file_list)
-            SUV_OBJ = SUVscalingObj(Dcmheader)
-            returned_val = SUV_OBJ.get_scale_factor(suv_normalisation="bw", data=data)
+            try:
+                data = img[0]
+                header = img[1]
+                Dcmheader = pydicom.dcmread(os.path.join(folder, name))
+                # returned_val = compute_suv(data,Dcmheader)
 
-            convert_modalities(returned_val[0], header, 'Nifti', 'Nifti', destfolder, _filename + '_SUV_Calculation',
-                               createfolder)
+                # pet_image_file_list = [os.path.join(folder,name)]
+                # pet_image_file_list = sort_by_instance_number(pet_image_file_list)
+                # data = imread(pet_image_file_list)
+                # returned_val = compute_suv(data,Dcmheader)
 
-            suv_max = np.max(returned_val[0])
-            suv_mean = np.mean(returned_val[0])
-            suv_min = np.min(returned_val[0])
-            suv_std = np.std(returned_val[0])
+                # pet_image_file_list = [os.path.join(folder,name)]
+                # pet_image_file_list = sort_by_instance_number(pet_image_file_list)
+                # data = imread(pet_image_file_list)
+                SUV_OBJ = SUVscalingObj(Dcmheader)
+                returned_val = SUV_OBJ.get_scale_factor(suv_normalisation="bw", data=data)
 
-            lock = threading.Lock()
-            lock.acquire()
-            sucsessList.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
-            lock.release()
-        except:
-            data = img[0]
-            header = img[1]
-            Dcmheader = pydicom.dcmread(os.path.join(folder, name))
-            returned_val = compute_suv(data, Dcmheader)
+                if returned_val[2] is not None:
+                    
 
-            convert_modalities(returned_val[0], header, 'Nifti', 'Nifti', destfolder, _filename + '_SUV_Estimation',
-                               createfolder)
+                    convert_modalities(returned_val[0], header, 'Nifti', 'Nifti', destfolder2, _filename + '_SUV_Calculation',
+                                    createfolder)
 
-            suv_max = np.max(returned_val[0])
-            suv_mean = np.mean(returned_val[0])
-            suv_min = np.min(returned_val[0])
-            suv_std = np.std(returned_val[0])
+                    suv_max = np.max(returned_val[0])
+                    suv_mean = np.mean(returned_val[0])
+                    suv_min = np.min(returned_val[0])
+                    suv_std = np.std(returned_val[0])
 
-            lock = threading.Lock()
-            lock.acquire()
-            sucsessList.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
-            lock.release()
+                    lock = threading.Lock()
+                    lock.acquire()
+                    sucsessList.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
+                    lock.release()
+                else:
+                    raise TypeError('suv_scale_factor is None')
+
+            except:
+                data = img[0]
+                header = img[1]
+                Dcmheader = pydicom.dcmread(os.path.join(folder, name))
+                returned_val = compute_suv(data, Dcmheader)
+
+                convert_modalities(returned_val[0], header, 'Nifti', 'Nifti', destfolder2, _filename + '_SUV_Estimation',
+                                createfolder)
+
+                suv_max = np.max(returned_val[0])
+                suv_mean = np.mean(returned_val[0])
+                suv_min = np.min(returned_val[0])
+                suv_std = np.std(returned_val[0])
+
+                lock = threading.Lock()
+                lock.acquire()
+                sucsessList.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
+                lock.release()
 
         ##################################  Convertion functon   ##################################
 
@@ -611,7 +666,7 @@ def Convert_nifti_to_others(registered, header, Datatype, OUTPUT_DIR, filename, 
     if Datatype == 'Nifti':
         perm = (0, 1, 2)
         img = sitk.GetImageFromArray(np.transpose(registered.astype(np.float32), perm), isVector=False)
-
+        
         img.SetOrigin(header.GetOrigin())
         img.SetSpacing(header.GetSpacing())
         img.SetDirection(header.GetDirection())
@@ -668,7 +723,7 @@ def Convert_nifti_to_others(registered, header, Datatype, OUTPUT_DIR, filename, 
                 return os.path.join(OUTPUT_DIR, filename + '.nrrd')
 
         else:
-            print('Nrrd Format doesn''t work with', spaceStr2, 'direction')
+            raise('Nrrd Format doesn''t work with', spaceStr2, 'direction')
 
         # perm = (2, 1, 0)
         # data = np.transpose(registered.astype(np.float32), perm)
@@ -817,9 +872,9 @@ def Convert_nifti_to_others(registered, header, Datatype, OUTPUT_DIR, filename, 
             writer.SetFileName(outputpathWrite)
             writer.Execute(image_slice)
 
-        if un_precision:
-            print(
-                'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
+        # if un_precision:
+        #     print(
+        #         'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
         return outputpathWrite
 
     elif Datatype == 'SDicom':
@@ -906,12 +961,12 @@ def Convert_nifti_to_others(registered, header, Datatype, OUTPUT_DIR, filename, 
 
         writer.SetFileName(outputpathWrite)
         writer.Execute(image_slice)
-        if un_precision:
-            print(
-                'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
+        # if un_precision:
+        #     print(
+        #         'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
         return outputpathWrite
-    else:
-        print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
+    # else:
+    #     print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
 
 
 def Convert_nifti_nibabel_to_others(registered, header, Datatype,
@@ -1019,7 +1074,7 @@ def Convert_nifti_nibabel_to_others(registered, header, Datatype,
                 sitk.WriteImage(img, os.path.join(OUTPUT_DIR, filename + '.nrrd'))
                 return os.path.join(OUTPUT_DIR, filename + '.nrrd')
         else:
-            print('Nrrd Format doesn''t work with', spaceStr2, 'direction')
+            raise('Nrrd Format doesn''t work with', spaceStr2, 'direction')
 
         # cont = True
         # spacing = (abs(header.affine[0,0]),abs(header.affine[1,1]),abs(header.affine[2,2]))
@@ -1218,9 +1273,9 @@ def Convert_nifti_nibabel_to_others(registered, header, Datatype,
 
             writer.SetFileName(outputpathWrite)
             writer.Execute(image_slice)
-        if un_precision:
-            print(
-                'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
+        # if un_precision:
+        #     print(
+        #         'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
         return outputpathWrite
     elif Datatype == 'SDicom':
 
@@ -1336,12 +1391,12 @@ def Convert_nifti_nibabel_to_others(registered, header, Datatype,
         writer.SetFileName(outputpathWrite)
         writer.Execute(image_slice)
 
-        if un_precision:
-            print(
-                'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
+        # if un_precision:
+        #     print(
+        #         'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
         return outputpathWrite
-    else:
-        print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
+    # else:
+    #     print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
 
 
 def Convert_nrrd_to_others(registered, header, Datatype, OUTPUT_DIR, filename, createfolder):
@@ -1479,9 +1534,9 @@ def Convert_nrrd_to_others(registered, header, Datatype, OUTPUT_DIR, filename, c
             writer.SetFileName(outputpathWrite)
             writer.Execute(image_slice)
 
-        if un_precision:
-            print(
-                'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
+        # if un_precision:
+        #     print(
+        #         'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
         return outputpathWrite
     elif Datatype == 'SDicom':
 
@@ -1572,12 +1627,12 @@ def Convert_nrrd_to_others(registered, header, Datatype, OUTPUT_DIR, filename, c
 
         writer.SetFileName(outputpathWrite)
         writer.Execute(image_slice)
-        if un_precision:
-            print(
-                'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
+        # if un_precision:
+        #     print(
+        #         'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
         return outputpathWrite
-    else:
-        print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
+    # else:
+    #     print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
 
 
 def Convert_dicom_to_others(registered, header, Datatype, OUTPUT_DIR, filename, createfolder):
@@ -1640,7 +1695,7 @@ def Convert_dicom_to_others(registered, header, Datatype, OUTPUT_DIR, filename, 
                     return os.path.join(OUTPUT_DIR, filename + '.nrrd')
 
             else:
-                print('Nrrd Format doesn''t work with', spaceStr2, 'direction')
+                raise('Nrrd Format doesn''t work with', spaceStr2, 'direction')
 
             # perm = (2, 1, 0)
             # data = np.transpose(registered.astype(np.float32), perm)
@@ -1785,15 +1840,93 @@ def Convert_dicom_to_others(registered, header, Datatype, OUTPUT_DIR, filename, 
 
             writer.SetFileName(outputpathWrite)
             writer.Execute(image_slice)
-            if un_precision:
-                print(
-                    'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
+            # if un_precision:
+            #     print(
+            #         'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
             return outputpathWrite
 
         elif Datatype == 'MDicom':
-            print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
-        else:
-            print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
+
+            un_precision = False
+            registered_max = np.max(registered)
+            if registered_max > pow(2, 16):
+                un_precision = True
+            registered_min = np.min(registered)
+            if registered_min < 0:
+                registered = registered.astype(np.int16)  # best ct
+            else:
+                registered = registered.astype(np.uint16)  # best pet
+
+            new_img = sitk.GetImageFromArray(registered)
+
+            writer = sitk.ImageFileWriter()
+            writer.KeepOriginalImageUIDOn()
+
+            modification_time = time.strftime("%H%M%S")
+            modification_date = time.strftime("%Y%m%d")
+
+            direction = header.GetDirection()
+            origin = header.GetOrigin()
+            spaceiing = header.GetSpacing()
+
+            rand_number_Sdicom = randint(200000, 210000) * 13
+
+            series_tag_values = [
+                ("0008|0031", modification_time),
+                ("0008|0021", modification_date),
+                ("0008|0008", "DERIVED\\SECONDARY"),
+                ("0020|000e", "1.2.826.0.1.3680043.2.1125." + str(rand_number_Sdicom) + "."
+                 + modification_date + ".1" + modification_time),
+                # ("0020|0037", '\\'.join(map(str, (direction[0], direction[1],direction[2],
+                #                                   direction[3],direction[4],
+                #                                   direction[5])))),# Image Orientation
+                ("0020|0037",
+                 '\\'.join(map(str, (direction[0], direction[3], direction[6],  # Image Orientation (Patient)
+                                     direction[1], direction[4], direction[7])))),
+                ("0020|0032", '\\'.join(map(str, (origin[0], origin[1], origin[2])))),
+                ("0028|0030", '\\'.join(map(str, (spaceiing[0], spaceiing[1])))),
+                ("0018|0050", str(spaceiing[2])),
+                ("0008|103e", filename)  # Series Description
+            ]
+
+            new_img.SetDirection(header.GetDirection())
+            new_img.SetSpacing(header.GetSpacing())
+            new_img.SetOrigin(header.GetOrigin())
+
+            if createfolder == 'True':
+                filename2 = filename + '_SDicom'
+
+                create_Folder_path = os.path.join(OUTPUT_DIR, filename2)
+                if os.path.isdir(create_Folder_path) == False:
+                    os.mkdir(create_Folder_path)
+
+            for i in range(new_img.GetDepth()):
+                image_slice = new_img[:, :, i]
+                list(map(lambda tag_value: image_slice.SetMetaData(tag_value[0], tag_value[1]), series_tag_values))
+                for tag, value in series_tag_values:
+                    image_slice.SetMetaData(tag, value)
+                image_slice.SetMetaData("0008|0012", time.strftime("%Y%m%d"))  # Instance Creation Date
+                image_slice.SetMetaData("0008|0013", time.strftime("%H%M%S"))  # Instance Creation Time
+                image_slice.SetMetaData("0008|0060", "CT")  # set the type to CT so the thickness is carried over
+                image_slice.SetMetaData("0020|0032", '\\'.join(
+                    map(str, new_img.TransformIndexToPhysicalPoint((0, 0, i)))))  # Image Position (Patient)
+                image_slice.SetMetaData("0020,0013", str(i))  # Instance Number
+
+
+                if createfolder == 'True':
+                    outputpathWrite = os.path.join(create_Folder_path, filename + '_' + str(i) + '.dcm')
+                else:
+                    outputpathWrite = os.path.join(OUTPUT_DIR, filename + '_' + str(i) + '.dcm')
+
+                writer.SetFileName(outputpathWrite)
+                writer.Execute(image_slice)
+            
+            # if un_precision:
+            #     print(
+            #         'voxel intensity in the converted image was limited to a 16-bit integer, so the converted image is not precise.')
+            return outputpathWrite            
+        # else:
+        #     print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
 
     elif len(registered.shape) == 2:
         if Datatype == 'Nifti':
@@ -1855,7 +1988,7 @@ def Convert_dicom_to_others(registered, header, Datatype, OUTPUT_DIR, filename, 
                     return os.path.join(OUTPUT_DIR, filename + '.nrrd')
 
             else:
-                print('Nrrd Format doesn''t work with', spaceStr2, 'direction')
+                raise('Nrrd Format doesn''t work with', spaceStr2, 'direction')
 
             # perm = (1, 0)
             # data = np.transpose(registered.astype(np.float32), perm)
@@ -1920,12 +2053,12 @@ def Convert_dicom_to_others(registered, header, Datatype, OUTPUT_DIR, filename, 
             # else:
             #     print('Nrrd Format doesn''t work with',spaceStr2,'direction')
 
-        elif Datatype == 'SDicom':
-            print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
-        elif Datatype == 'MDicom':
-            print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
-        else:
-            print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
+        # elif Datatype == 'SDicom':
+        #     print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
+        # elif Datatype == 'MDicom':
+        #     print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
+        # else:
+        #     print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
 
 
 def convert_modalities(registered, header, DatatypeFrom, Datatype, OUTPUT_DIR, filename, createfolder,
@@ -1940,8 +2073,8 @@ def convert_modalities(registered, header, DatatypeFrom, Datatype, OUTPUT_DIR, f
             return Convert_nifti_nibabel_to_others(registered, header, Datatype, OUTPUT_DIR, filename, createfolder,
                                                    ImagePositionPatients, ImageOrientationPatient, step, PixelSpacing,
                                                    filepaths)
-        else:
-            print('This kind of header does''nt support.')
+        # else:
+        #     print('This kind of header does''nt support.')
     elif DatatypeFrom == 'Nrrd':
         perm = (2, 1, 0)
         registered = np.transpose(registered.astype(np.float32), perm)
@@ -1957,7 +2090,7 @@ def convert_modalities(registered, header, DatatypeFrom, Datatype, OUTPUT_DIR, f
     #     # Convert_nifti_nibabel_to_others(registered , header , Datatype , OUTPUT_DIR , filename)
     #     Convert_dicom_to_others(registered , header , Datatype , OUTPUT_DIR , filename,createfolder)
     else:
-        print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
+        # print('The software just supports 4 formats such as Nifti, Nrrd, Single and multi Dicom images.')
         return ""
 
 
@@ -1998,9 +2131,9 @@ def convertimage(souecefile, types='SDicom;Nifti;Nrrd', createfolder='True', des
                         if path is not None:
                             mpath.append(path)
                     else:
-                        print('The image converter tool can''t read the input.')
+                        raise('The image converter tool can''t read the input.')
                 except Exception as e:
-                    print('The image converter tool can''t read the input:', e)
+                    raise('The image converter tool can''t read the input:', e)
             elif _type == intype:
                 if createfolder == 'True':
                     create_Folder_path = os.path.join(destfolder, _filename)
@@ -2024,9 +2157,9 @@ def convertimage(souecefile, types='SDicom;Nifti;Nrrd', createfolder='True', des
                         if path is not None:
                             mpath.append(path)
                     else:
-                        print('The image converter tool can''t read the input.')
+                        raise('The image converter tool can''t read the input.')
                 except Exception as e:
-                    print('The image converter tool can''t read the input:', e)
+                    raise('The image converter tool can''t read the input:', e)
             elif _type == intype:
                 if createfolder == 'True':
                     create_Folder_path = os.path.join(destfolder, _filename)
@@ -2052,10 +2185,12 @@ def convertimage(souecefile, types='SDicom;Nifti;Nrrd', createfolder='True', des
                         fullpath = convert_modalities(dicom[0], dicom[1], 'SDicom', _type, destfolder, _filename,
                                                       createfolder)
                         cont = True
+                        if fullpath is not None:
+                            mpath.append(fullpath)
                     else:
-                        print('The image converter tool can''t read the input.')
+                        raise('The image converter tool can''t read the input.')
                 except Exception as e:
-                    print('The image converter tool can''t read the input:', e)
+                    raise('The image converter tool can''t read the input:', e)
             elif _type == intype:
                 if createfolder == 'True':
                     create_Folder_path = os.path.join(destfolder, _filename)
@@ -2068,8 +2203,15 @@ def convertimage(souecefile, types='SDicom;Nifti;Nrrd', createfolder='True', des
 
                 shutil.copy(souecefile, fullpath)
                 cont = True
+                if fullpath is not None:
+                    mpath.append(fullpath)
 
         if suv == True:
+
+            destfolder2 = os.path.join(destfolder, 'SUV')
+            if os.path.isdir(destfolder2) == False:
+                os.mkdir(destfolder2)
+
             if cont == True:
                 SUVresult = []
                 try:
@@ -2091,27 +2233,31 @@ def convertimage(souecefile, types='SDicom;Nifti;Nrrd', createfolder='True', des
                         SUV_OBJ = SUVscalingObj(Dcmheader)
                         returned_val = SUV_OBJ.get_scale_factor(suv_normalisation="bw", data=data)
 
-                        convert_modalities(returned_val[0], header, 'SDicom', 'Nifti', destfolder,
-                                           _filename + '_SUV_Calculation', createfolder)
+                        if returned_val[2] is not None:        
+                            convert_modalities(returned_val[0], header, 'SDicom', 'Nifti', destfolder2,
+                                            _filename + '_SUV_Calculation', createfolder)
 
-                        suv_max = np.max(returned_val[0])
-                        suv_mean = np.mean(returned_val[0])
-                        suv_min = np.min(returned_val[0])
-                        suv_std = np.std(returned_val[0])
+                            suv_max = np.max(returned_val[0])
+                            suv_mean = np.mean(returned_val[0])
+                            suv_min = np.min(returned_val[0])
+                            suv_std = np.std(returned_val[0])
 
-                        SUVresult.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
+                            SUVresult.append([_filename, suv_min, suv_max, suv_mean, suv_std, returned_val[1]])
 
-                        SUVresult_arr = np.asarray(SUVresult)
-                        col = ['FileName', 'suv_min', 'suv_max', 'suv_mean', 'suv_std', 'estimated']
+                            SUVresult_arr = np.asarray(SUVresult)
+                            col = ['FileName', 'suv_min', 'suv_max', 'suv_mean', 'suv_std', 'estimated']
 
-                        SUVresult_df = pd.DataFrame(SUVresult_arr)
-                        SUVresult_df.columns = col
+                            SUVresult_df = pd.DataFrame(SUVresult_arr)
+                            SUVresult_df.columns = col
 
-                        CSVFilename = "SUV_Report_Single_Dicom.csv"
-                        CSVfullpath = os.path.join(destfolder, CSVFilename)
-                        SUVresult_df.to_csv(CSVfullpath, index=None)
+                            CSVFilename = "SUV_Report_Single_Dicom.csv"
+                            CSVfullpath = os.path.join(destfolder2, CSVFilename)
+                            SUVresult_df.to_csv(CSVfullpath, index=None)
+                        else:
+                            raise TypeError('suv_scale_factor is None')
+                        
                     else:
-                        print('The image converter tool can''t read the input.')
+                        raise('The image converter tool can''t read the input.')
                 except:
                     # print('The image converter tool can''t read the input.')
                     data = dicom[0]
@@ -2119,7 +2265,7 @@ def convertimage(souecefile, types='SDicom;Nifti;Nrrd', createfolder='True', des
                     Dcmheader = pydicom.dcmread(os.path.join(data_directory, file_name))
                     returned_val = compute_suv(data, Dcmheader)
 
-                    convert_modalities(returned_val[0], header, 'SDicom', 'Nifti', destfolder,
+                    convert_modalities(returned_val[0], header, 'SDicom', 'Nifti', destfolder2,
                                        _filename + '_SUV_Estimation', createfolder)
 
                     suv_max = np.max(returned_val[0])
@@ -2136,12 +2282,11 @@ def convertimage(souecefile, types='SDicom;Nifti;Nrrd', createfolder='True', des
                     SUVresult_df.columns = col
 
                     CSVFilename = "SUV_Report_Single_Dicom.csv"
-                    CSVfullpath = os.path.join(destfolder, CSVFilename)
+                    CSVfullpath = os.path.join(destfolder2, CSVFilename)
                     SUVresult_df.to_csv(CSVfullpath, index=None)
-                if fullpath is not None:
-                    mpath.append(fullpath)
+
     else:
-        print('The image converter tool can''t read the input.')
+        raise('The image converter tool can''t read the input.')
     if len(mpath) == 1:
         return mpath[0]
     elif len(mpath) == 0:
@@ -2149,7 +2294,7 @@ def convertimage(souecefile, types='SDicom;Nifti;Nrrd', createfolder='True', des
     return mpath[0]
 
 
-def convertimage_folder(sourcefolder, types='SDicom;MDicom;Nifti;Nrrd', createfolder='True', destfolder='', suv=False):
+def convertimage_folder(sourcefolder, types='SDicom;MDicom;Nifti;Nrrd', createfolder='False', destfolder='', suv=False):
     if '\\' in types:
         _types = types.split('\\')
     else:
@@ -2247,7 +2392,7 @@ def compute_suv(raw, f):
     try:
         weight_grams = float(f.PatientWeight) * 1000
     except:
-        traceback.print_exc()
+        # traceback.print_exc()
         weight_grams = 75000
         estimated = True
 
@@ -2267,7 +2412,7 @@ def compute_suv(raw, f):
         # Calculate the dose decayed during procedure
         injected_dose_decay = injected_dose * decay  # in Bq
     except:
-        traceback.print_exc()
+        # traceback.print_exc()
         decay = np.exp(-np.log(2) * (1.75 * 3600) / 6588)  # 90 min waiting time, 15 min preparation
         injected_dose_decay = 420000000 * decay  # 420 MBq
         estimated = True

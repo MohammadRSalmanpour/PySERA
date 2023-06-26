@@ -3,7 +3,7 @@ import os
 
 import cv2
 import numpy as np
-import scipy.ndimage as ndi
+# import scipy.ndimage as ndi
 import scipy.ndimage as ndimage
 import skimage.exposure
 from PIL import Image, ImageDraw
@@ -19,6 +19,7 @@ from skimage.segmentation import active_contour
 from dcmrtstruct2nii import dcmrtstruct2nii
 
 import nibabel
+import SimpleITK as sitk
 
 
 def ConvertRTS2NII(RTSFilePath, DicomDatabase, OutFilename, ret=False):
@@ -43,13 +44,20 @@ def ConvertRTS2NII(RTSFilePath, DicomDatabase, OutFilename, ret=False):
                         im[:, :, j] = add_label(im[:, :, j], im1[:, :, j])
         if ret:
             return im.astype(np.uint8)
-        img = nibabel.Nifti1Image(im, affine=np.eye(4))
+        # img = nibabel.Nifti1Image(im, affine=np.eye(4))
         path = OutFilename + "/mask_total.nii.gz"
-        nibabel.save(img, path)
+        save_segmentation(im, path, sitk.ReadImage(OutFilename + "/" + lis[1]).GetSpacing())
+        # nibabel.save(img, path)
         return path
     except Exception as e:
-        print(e)
+        raise(e)
     return OutFilename
+
+
+def save_segmentation(im, path, spacing):
+    im1 = sitk.GetImageFromArray(np.fliplr(np.swapaxes(np.swapaxes(im.astype(np.uint8), 0, 2), 1, 2)))
+    im1.SetSpacing(spacing)
+    sitk.WriteImage(im1, path)
 
 
 def ImageInfo(image):
@@ -73,7 +81,7 @@ def layer_inspector(image, which_layer):
 
     _, _, d_max = image.shape
     if which_layer > d_max:
-        print('Error : Layer excide boundaries')
+        raise('Error : Layer excide boundaries')
     else:
         out = image[:, :, which_layer]
 
@@ -91,14 +99,19 @@ def contrast(image, which_layer, contrast_value):
 
     _, _, d_max = image.shape
     if which_layer > d_max:
-        print('Error : Layer excide boundaries')
+        raise('Error : Layer excide boundaries')
     else:
         frame = image[:, :, which_layer]
         # Gamma:
-        out = exposure.adjust_gamma(frame, contrast_value)
+        out = exposure.adjust_gamma(frame + abs(np.min(frame)), contrast_value)
         # or Logarithmic:
         # out = exposure.adjust_log(Frame, ContrastValue)
         return out
+
+
+def contrast_(frame, contrast_value):
+    x = (abs(np.min(frame)) if np.min(frame) < 0 else 0)
+    return exposure.adjust_gamma(frame + x, contrast_value)
 
 
 def crop(image, x0, y0, z0, w, h, d):
@@ -116,9 +129,33 @@ def crop(image, x0, y0, z0, w, h, d):
 
     w_max, h_max, d_max = image.shape
     if (x0 + w > w_max) | (y0 + h > h_max) | (z0 + d > d_max):
-        print('Error : Size exceed boundaries')
+        raise('Error : Size exceed boundaries')
     else:
-        out = image[x0:x0 + w, y0:y0 + h, z0:z0 + d]
+        # out = image[y0:y0 + h, x0:x0 + w, z0:z0 + d]
+        out = image[y0:y0 + h, x0:x0 + w, :]
+
+        return out
+
+
+def crop0(image, x0, y0, x1, y1):
+    """
+    This is the Crop algorithm.
+    :param image: The image.
+    :param x0 : starting point
+    :param y0 : starting point
+    :param z0 : starting point
+    :param w : width of crop
+    :param h : height of crop
+    :param d : depth of crop
+    :return: The cropped image.
+    """
+
+    w_max, h_max, d_max = image.shape
+    if (abs(x0 - x1) > w_max) | (abs(y0 - y1) > h_max):
+        raise('Error : Size exceed boundaries')
+    else:
+        # out = image[y0:y0 + h, x0:x0 + w, z0:z0 + d]
+        out = image[y0:y1, x0:x1, :]
 
         return out
 
@@ -135,7 +172,7 @@ def label(image, which_layer, which_label, new_label):
 
     _, _, d_max = image.shape
     if which_layer > d_max:
-        print('Error : Layer exceed boundaries')
+        raise('Error : Layer exceed boundaries')
     else:
         frame = image[:, :, which_layer]
         out = frame
@@ -152,7 +189,7 @@ def order(frame):
     """
 
     out = frame
-    print(np.max(frame))
+    raise(np.max(frame))
     for i in range(0, np.max(frame)):
         out[(frame == i)] = np.abs(- i)
 
@@ -171,7 +208,7 @@ def transparency(image, whichLayer, whichLabel, NewTransparency):
 
     _, _, d_max = image.shape
     if whichLayer > d_max:
-        print('Error : Layer excide boundaries')
+        raise('Error : Layer excide boundaries')
     else:
         frame = image[:, :, whichLayer]
         out = frame
@@ -191,7 +228,7 @@ def visibility(image, whichLayer, whichLabel):
 
     _, _, d_max = image.shape
     if whichLayer > d_max:
-        print('Error : Layer excide boundaries')
+        raise('Error : Layer excide boundaries')
     else:
         frame = image[:, :, whichLayer]
         out = frame
@@ -211,7 +248,7 @@ def manual(image, whichLayer, polygon):
 
     _, _, d_max = image.shape
     if whichLayer > d_max:
-        print('Error : Layer excide boundaries')
+        raise('Error : Layer excide boundaries')
     else:
         frame = image[:, :, whichLayer]
         img_array = frame
@@ -287,7 +324,6 @@ def RG(I, sigma, seed_x, seed_y, thresh):
     # OUTPUTS:
     #   Im_blur - output of 2D Gaussian blurring on I - float
     #   seg - logical segmentation output - bool
-    #   region_size - number of pixels in segmented region - int
 
     # FUNCTION DEPENDENCIES:
     #   numpy
@@ -296,7 +332,7 @@ def RG(I, sigma, seed_x, seed_y, thresh):
     n_rows, n_cols = I.shape
 
     # %% pre processing - 2D gaussian blurring to smooth out noise
-    Im_blur = ndi.gaussian_filter(I, sigma, order=0, mode='reflect')
+    Im_blur = ndimage.gaussian_filter(I, sigma, order=0, mode='reflect')
 
     # %% preallocate memory for segmentation output, also specify maximum
     # number of iterations as 10% of image area
@@ -368,7 +404,6 @@ def RG(I, sigma, seed_x, seed_y, thresh):
             break
 
     # calculate total number of pixels in segmentation
-    region_size = sum(sum(region != 0))
 
     return np.array(seg, dtype=np.uint8)
 
@@ -409,7 +444,7 @@ def threshold(image, whichLayer):
 
     _, _, d_max = image.shape
     if whichLayer > d_max:
-        print('Error : Layer excide boundaries')
+        raise('Error : Layer excide boundaries')
     else:
         frame = image[:, :, whichLayer]
         thresholds = threshold_multiotsu(frame)
@@ -429,7 +464,7 @@ def multi_threshold(image, whichLayer, thresholds):
 
     _, _, d_max = image.shape
     if whichLayer > d_max:
-        print('Error : Layer excide boundaries')
+        raise('Error : Layer excide boundaries')
     else:
         frame = image[:, :, whichLayer]
         original = frame
@@ -541,7 +576,7 @@ def DICOM2RTS(DicomDatabase, MASK_FROM_ML_MODEL, PathOutput):
     )
 
     # View all of the ROI names from within the image
-    print(rtstruct.get_roi_names())
+    raise(rtstruct.get_roi_names())
 
     # Loading the 3D Mask from within the RT Struct
     mask_3d = rtstruct.get_roi_mask_by_name("RT-Utils ROI!")
@@ -757,7 +792,7 @@ def post_process(frame, What, param):
     return out
 
 
-def add_label(PastLabels, NewLabel):
+def add_label(PastLabels, NewLabel, label=None):
     """
     This is the adding label to the existing labels algorithm. 
     :param frame: The image Frame.
@@ -766,8 +801,11 @@ def add_label(PastLabels, NewLabel):
      NewLabel : the value of new lebel to be replaced
        :return: The updated labels image.
     """
-
-    MaxL = np.max(PastLabels)
-    NewLabelBW = (MaxL + 1) * np.array(NewLabel > 0)
+    if label is None:
+        MaxL = np.max(PastLabels)
+        NewLabelBW = (MaxL + 1) * np.array(NewLabel > 0)
+    else:
+        NewLabelBW = label * np.array(NewLabel > 0)
+    PastLabels[NewLabel > 0] = 0
     out = PastLabels + NewLabelBW
     return out

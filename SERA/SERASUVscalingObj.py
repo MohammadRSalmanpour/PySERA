@@ -137,11 +137,22 @@ class SUVscalingObj:
         suv_scale_factor = self.apply_normalisation(scale_factor=suv_scale_factor, norm_method=suv_normalisation)
 
         
-        ImageArray = sitk.GetImageFromArray(data, isVector=False)
-        image = sitk.Multiply(ImageArray, suv_scale_factor)
-        SUV = sitk.GetArrayFromImage(image)
+        # ImageArray = sitk.GetImageFromArray(data, isVector=False)
+        # image = sitk.Multiply(ImageArray, suv_scale_factor)
+        # SUV = sitk.GetArrayFromImage(image)
 
-        return SUV,estimated
+        ImageArray = sitk.GetImageFromArray(data, isVector=False)
+        ImageArray = sitk.Cast(ImageArray, sitk.sitkFloat32)
+
+        if suv_scale_factor is not None:
+            # image = ImageArray * suv_scale_factor
+            image = sitk.Multiply(ImageArray, suv_scale_factor)
+            SUV = sitk.GetArrayFromImage(image)
+        else:
+            SUV = sitk.GetArrayFromImage(ImageArray)
+
+
+        return SUV,estimated,suv_scale_factor
 
     def get_scale_factor_counts(self):
         """

@@ -44,7 +44,7 @@ def weighted_average_fusion(img1, img2, w1, w2 , InterPolation):
     :return: The fusioned image.
     '''
     if w1<0 or w2<0:
-        print('You are not allowed to use weight value lesser than zero.')
+        raise('You are not allowed to use weight value lesser than zero.')
         return
     elif w1 + w2 != 1:
         w1 = w1/(w1+w2)
@@ -108,8 +108,8 @@ def weighted_Fusion(ct_image , pet_image , w1, w2, InterPolation):
     # Final_fusion3D = ((ct_max - ct_min )*((Final_fusion3D - Currentmin ) / (Currentmax - Currentmin))) + ct_min
     # Final_fusion3D = Final_fusion3D.astype(np.uint16())
     
-    # print(np.min(Final_fusion3D))
-    # print(np.max(Final_fusion3D))
+    # raise(np.min(Final_fusion3D))
+    # raise(np.max(Final_fusion3D))
     return Final_fusion3D
 
 
@@ -335,8 +335,8 @@ def Wavelet_Fusion(ct_image , pet_image , FUSION_METHOD, wavelet , MODE, level):
     # Final_fusion3D = ((ct_max - ct_min )*((Final_fusion3D - Currentmin ) / (Currentmax - Currentmin))) + ct_min
     # Final_fusion3D = Final_fusion3D.astype(np.uint16())
     
-    # print(np.min(Final_fusion3D))
-    # print(np.max(Final_fusion3D))
+    # raise(np.min(Final_fusion3D))
+    # raise(np.max(Final_fusion3D))
 
 
 
@@ -414,8 +414,8 @@ def PCA_Fusion(ct_image , pet_image, nc , ss):
     # Final_fusion3D = ((ct_max - ct_min )*((Final_fusion3D - Currentmin ) / (Currentmax - Currentmin))) + ct_min
     # Final_fusion3D = Final_fusion3D.astype(np.uint16())
     
-    # print(np.min(Final_fusion3D))
-    # print(np.max(Final_fusion3D))
+    # raise(np.min(Final_fusion3D))
+    # raise(np.max(Final_fusion3D))
     
     
     
@@ -482,7 +482,7 @@ def pca_fusion_folder( ct_path , pet_path , ss, nc , destfolder):
                         Moved_fullpath = os.path.join(pet_path,moved[selected_index])
                         moved_img =  readimage(Moved_fullpath)
                         
-                        # print(co ,'matched with', moved[selected_index],'.')
+                        # raise(co ,'matched with', moved[selected_index],'.')
                         try:
                             if isinstance(moved_img[0], np.ndarray) & isinstance(fixed_img[0], np.ndarray):
                     
@@ -510,16 +510,16 @@ def pca_fusion_folder( ct_path , pet_path , ss, nc , destfolder):
                                         if(len(moved)>0):
                                             moved.pop(selected_index)
                                 else:
-                                    print('Images must be 3D.')
+                                    raise('Images must be 3D.')
                             else:
-                                print('You must use an approprate type of input.')	
+                                raise('You must use an approprate type of input.')	
                         except Exception as e:
-                            print('Out of Memory or the parameters of image fusion tool should be selected properly:', e)
+                            raise('Out of Memory or the parameters of image fusion tool should be selected properly:', e)
                     # else:
-                        # print('There is no image with the same name of',co,'in another folder.')
+                        # raise('There is no image with the same name of',co,'in another folder.')
         executor.shutdown(wait=True)
     else:
-        print('Change svd solver or number of component in PCA hyperparameter.')
+        raise('Change svd solver or number of component in PCA hyperparameter.')
     # for future in concurrent.futures.as_completed(futures):
     #     cc = 0
     # for thread in thread_list:
@@ -623,7 +623,7 @@ def wavelet_fusion_folder(ct_path , pet_path ,  fusion_method, wavelet , mode, l
                     Moved_fullpath = os.path.join(pet_path,moved[selected_index])
                     moved_img =  readimage(Moved_fullpath)
                     
-                    # print(co ,'matched with', moved[selected_index],'.')
+                    # raise(co ,'matched with', moved[selected_index],'.')
             
                     try:
                         if isinstance(moved_img[0], np.ndarray) & isinstance(fixed_img[0], np.ndarray):
@@ -670,17 +670,17 @@ def wavelet_fusion_folder(ct_path , pet_path ,  fusion_method, wavelet , mode, l
                                         futures.append(executor.submit(wavelet_fusion_folder_Thread, fixed_img,moved_img,ct_image , pet_image , FUSION_METHOD, wavelet , MODE, level,destfolder))
                                         
                                     else:
-                                        print('Change wavelet family hyperparameter.') 
+                                        raise('Change wavelet family hyperparameter.') 
                                     if(len(moved)>0):
                                         moved.pop(selected_index)
                             else:
-                                print('Images must be 3D.')
+                                raise('Images must be 3D.')
                         else:
-                            print('You must use an approprate type of input.')
+                            raise('You must use an approprate type of input.')
                     except Exception as e:
-                        print('Out of Memory or the parameters of image fusion tool should be selected properly:', e)
+                        raise('Out of Memory or the parameters of image fusion tool should be selected properly:', e)
                 # else:
-                    # print('There is no image with the same name of',co,'in another folder.')
+                    # raise('There is no image with the same name of',co,'in another folder.')
     executor.shutdown(wait=True)
     # for future in concurrent.futures.as_completed(futures):
     #     cc = 0
@@ -774,7 +774,7 @@ def weighted_fusion_folder( ct_path , pet_path , w1, w2, interpolation, destfold
             interpolation = cv2.INTER_LANCZOS
     except:
         # yp=0
-        # print('interpolator is incorrect')
+        # raise('interpolator is incorrect')
         # set default interpolator
         interpolation = cv2.INTER_LINEAR
         
@@ -819,7 +819,7 @@ def weighted_fusion_folder( ct_path , pet_path , w1, w2, interpolation, destfold
                     Moved_fullpath = os.path.join(pet_path,moved[selected_index])
                     moved_img =  readimage(Moved_fullpath)
                     
-                    # print(co ,'matched with', moved[selected_index],'.')
+                    # raise(co ,'matched with', moved[selected_index],'.')
             
                     try:
                         if isinstance(moved_img[0], np.ndarray) & isinstance(fixed_img[0], np.ndarray):
@@ -829,8 +829,8 @@ def weighted_fusion_folder( ct_path , pet_path , w1, w2, interpolation, destfold
                                 
                             ct_image = fixed_img[0] 
                             pet_image = moved_img[0]
-                            # print(ct_image.shape)
-                            # print(pet_image.shape)
+                            # raise(ct_image.shape)
+                            # raise(pet_image.shape)
                     
                             if len(ct_image.shape) == 3 & len(pet_image.shape) == 3 :   
                     
@@ -851,13 +851,13 @@ def weighted_fusion_folder( ct_path , pet_path , w1, w2, interpolation, destfold
                                         moved.pop(selected_index)
                                 
                             else:
-                                print('Images must be 3D.')
+                                raise('Images must be 3D.')
                         else:
-                            print('You must use an approprate type of input.')
+                            raise('You must use an approprate type of input.')
                     except Exception as e:
-                        print('Out of Memory or the parameters of Image Fusion tool should be selected properly:', e)
+                        raise('Out of Memory or the parameters of Image Fusion tool should be selected properly:', e)
                 # else:
-                    # print('There is no image with the same name of',co,'in another folder.')
+                    # raise('There is no image with the same name of',co,'in another folder.')
     executor.shutdown(wait=True)
     # for future in concurrent.futures.as_completed(futures):
     #     cc = 0  
@@ -964,7 +964,7 @@ def HSI_fusion_folder( ct_path , pet_path , destfolder):
                     Moved_fullpath = os.path.join(pet_path,moved[selected_index])
                     moved_img =  readimage(Moved_fullpath)
                     
-                    # print(co ,'matched with', moved[selected_index],'.')
+                    # raise(co ,'matched with', moved[selected_index],'.')
             
                     try:
                         if isinstance(moved_img[0], np.ndarray) & isinstance(fixed_img[0], np.ndarray):
@@ -973,8 +973,8 @@ def HSI_fusion_folder( ct_path , pet_path , destfolder):
 
                             ct_image = fixed_img[0] 
                             pet_image = moved_img[0]
-                            # print(ct_image.shape)
-                            # print(pet_image.shape)
+                            # raise(ct_image.shape)
+                            # raise(pet_image.shape)
                     
                             if len(ct_image.shape) == 3 & len(pet_image.shape) == 3 :   
                     
@@ -997,13 +997,13 @@ def HSI_fusion_folder( ct_path , pet_path , destfolder):
                                         moved.pop(selected_index)
                                 
                             else:
-                                print('Images must be 3D.')
+                                raise('Images must be 3D.')
                         else:
-                            print('You must use an approprate type of input.')
+                            raise('You must use an approprate type of input.')
                     except Exception as e:
-                        print('Out of Memory or the parameters of registration tool should be selected properly:', e)
+                        raise('Out of Memory or the parameters of registration tool should be selected properly:', e)
                 # else:
-                    # print('There is no image with the same name of',co,'in another folder.')
+                    # raise('There is no image with the same name of',co,'in another folder.')
     executor.shutdown(wait=True)
     # for future in concurrent.futures.as_completed(futures):
     #     cc = 0 

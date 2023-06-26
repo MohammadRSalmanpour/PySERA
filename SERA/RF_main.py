@@ -84,8 +84,10 @@ import pandas as pd
 # - Creation: December 2022
 # -------------------------------------------------------------------------
 
+
 def SERA_FE_main_Fun(data_orginal,
                     Data_ROI_mat,
+                    Data_ROI_Name,
                     VoxelSizeInfo,
                     BinSize,
                     DataType,
@@ -103,12 +105,18 @@ def SERA_FE_main_Fun(data_orginal,
                     isIsot2D,
                     ReSegIntrvl,
                     ROI_PV,
+                    IVH_Type,
+                    IVH_DiscCont,
+                    IVH_binSize,
+                    ROIsPerImg,
+                    isROIsCombined,
                     Feats2out,
                     IVHconfig): 
 
     # ROI_Box = computeBoundingBox(Data_ROI_mat)
     if isinstance(BinSize, collections.abc.Sequence):
-        Lbin = BinSize.shape[0]
+        # Lbin = BinSize.shape[0]
+        Lbin = len(BinSize)
     else:
         Lbin = 1
         temp = BinSize

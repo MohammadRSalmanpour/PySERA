@@ -97,7 +97,7 @@ def prepareVolume(volume,Mask,DataType,pixelW,sliceTh,
     elif DiscType == 'FBN':
         quantization = uniformQuantization
     else:
-        print('Error with discretization type. Must either be "FBS" (Fixed Bin Size) or "FBN" (Fixed Number of Bins).')
+        raise('Error with discretization type. Must either be "FBS" (Fixed Bin Size) or "FBN" (Fixed Number of Bins).')
 
 
     if qntz == 'Lloyd':
@@ -168,7 +168,7 @@ def prepareVolume(volume,Mask,DataType,pixelW,sliceTh,
             ROIwholeResmp = imresize3D(Mask,[pixelW, pixelW, sliceTh],[np.ceil(Mask.shape[0]*a),np.ceil(Mask.shape[1]*b),np.ceil(Mask.shape[2]*c)],ROIInterp,'constant',[newVoxelSize,newVoxelSize,newVoxelSize],isIsot2D)
             ImgWholeResmp = imresize3D(volume,[pixelW, pixelW, sliceTh],[np.ceil(volume.shape[0]*a),np.ceil(volume.shape[1]*b),np.ceil(volume.shape[2]*c)],VoxInterp ,'constant',[newVoxelSize,newVoxelSize,newVoxelSize],isIsot2D)
             if np.max(ROIwholeResmp) < ROI_PV:
-                print('Resampled ROI has no voxels with value above ROI_PV. Cutting ROI_PV to half.')
+                raise('Resampled ROI has no voxels with value above ROI_PV. Cutting ROI_PV to half.')
                 ROI_PV = ROI_PV/2
             
             ROIwholeResmp[ROIwholeResmp<ROI_PV] = 0
@@ -184,7 +184,7 @@ def prepareVolume(volume,Mask,DataType,pixelW,sliceTh,
             ROIwholeResmp = imresize(Mask,[pixelW, pixelW],[np.ceil(Mask.shape[0]*a),np.ceil(Mask.shape[1]*b)],ROIInterp,[newVoxelSize,newVoxelSize])
             ImgWholeResmp = imresize(volume,[pixelW, pixelW],[np.ceil(volume.shape[0]*a),np.ceil(volume.shape[1]*b)],VoxInterp,[newVoxelSize,newVoxelSize])
             if np.max(ROIwholeResmp) < ROI_PV:
-                print('Resampled ROI has no voxels with value above ROI_PV. Cutting ROI_PV to half.')
+                raise('Resampled ROI has no voxels with value above ROI_PV. Cutting ROI_PV to half.')
                 ROI_PV = ROI_PV/2
             
             ROIwholeResmp[ROIwholeResmp<ROI_PV] = 0

@@ -100,7 +100,7 @@ def getIntVolHist(IntsROI2,ROIBox3D2,BinSize,isReSeg,ResegIntrval,IVHconfig):
                 Hist = np.histogram(ROIarrayValid,G2)  
                 # n, bins, patches = plt.hist(ROIarrayValid,G2)
             except:
-                # print('--Problem with IVH. Dividing the bin size by 10 to fix.')
+                raise('--Problem with IVH. Dividing the bin size by 10 to fix.')
                 BinSize = BinSize/10
 
                 G = np.arange(minGL,(np.ceil(maxGL/BinSize)+1)*BinSize,BinSize)
@@ -112,7 +112,7 @@ def getIntVolHist(IntsROI2,ROIBox3D2,BinSize,isReSeg,ResegIntrval,IVHconfig):
                     G2 = np.insert(G,0,np.min(G)-1)
                     Hist = np.histogram(ROIarrayValid,G2)
                 except:
-                    # print('---It is even worse. Lets add 0.0001 to see if it fixes the histogram.')
+                    raise('---It is even worse. Lets add 0.0001 to see if it fixes the histogram.')
                     G2 = np.insert(G,0,np.min(G)-1)
                     Hist = np.histogram(ROIarrayValid, [G2, G2 + 0.0001])
                 
@@ -130,7 +130,7 @@ def getIntVolHist(IntsROI2,ROIBox3D2,BinSize,isReSeg,ResegIntrval,IVHconfig):
             # V = 1 - (  np.divide(HistAc, HistAc[-1]))
               
         else:
-            print('Wrong IVH Config parameter!')  
+            raise('Wrong IVH Config parameter!')  
         
         
     elif IVHconfig[0] == 1:
@@ -155,10 +155,10 @@ def getIntVolHist(IntsROI2,ROIBox3D2,BinSize,isReSeg,ResegIntrval,IVHconfig):
             gamma = ((BinsCenters - BinsCenters[0]) / (BinsCenters[-1]-BinsCenters[0]))
             
         else:
-            print('Wrong IVH Config parameter!')
+            raise('Wrong IVH Config parameter!')
         
     elif IVHconfig[0] == 2:
-        # print('Not a standard IVH Setting!! Make sure you know what you are doing.')
+        raise('Not a standard IVH Setting!! Make sure you know what you are doing.')
         ROIarrayValid = np.squeeze(IntsROI[~np.isnan(IntsROI)])
         BinSize = 1000
         Hist = np.histogram(ROIarrayValid,BinSize)
@@ -195,7 +195,7 @@ def getIntVolHist(IntsROI2,ROIBox3D2,BinSize,isReSeg,ResegIntrval,IVHconfig):
         gamma = ((BinsCenters - BinsCenters[0]) / (BinsCenters[-1]-BinsCenters[0]))
         
     else:
-        print('Wrong IVH Config parameter!')
+        raise('Wrong IVH Config parameter!')
     
 
     V_10 = V[np.where(gamma>=0.1)[0][0]]

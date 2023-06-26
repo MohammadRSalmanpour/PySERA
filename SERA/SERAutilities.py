@@ -247,20 +247,20 @@ def MarchingCubes(x,y,z,c,iso,colors):
 
 
     if x.ndim != 3 and y.ndim  != 3 and z.ndim  != 3 and c.ndim  != 3:
-        print('x, y, z, c must be matrices of dim 3')
+        raise('x, y, z, c must be matrices of dim 3')
     
 
     if x.shape != y.shape or y.shape != z.shape or z.shape != c.shape:
-        print('x, y, z, c must be the same size')
+        raise('x, y, z, c must be the same size')
     
 
     if np.any(x.shape < (2, 2, 2)):
-        print('grid size must be at least 2x2x2')
+        raise('grid size must be at least 2x2x2')
     
 
     if colors is not None:
         if colors.shape != c.shape:
-            print( 'color must be matrix of same size as c')
+            raise( 'color must be matrix of same size as c')
         
         calc_cols = True
         lindex = 5
@@ -1121,7 +1121,7 @@ def minboundbox(x,y,z,metric=None,level=None):
     n2 = y.shape[0]
     n3 = z.shape[0]
     if n1 != n2 or n1 != n3 or n2 != n3:
-        print('x, y and z must be the same sizes')
+        raise('x, y and z must be the same sizes')
     
 
     try:
@@ -1172,7 +1172,7 @@ def minboundbox(x,y,z,metric=None,level=None):
             K[:,2] = np.ones(K[:,1].shape)
 
         except:
-            print('The number and/or distribution of given points does not allow the construction of a convex hull.')
+            raise('The number and/or distribution of given points does not allow the construction of a convex hull.')
         
     K = K.astype(np.int32)
     fx = np.column_stack((x[K[:,0]],x[K[:,1]],x[K[:,2]]))                   

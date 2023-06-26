@@ -234,7 +234,7 @@ def SERA_main_process(da_original, VoxelSize, da_label,
                       isROIsCombined,
                       Feats2out,
                       IVHconfig,
-                      destfolder,rand_number,sucsessList):
+                      destfolder,rand_number,sucsessList,roi_segments,obj):
 
     
     if np.issubdtype(da_original[0].dtype, np.floating) == True:
@@ -250,64 +250,235 @@ def SERA_main_process(da_original, VoxelSize, da_label,
 
     VoxelSizeInfo = np.squeeze(VoxelSize).astype(np.float32)
 
+    if roi_segments == None:
 
-    Data_ROI_np = da_label[0]
-    AllROIs = []
-    ROIMax = np.max(Data_ROI_np)
-    number_of_ROI = ROIsPerImg if ROIsPerImg < ROIMax else ROIMax
-    for ijk in range(0, number_of_ROI):
-        Data_ROI_aa = Data_ROI_np == (ijk+1)
-        Data_ROI_aa = Data_ROI_aa.astype(int)
-        labeled_array, num_features = ndimage.label(Data_ROI_aa)
+        Data_ROI_np = da_label[0]
+        AllROIs = []
+        ROIMax = np.max(Data_ROI_np)
+        number_of_ROI = ROIsPerImg if ROIsPerImg < ROIMax else ROIMax
+        for ijk in range(0, number_of_ROI):
+            Data_ROI_aa = Data_ROI_np == (ijk+1)
+            Data_ROI_aa = Data_ROI_aa.astype(int)
+            labeled_array, num_features = ndimage.label(Data_ROI_aa)
 
-        ROIs = []
-        number_of_ROI_per_ROI = num_features
+            ROIs = []
+            number_of_ROI_per_ROI = num_features
 
-        for jk in range(0, number_of_ROI_per_ROI):
-            arr = labeled_array == (jk+1)
-            arr = arr.astype(int)
-            volume = ndimage.sum(arr)
-            ROIs.append((arr, volume))
+            for jk in range(0, number_of_ROI_per_ROI):
+                arr = labeled_array == (jk+1)
+                arr = arr.astype(int)
+                volume = ndimage.sum(arr)
+                ROIs.append((arr, volume))
 
-        ROIs.sort(key=lambda x: x[1], reverse=True)
-        ROIs = ROIs[:ROIsPerImg]
-        AllROIs.append(ROIs)
+            ROIs.sort(key=lambda x: x[1], reverse=True)
+            if len(ROIs) > ROIsPerImg:
+                ROIs = ROIs[:ROIsPerImg]
+            AllROIs.append(ROIs)
+
+        current_List = []
+        current_Name = []
+        count = 1
+        for mn in AllROIs:
+            # count2 = 1
+            for mn2 in mn:
+                # label_name = 'label-'+str(count)+'_'+str(count2)
+                label_name = 'label '+str(count)
+                mn3 = mn2[0].astype(np.uint8)
+                current_List.append(mn3)
+                current_Name.append(label_name)
+                # count2 = count2+1
+                # count = count+1
+            count = count+1
+
+    else:
+        # Data_ROI_np = da_label[0]
+        # AllROIs = []
+        # ROIMax = np.max(Data_ROI_np)
+        # number_of_ROI = ROIsPerImg if ROIsPerImg < ROIMax else ROIMax
+        # for ijk in range(0, number_of_ROI):
+        #     Data_ROI_aa = Data_ROI_np == (ijk+1)
+        #     Data_ROI_aa = Data_ROI_aa.astype(int)
+        #     labeled_array, num_features = ndimage.label(Data_ROI_aa)
+
+        #     ROIs = []
+        #     number_of_ROI_per_ROI = num_features
+
+        #     for jk in range(0, number_of_ROI_per_ROI):
+        #         arr = labeled_array == (jk+1)
+        #         arr = arr.astype(int)
+        #         volume = ndimage.sum(arr)
+        #         ROIs.append((arr, volume))
+
+        #     ROIs.sort(key=lambda x: x[1], reverse=True)
+        #     ROIs = ROIs[:ROIsPerImg]
+        #     AllROIs.append(ROIs)
+        # np.save('roi_segments', roi_segments)
+        # import pickle
+        # with open('roi_segments.pkl', 'wb') as file:
+        #     pickle.dump(roi_segments, file)
+
+        # current_List = []
+        # current_Name = []
+        # # count = 1
+        # for mn in roi_segments[obj]:
+        #     # count2 = 1
+        #     for mn2 in mn:
+
+        #         for mn3 in mn[mn2]:
+                        
+        #             mn4 = mn3[0].astype(np.uint8)
+        #             current_List.append(mn4)
+        #             # current_Name.append(mn2[2])
+        #             # count2 = count2+1
+        #         # count = count+1
+
+        current_List = []
+        current_Name = []
+        current_Size = []
+
+        for mn in roi_segments[1]:
+            for mn2 in mn:
+                for mn3 in mn[mn2]:        
+                    mn4 = mn3[0].astype(np.uint8)
+                    current_List.append(mn4)
+                    current_Name.append(mn2)
+                    current_Size.append(mn3[1])
 
 
+        # current_List = []
+        # current_Name = []
+        # # count = 1
+        # for mn in roi_segments[obj]:
+        #     # count2 = 1
+        #     for mn2 in mn:
+        #         mn3 = mn2[0].astype(np.uint8)
+        #         current_List.append(mn3)
+        #         current_Name.append(mn2[2])
+        #         # count2 = count2+1
+        #     # count = count+1
 
-    current_List = []
-    count = 1
-    for mn in AllROIs:
-        count2 = 1
-        for mn2 in mn:
-            mn3 = mn2[0].astype(np.uint8)
-            current_List.append(mn3)
-            count2 = count2+1
-        count = count+1
+    # import pickle
+
+    # # save dictionary to person_data.pkl file
+    # with open('roi_segments_data.pkl', 'wb') as fp:
+    #     pickle.dump(roi_segments, fp)
+    #     # print('dictionary saved successfully to file')
+
+    # with open('current_List.pkl', 'wb') as fp:
+    #     pickle.dump(current_List, fp)
+    #     # print('dictionary saved successfully to file')
 
     if DataType == 'CT / SPECT':
         DataType = 'CT'
     # if DataType == 'MR':
     #     DataType = 'MRscan'
 
-    start = timeit.default_timer()
     Co = 0
+    Co_n = 0
+    lastCo = 0
     pd_ROIS = []
+    con = False
     for curROI in current_List:
 
-        Co = Co +1
+        try:
+            lastCo = Co
+            Co = Co +1
+            Co_n = Co_n + 1
+            Data_ROI_mat = np.squeeze(curROI).astype(np.float32)
+            Data_ROI_Name = str(Co)
 
-        Data_ROI_mat = np.squeeze(curROI).astype(np.float32)
-        Data_ROI_Name = str(Co)
+            AllFeat = SERA_FE_main_Fun(data_orginal,
+                            Data_ROI_mat,
+                            Data_ROI_Name,
+                            VoxelSizeInfo,
+                            BinSize,
+                            DataType,
+                            isotVoxSize,
+                            isotVoxSize2D,
+                            DiscType,
+                            qntz,
+                            VoxInterp,
+                            ROIInterp,
+                            isScale,
+                            isGLround,
+                            isReSegRng,
+                            isOutliers,
+                            isQuntzStat,
+                            isIsot2D,
+                            ReSegIntrvl,
+                            ROI_PV,
+                            IVH_Type,
+                            IVH_DiscCont,
+                            IVH_binSize,
+                            ROIsPerImg,
+                            isROIsCombined,
+                            Feats2out,
+                            IVHconfig)
+            
+            if Co == 1:
+                AllFeats = AllFeat
+                con = True
+            else:
+                AllFeats += AllFeat
+                con = True
 
-        AllFeat = SERA_FE_main_Fun(data_orginal,
-                        Data_ROI_mat,
-                        Data_ROI_Name,
-                        VoxelSizeInfo,
-                        BinSize,
-                        DataType,
+            for i in range(len(AllFeat)) :
+                # pd_ROIS += [Co]  
+                pd_ROIS += [current_Name[Co_n - 1]]  
+            # print(AllFeats)
+        except:
+            Co = lastCo
+
+    if con:
+        AllFeats = np.array(AllFeats)
+
+        matFilename = "All_extracted_features_"+da_original[3]+".xlsx"
+        matFilename_path = "Patient_"+ da_original[3]+"_"+str(rand_number)+".xlsx"
+
+        features = pd.read_excel("SERA Features Name and Tags.xlsx" , sheet_name= str(Feats2out) , engine='openpyxl' ,header=0)
+        fe2 = features.iloc[:,-1]
+        column1 = list(fe2)
+        column = column1
+
+
+        ExtendedBinSize = []
+        try:
+            for i in range(int(AllFeats.shape[0]/len(BinSize))) :
+                ExtendedBinSize += [j for j in BinSize]
+        except:
+            for i in range(int(AllFeats.shape[0])) :
+                ExtendedBinSize += [BinSize]
+        
+        FE = pd.DataFrame(AllFeats)
+        FE.columns = column
+
+                
+        FE.insert(0, "ROI", pd_ROIS , True)
+        FE.insert(0, "Bin Size", ExtendedBinSize , True)
+        pd_id = da_original[3]
+
+        pd_ids = []
+        for i in range(int(AllFeats.shape[0])) :
+            pd_ids += [pd_id]
+
+
+        FE.insert(0, "PatientID", pd_ids , True)
+                
+        para = {
+                'Parameter':['Bin Size/Width', '3D Isotropic Voxel Size Flag', '2D Isotropic Voxel Size Flag', 'Image Modality Type',
+                                'Discretization Type', 'Quantization Type', 'Image Resampling Interpolation Type', 'ROI Resampling Interpolation Type',
+                                'Scale (Resampling) Flag', 'Round Voxel Intensity Values Flag', 'Range Re-Segmentation Flag', 
+                                'Intensity Outlier Re-Segmentation Flag','Image Quantization Flag','Isotropic 2D Voxels Flag',
+                                'Re-Segmentation Interval Range','ROI Partial Volume Threshold','Intensity Volume Histogram (IVH) Type','Intensity Volume Histogram (IVH) Discretization Type',
+                                'Intensity Volume Histogram (IVH) Discretization Binning Option/Size',
+                                'Max Number Of ROIs per Image',
+                                'Combine Multiple ROIs To ONE Flag',
+                                'Type of Ouyput Data'
+                                ],
+                'Value':[BinSize,
                         isotVoxSize,
                         isotVoxSize2D,
+                        DataType,
                         DiscType,
                         qntz,
                         VoxInterp,
@@ -325,118 +496,75 @@ def SERA_main_process(da_original, VoxelSize, da_label,
                         IVH_binSize,
                         ROIsPerImg,
                         isROIsCombined,
-                        Feats2out,
-                        IVHconfig)
+                        Feats2out]
+            }
         
-        if Co == 1:
-            AllFeats = AllFeat
+
+        now = datetime.datetime.now()
+        
+
+        Currentdate = now.strftime("%m-%d-%Y_%H%M%S")
+
+                
+        result = pd.DataFrame(para)
+                        
+        if rand_number >= 0:    
+            CSVFilename = matFilename_path.split(".")[0]+".xlsx"
         else:
-            AllFeats += AllFeat
+            CSVFilename = matFilename.split(".")[0]+"_"+Currentdate+".xlsx"
 
-        for i in range(len(AllFeat)) :
-            pd_ROIS += [Co]  
-        # print(AllFeats)
+        CSVfullpath = os.path.join(destfolder, CSVFilename)
 
-    AllFeats = np.array(AllFeats)
-
-    matFilename = "All_extracted_features_"+da_original[3]+".xlsx"
-    matFilename_path = "All_extracted_features_"+ da_original[3]+"_"+str(rand_number)+".xlsx"
-
-    features = pd.read_excel("SERA Features Name and Tags.xlsx" , sheet_name= str(Feats2out) , engine='openpyxl' ,header=0)
-    fe2 = features.iloc[:,-1]
-    column1 = list(fe2)
-    column = column1
-
-
-    ExtendedBinSize = []
-    try:
-        for i in range(int(AllFeats.shape[0]/len(BinSize))) :
-            ExtendedBinSize += [j for j in BinSize]
-    except:
-        for i in range(int(AllFeats.shape[0])) :
-            ExtendedBinSize += [BinSize]
-    
-    FE = pd.DataFrame(AllFeats)
-    FE.columns = column
-
-
+        writer = pd.ExcelWriter(CSVfullpath, engine='xlsxwriter') # pylint: disable=abstract-class-instantiated
+        FE.to_excel(writer, sheet_name='Extracted_features',index=None)
+        result.to_excel(writer, sheet_name='Parameters',index=None)
+        writer.save() 
             
-    FE.insert(0, "ROI", pd_ROIS , True)
-    FE.insert(0, "Bin Size", ExtendedBinSize , True)
-    pd_id = da_original[3]
-
-    pd_ids = []
-    for i in range(int(AllFeats.shape[0])) :
-        pd_ids += [pd_id]
+        sucsessList.append((matFilename,True))
 
 
-    FE.insert(0, "PatientID", pd_ids , True)
-            
-    para = {
-            'Parameter':['Bin Size/Width', '3D Isotropic Voxel Size Flag', '2D Isotropic Voxel Size Flag', 'Image Modality Type',
-                            'Discretization Type', 'Quantization Type', 'Image Resampling Interpolation Type', 'ROI Resampling Interpolation Type',
-                            'Scale (Resampling) Flag', 'Round Voxel Intensity Values Flag', 'Range Re-Segmentation Flag', 
-                            'Intensity Outlier Re-Segmentation Flag','Image Quantization Flag','Isotropic 2D Voxels Flag',
-                            'Re-Segmentation Interval Range','ROI Partial Volume Threshold','Intensity Volume Histogram (IVH) Type','Intensity Volume Histogram (IVH) Discretization Type',
-                            'Intensity Volume Histogram (IVH) Discretization Binning Option/Size',
-                            'Max Number Of ROIs per Image',
-                            'Combine Multiple ROIs To ONE Flag',
-                            'Type of Ouyput Data'
-                            ],
-            'Value':[BinSize,
-                    isotVoxSize,
-                    isotVoxSize2D,
-                    DataType,
-                    DiscType,
-                    qntz,
-                    VoxInterp,
-                    ROIInterp,
-                    isScale,
-                    isGLround,
-                    isReSegRng,
-                    isOutliers,
-                    isQuntzStat,
-                    isIsot2D,
-                    ReSegIntrvl,
-                    ROI_PV,
-                    IVH_Type,
-                    IVH_DiscCont,
-                    IVH_binSize,
-                    ROIsPerImg,
-                    isROIsCombined,
-                    Feats2out]
-        }
-    
-
-    now = datetime.datetime.now()
-    
-
-    Currentdate = now.strftime("%m-%d-%Y_%H%M%S")
-
-            
-    result = pd.DataFrame(para)
-                    
-    if rand_number >= 0:    
-        CSVFilename = matFilename_path.split(".")[0]+"_"+Currentdate+".xlsx"
-    else:
-        CSVFilename = matFilename.split(".")[0]+"_"+Currentdate+".xlsx"
-
-    CSVfullpath = os.path.join(destfolder, CSVFilename)
-
-    writer = pd.ExcelWriter(CSVfullpath, engine='xlsxwriter') # pylint: disable=abstract-class-instantiated
-    FE.to_excel(writer, sheet_name='Extracted_features',index=None)
-    result.to_excel(writer, sheet_name='Parameters',index=None)
-    writer.save() 
-
-    stop = timeit.default_timer()
-
-    print('Time: ', stop - start)  
-        
-    sucsessList.append((matFilename,True))
     return True   
 
                         
         
+
+def FE_export_excels(destfolder , str_rand_number):
+    List_files = os.listdir(destfolder)
+    FirstFile = True  
+    for i in List_files:
+        postfix = str_rand_number + '.xlsx'
+        if i.endswith(postfix):
+            fullpath = os.path.join(destfolder,i)
+            data = pd.read_excel(fullpath,sheet_name='Extracted_features',header=0,index_col=None)
+            Parameters = pd.read_excel(fullpath,sheet_name='Parameters',header=0,index_col=None)
+            # extracted_features = extracted_features.astype(np.float32)			                
+
+            if FirstFile == True :
+                FirstFile = False
+                merged_df = data
+            else:
+                frames = [merged_df, data]
+                merged_df = pd.concat(frames)
+            
+            
+            fullpathDes = os.path.join(destfolder,'Radiomics features for single patient')
+            if os.path.exists(fullpathDes) == False:
+                os.mkdir(fullpathDes)
+
+            fullpathDesFilename = os.path.join(fullpathDes,i)
+            shutil.move(fullpath,fullpathDesFilename)
+            
+            # os.remove(fullpath)
+    if FirstFile == False:    
+
+        now = datetime.datetime.now() 
+        Currentdate = now.strftime("%m-%d-%Y_%H%M%S")                                
+        CSVFilename = "All_extracted_features_"+Currentdate+".xlsx"
+        CSVfullpath = os.path.join(destfolder, CSVFilename)
+        writer = pd.ExcelWriter(CSVfullpath, engine='xlsxwriter') # pylint: disable=abstract-class-instantiated
+        merged_df.to_excel(writer, sheet_name='Extracted_features',index=None)
+        Parameters.to_excel(writer, sheet_name='Parameters',index=None)
+        writer.save()
 
 
 
@@ -573,173 +701,173 @@ def SERA(da_original, da_label,
                 ROIsPerImg,
                 isROIsCombined,
                 Feats2out,
-                destfolder):
+                destfolder,roi_segments,obj):
         
     da_original = readimage(da_original)
     da_label = readimage(da_label)
     sucsessList = []
-    # try:
-    if isinstance(da_original[0], np.ndarray) & isinstance(da_label[0], np.ndarray):
+    try:
+        if isinstance(da_original[0], np.ndarray) & isinstance(da_label[0], np.ndarray):
 
-    # if da_original[0] != None & da_label[0] != None:  
+        # if da_original[0] != None & da_label[0] != None:  
 
-                        
-        if da_original[2] == 'Nifti' or da_original[2] == 'Dicom':
-            perm = (2, 1, 0)
-            da_original[0] = np.transpose(da_original[0], perm)
-        if da_label[2] == 'Nifti' or da_label[2] == 'Dicom':
-            perm = (2, 1, 0)
-            da_label[0] = np.transpose(da_label[0], perm)  
+                            
+            if da_original[2] == 'Nifti' or da_original[2] == 'Dicom':
+                perm = (2, 1, 0)
+                da_original[0] = np.transpose(da_original[0], perm)
+            if da_label[2] == 'Nifti' or da_label[2] == 'Dicom':
+                perm = (2, 1, 0)
+                da_label[0] = np.transpose(da_label[0], perm)  
 
-        dim01 = np.shape(da_original[0])
-        dim02 = np.shape(da_label[0])
-        if (dim01 == dim02):
-            
-            if len(dim01) == 3 & len(dim02) == 3 :   
-        
-                if da_original[2] == 'Nifti':  
-                    VoxelSize = da_original[1].GetSpacing()
-                if da_original[2] == 'Nrrd':  
-                    VoxelSize = (da_original[1]['space directions'][0,0],da_original[1]['space directions'][1,1],da_original[1]['space directions'][2,2])
-                if da_original[2] == 'Dicom':  
-                    VoxelSize = da_original[1].GetSpacing()     
-
-                if da_label[2] == 'Nifti':  
-                    VoxelSizelabel = da_label[1].GetSpacing()
-                if da_label[2] == 'Nrrd':  
-                    VoxelSizelabel = (da_label[1]['space directions'][0,0],da_label[1]['space directions'][1,1],da_label[1]['space directions'][2,2])
-                if da_label[2] == 'Dicom':  
-                    VoxelSizelabel = da_label[1].GetSpacing()     
+            dim01 = np.shape(da_original[0])
+            dim02 = np.shape(da_label[0])
+            if (dim01 == dim02):
                 
-                if VoxelSizelabel == VoxelSize:
+                if len(dim01) == 3 & len(dim02) == 3 :   
+            
+                    if da_original[2] == 'Nifti':  
+                        VoxelSize = da_original[1].GetSpacing()
+                    if da_original[2] == 'Nrrd':  
+                        VoxelSize = (da_original[1]['space directions'][0,0],da_original[1]['space directions'][1,1],da_original[1]['space directions'][2,2])
+                    if da_original[2] == 'Dicom':  
+                        VoxelSize = da_original[1].GetSpacing()     
+
+                    if da_label[2] == 'Nifti':  
+                        VoxelSizelabel = da_label[1].GetSpacing()
+                    if da_label[2] == 'Nrrd':  
+                        VoxelSizelabel = (da_label[1]['space directions'][0,0],da_label[1]['space directions'][1,1],da_label[1]['space directions'][2,2])
+                    if da_label[2] == 'Dicom':  
+                        VoxelSizelabel = da_label[1].GetSpacing()     
                     
-                    if CheckGTV(da_label[0]):
-                        # BinSize = int(BinSize)
-                        # isotVoxSize = int(isotVoxSize)
-                        # isotVoxSize2D = int(isotVoxSize2D)
-                        # isScale = int(isScale)
-                        # isGLround = int(isGLround)
-                        # isReSegRng = int(isReSegRng)
-                        # isOutliers = int(isOutliers)
-                        # isQuntzStat = int(isQuntzStat)
-                        # isIsot2D = int(isIsot2D)
-                        # ReSegIntrvl = [int(ReSegIntrvl01), int(ReSegIntrvl02)]
-                        # ROI_PV = float(ROI_PV)
-                        # IVH_Type = int(IVH_Type)
-                        # IVH_DiscCont = int(IVH_DiscCont)
-                        # IVH_binSize = int(IVH_binSize)
-                        # ROIsPerImg = int(ROIsPerImg)
-                        # isROIsCombined = int(isROIsCombined)
-                        # Feats2out = int(Feats2out)
-                        # IVHconfig = [IVH_Type, IVH_DiscCont, IVH_binSize]
+                    if np.all(np.around(VoxelSizelabel, 3) == np.around(VoxelSize, 3)):
                         
-                        contin = True 
-                        try:
-                            # BinSize_values = BinSize.split(',')
-                            # BinSize_values = [int(mi) for mi in BinSize_values]
-                            # # print(BinSize_values)
+                        if CheckGTV(da_label[0]):
+                            # BinSize = int(BinSize)
+                            # isotVoxSize = int(isotVoxSize)
+                            # isotVoxSize2D = int(isotVoxSize2D)
+                            # isScale = int(isScale)
+                            # isGLround = int(isGLround)
+                            # isReSegRng = int(isReSegRng)
+                            # isOutliers = int(isOutliers)
+                            # isQuntzStat = int(isQuntzStat)
+                            # isIsot2D = int(isIsot2D)
+                            # ReSegIntrvl = [int(ReSegIntrvl01), int(ReSegIntrvl02)]
+                            # ROI_PV = float(ROI_PV)
+                            # IVH_Type = int(IVH_Type)
+                            # IVH_DiscCont = int(IVH_DiscCont)
+                            # IVH_binSize = int(IVH_binSize)
+                            # ROIsPerImg = int(ROIsPerImg)
+                            # isROIsCombined = int(isROIsCombined)
+                            # Feats2out = int(Feats2out)
+                            # IVHconfig = [IVH_Type, IVH_DiscCont, IVH_binSize]
                             
-                            # if len(BinSize_values) == 1:
-                            #     BinSize = BinSize_values[0]
-                            #     BinSize = int(BinSize)
-                            # else:
-                            #     BinSize = BinSize_values
-                            #     BinSize = [int(mi) for mi in BinSize]
-                        
-                            # contin = True        
-                            # print(BinSize)  
-                            # 
-                            if BinSize != '':
-                                BinSize_values = BinSize.split(',')
-                                BinSize_values2 = []
-                                for mi in BinSize_values:
-                                    if mi != '':
-                                        BinSize_values2.append(int(mi))
-                                # print(BinSize_values2)
-
-                                if len(BinSize_values2) == 1:
-                                    BinSize = BinSize_values2[0]
-                                    BinSize = int(BinSize)
-                                elif len(BinSize_values2) == 0:
-                                    BinSize = int(32) 
-                                else:   
-                                    BinSize = []
-                                    for mi in BinSize_values2:
+                            contin = True 
+                            try:
+                                # BinSize_values = BinSize.split(',')
+                                # BinSize_values = [int(mi) for mi in BinSize_values]
+                                # # print(BinSize_values)
+                                
+                                # if len(BinSize_values) == 1:
+                                #     BinSize = BinSize_values[0]
+                                #     BinSize = int(BinSize)
+                                # else:
+                                #     BinSize = BinSize_values
+                                #     BinSize = [int(mi) for mi in BinSize]
+                            
+                                # contin = True        
+                                # print(BinSize)  
+                                # 
+                                if BinSize != '':
+                                    BinSize_values = BinSize.split(',')
+                                    BinSize_values2 = []
+                                    for mi in BinSize_values:
                                         if mi != '':
-                                            BinSize.append(int(mi)) 
-                                # if len(BinSize) == 0 :
-                                #     BinSize = int(32)            
-                            else:
-                                BinSize = int(32)
-                            
-                        except:
-                            # print('Bin size input is invalid.')
-                            BinSize = int(32)
-                            # exit()
-                        
-                        if contin == True:                  
-                            isotVoxSize = float(isotVoxSize)
-                            isotVoxSize2D = float(isotVoxSize2D)
-                            isScale = int(isScale)
-                            isGLround = int(isGLround)
-                            isReSegRng = int(isReSegRng)
-                            isOutliers = int(isOutliers)
-                            isQuntzStat = int(isQuntzStat)
-                            isIsot2D = int(isIsot2D)
-                            ReSegIntrvl = [int(ReSegIntrvl01), int(ReSegIntrvl02)]
-                            ROI_PV = float(ROI_PV)
-                            IVH_Type = int(IVH_Type)
-                            IVH_DiscCont = int(IVH_DiscCont)
-                            IVH_binSize = float(IVH_binSize)
-                            ROIsPerImg = int(ROIsPerImg)
-                            isROIsCombined = int(isROIsCombined)
-                            Feats2out = int(Feats2out)
-                            IVHconfig = [IVH_Type, IVH_DiscCont, IVH_binSize]
-                            
-                            SERA_main_process(da_original, VoxelSize, da_label,
-                                                BinSize,
-                                                isotVoxSize,
-                                                isotVoxSize2D,
-                                                DataType,
-                                                DiscType,
-                                                qntz,
-                                                VoxInterp,
-                                                ROIInterp,
-                                                isScale,
-                                                isGLround,
-                                                isReSegRng,
-                                                isOutliers,
-                                                isQuntzStat,
-                                                isIsot2D,
-                                                ReSegIntrvl,
-                                                ROI_PV,
-                                                IVH_Type,
-                                                IVH_DiscCont,
-                                                IVH_binSize,
-                                                ROIsPerImg,
-                                                isROIsCombined,
-                                                Feats2out,
-                                                IVHconfig,
-                                                destfolder,-1,sucsessList)       
-                            
+                                            BinSize_values2.append(int(mi))
+                                    # print(BinSize_values2)
 
+                                    if len(BinSize_values2) == 1:
+                                        BinSize = BinSize_values2[0]
+                                        BinSize = int(BinSize)
+                                    elif len(BinSize_values2) == 0:
+                                        BinSize = int(32) 
+                                    else:   
+                                        BinSize = []
+                                        for mi in BinSize_values2:
+                                            if mi != '':
+                                                BinSize.append(int(mi)) 
+                                    # if len(BinSize) == 0 :
+                                    #     BinSize = int(32)            
+                                else:
+                                    BinSize = int(32)
+                                
+                            except:
+                                # print('Bin size input is invalid.')
+                                BinSize = int(32)
+                                # exit()
                             
-                    else:
-                        print('Label Image is Corrupted or Empty.') 
+                            if contin == True:                  
+                                isotVoxSize = float(isotVoxSize)
+                                isotVoxSize2D = float(isotVoxSize2D)
+                                isScale = int(isScale)
+                                isGLround = int(isGLround)
+                                isReSegRng = int(isReSegRng)
+                                isOutliers = int(isOutliers)
+                                isQuntzStat = int(isQuntzStat)
+                                isIsot2D = int(isIsot2D)
+                                ReSegIntrvl = [int(ReSegIntrvl01), int(ReSegIntrvl02)]
+                                ROI_PV = float(ROI_PV)
+                                IVH_Type = int(IVH_Type)
+                                IVH_DiscCont = int(IVH_DiscCont)
+                                IVH_binSize = float(IVH_binSize)
+                                ROIsPerImg = int(ROIsPerImg)
+                                isROIsCombined = int(isROIsCombined)
+                                Feats2out = int(Feats2out)
+                                IVHconfig = [IVH_Type, IVH_DiscCont, IVH_binSize]
+                                
+                                SERA_main_process(da_original, VoxelSize, da_label,
+                                                    BinSize,
+                                                    isotVoxSize,
+                                                    isotVoxSize2D,
+                                                    DataType,
+                                                    DiscType,
+                                                    qntz,
+                                                    VoxInterp,
+                                                    ROIInterp,
+                                                    isScale,
+                                                    isGLround,
+                                                    isReSegRng,
+                                                    isOutliers,
+                                                    isQuntzStat,
+                                                    isIsot2D,
+                                                    ReSegIntrvl,
+                                                    ROI_PV,
+                                                    IVH_Type,
+                                                    IVH_DiscCont,
+                                                    IVH_binSize,
+                                                    ROIsPerImg,
+                                                    isROIsCombined,
+                                                    Feats2out,
+                                                    IVHconfig,
+                                                    destfolder,-1,sucsessList,roi_segments,obj)       
                                 
 
-                    # else:
-                    #     print ('Failed in feature extraction')
+                                
+                        else:
+                            raise('Label Image is Corrupted or Empty.') 
+                                    
+
+                        # else:
+                        #     print ('Failed in feature extraction')
+                    else:
+                        raise('Images voxel size must be same.')    
                 else:
-                    print('Images voxel size must be same.')    
+                    raise('Images must be 3D.')
             else:
-                print('Images must be 3D.')
+                raise('Dimension of original and segmented image not equal.')
         else:
-            print('Dimension of original and segmented image not equal.')
-    else:
-        print('You must use an approprate type of input.')
-    # except Exception as e:
-    #     print('Out of Memory or the parameters of radiomics feature generator tool should be selected properly:', e)
+            raise('You must use an approprate type of input.')
+    except Exception as e:
+        raise('Out of Memory or the parameters of radiomics feature generator tool should be selected properly:', e)
 		
 		
     return ""
@@ -770,7 +898,7 @@ def SERA_folder(da_original_path, da_label_path,
                 ROIsPerImg,
                 isROIsCombined,
                 Feats2out,
-                destfolder):
+                destfolder,roi_segments,obj):
     
     Fixed_datas = os.listdir(da_original_path)
     fixed = [i for i in Fixed_datas if (i.endswith(".nrrd") | i.endswith(".dcm") | i.endswith(".dicom") | i.endswith(".nii") | i.endswith(".nii.gz"))]
@@ -785,7 +913,7 @@ def SERA_folder(da_original_path, da_label_path,
     try:
         # BinSize_values = BinSize.split(',')
         # BinSize_values = [int(mi) for mi in BinSize_values]
-        # # print(BinSize_values)
+        # # raise(BinSize_values)
         
         # if len(BinSize_values) == 1:
         #     BinSize = BinSize_values[0]
@@ -882,6 +1010,7 @@ def SERA_folder(da_original_path, da_label_path,
                                             isROIsCombined,
                                             Feats2out,
                                             destfolder,rand_number,sucsessList,co,moved[selected_index],result
+                                            ,roi_segments,obj
                             )
                         )
 
@@ -898,7 +1027,7 @@ def SERA_folder(da_original_path, da_label_path,
             #     cc = 0 
                 # if future.result() == False:
                 #     print(future.result())    
-        # FE_export(destfolder , str(rand_number),Feats2out,result,BinSize)
+        FE_export_excels(destfolder , str(rand_number))
 
 
 def SERA_folder_Thread(da_original_path, da_label_path,
@@ -925,7 +1054,7 @@ def SERA_folder_Thread(da_original_path, da_label_path,
                 ROIsPerImg,
                 isROIsCombined,
                 Feats2out,
-                destfolder,rand_number,sucsessList,co,co2,result):
+                destfolder,rand_number,sucsessList,co,co2,result,roi_segments,obj):
 
     Fixed_fullpath = os.path.join(da_original_path,co)
     da_original =  readimage(Fixed_fullpath)
@@ -973,7 +1102,7 @@ def SERA_folder_Thread(da_original_path, da_label_path,
                     if da_label[2] == 'Dicom':  
                         VoxelSizelabel = da_label[1].GetSpacing()     
                     
-                    if VoxelSizelabel == VoxelSize:
+                    if np.all(np.around(VoxelSizelabel, 3) == np.around(VoxelSize, 3)):
 
                         if CheckGTV(da_label[0]):           
                             
@@ -1022,19 +1151,19 @@ def SERA_folder_Thread(da_original_path, da_label_path,
                                         isROIsCombined,
                                         Feats2out,
                                         IVHconfig,
-                                        destfolder,rand_number,sucsessList)
+                                        destfolder,rand_number,sucsessList,roi_segments,obj)
                         else:
-                            print('Label Image is Corrupted or Empty.') 
+                            raise('Label Image is Corrupted or Empty.') 
                     else:
-                        print('Images voxel size must be same.') 
+                        raise('Images voxel size must be same.') 
                 else:
-                    print('Images must be 3D.')
+                    raise('Images must be 3D.')
             else:
-                print('Dimension of original and segmented image not equal.')
+                raise('Dimension of original and segmented image not equal.')
         else:
-            print('You must use an approprate type of input.')
+            raise('You must use an approprate type of input.')
     except Exception as e:
-        print('Out of Memory or the parameters of radiomics feature generator tool should be selected properly:', e)
+        raise('Out of Memory or the parameters of radiomic feature generator tool should be selected properly:', e)
 
 
 
@@ -1893,17 +2022,17 @@ def SERA_folder_Once_Folder(da_original_path, da_label_path,
                                 destfolder,rand_number
                             )
                         else:
-                            print('Label Image is Corrupted or Empty.') 
+                            raise('Label Image is Corrupted or Empty.') 
                     else:
-                        print('Images voxel size must be same.') 
+                        raise('Images voxel size must be same.') 
                 else:
-                    print('Images must be 3D.')
+                    raise('Images must be 3D.')
             else:
-                print('Dimension of original and segmented image not equal.')
+                raise('Dimension of original and segmented image not equal.')
         else:
-            print('You must use an approprate type of input.')
+            raise('You must use an approprate type of input.')
     except Exception as e:
-        print('Out of Memory or the parameters of radiomics feature generator tool should be selected properly:', e)
+        raise('Out of Memory or the parameters of radiomic feature generator tool should be selected properly:', e)
 
 
         

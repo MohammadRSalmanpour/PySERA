@@ -40,7 +40,7 @@ def fixedBinSizeQuantization(ROIonly,BinSize,minGL):
     ROIonlyUniform[ROIonly==minGL] = 1 
 
     if np.nanmin(ROIonlyUniform)<1:
-        print('Minimum discritization is below 1. Check the fixed bin size quantization.')
+        raise('Minimum discritization is below 1. Check the fixed bin size quantization.')
 
     levels = np.arange(1,np.nanmax(ROIonlyUniform)+1,1)
 
@@ -82,7 +82,7 @@ def uniformQuantization(ROIonly,Ng,minGL):
     ROIonlyUniform[ROIonlyUniform==0]=1
 
     if np.min(ROIonlyUniform) < 1: 
-        print('Something wrong with FNB discritization.')
+        raise('Something wrong with FNB discritization.')
 
     levels = np.arange(1,Ng+1)
 

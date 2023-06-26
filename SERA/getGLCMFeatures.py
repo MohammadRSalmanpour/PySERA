@@ -164,9 +164,42 @@ def getGLCM2Dtex(ROIonly2,levels2):
     nZ = ROInanReplaced.shape[2]
     nlevels = len(levels)-1 
     GLCM_KeepSlice_KeepDirs = np.zeros((nlevels,nlevels,DIST.shape[0],nZ))
-    if len(np.where(ROInanReplaced==0)[0]) == 0: 
-        print('Need to change the minimum GrayLimits of GLCM to zeros.')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # un comment plz
+    # if len(np.where(ROInanReplaced==0)[0]) == 0: 
+    #     print('Need to change the minimum GrayLimits of GLCM to zeros.')
      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     for s in range(0,nZ):
 
         # tmpGLCM = graycomatrix(ROInanReplaced[:,:,s],'Offset',DIST,'NumLevels',nlevels+1,'GrayLimits',[1, nlevels+1],'Symmetric', True)
@@ -220,7 +253,7 @@ def getGLCM2Dtex(ROIonly2,levels2):
     tmp = np.squeeze(tmp)
 
     if tmp.ndim > 2:
-        print('GLCM features might having an extra dimension')
+        raise('GLCM features might having an extra dimension')
     Feats_KSMD = np.nanmean(tmp , axis=1)
 
     tmp = CalcGLCM(GLCMnorm_MergeSlice_KeepDirs)
@@ -228,7 +261,7 @@ def getGLCM2Dtex(ROIonly2,levels2):
     tmp = np.squeeze(tmp)
     
     if tmp.ndim >2:
-        print('GLCM features might having an extra dimension')
+        raise('GLCM features might having an extra dimension')
 
     Feats_MSKD = np.nanmean(tmp ,axis=1)
 
@@ -677,7 +710,7 @@ def ParseInputs(I,gl = None ,nl = 2 ,offset = [0, 1] , sym = None):
 
 
     if offset.ndim != 2:
-        print('images:graycomatrix:invalidOffsetSize')
+        raise('images:graycomatrix:invalidOffsetSize')
     
     offset = offset.astype(np.float32)
 
@@ -692,7 +725,7 @@ def ParseInputs(I,gl = None ,nl = 2 ,offset = [0, 1] , sym = None):
     #     print('images:graycomatrix:invalidNumLevels')
 
     if isinstance(I, (int, float)) and nl != 2:
-        print('images:graycomatrix:invalidNumLevelsForBinary')
+        raise('images:graycomatrix:invalidNumLevelsForBinary')
     
 
     # nl = nl.astype(np.float32)
@@ -705,7 +738,7 @@ def ParseInputs(I,gl = None ,nl = 2 ,offset = [0, 1] , sym = None):
     gl = np.array(gl)
             
     if len(gl) != 2:
-        print('images:graycomatrix:invalidGrayLimitsSize')
+        raise('images:graycomatrix:invalidGrayLimitsSize')
     
     gl = gl.astype(np.float32)
     
@@ -764,7 +797,7 @@ def computeGLCM(r,c,offset,si,nl):
     bad2 = v2 == np.nan
     bad = np.logical_or(bad1, bad2) 
     if np.any(bad):
-        print('images:graycomatrix:scaledImageContainsNan')
+        raise('images:graycomatrix:scaledImageContainsNan')
     
 
     Ind = np.column_stack((v1, v2))
@@ -935,10 +968,10 @@ def graycooc3d_bis(I,ROI,distance,numLevels,offSet,normflag):
 
             I2 = I[ROI == 1]
             if minImage > np.min(I2):
-                print('min too large in graycooc3d_bis.m')
+                raise('min too large in graycooc3d_bis.m')
             
             if normflag[1] < np.max(I2) :
-                print('max too small in graycooc3d_bis.m')
+                raise('max too small in graycooc3d_bis.m')
             
             I=I-minImage
         else:
@@ -965,7 +998,7 @@ def graycooc3d_bis(I,ROI,distance,numLevels,offSet,normflag):
 
     newI = I[ROI>0]
     if np.max(newI) > numLevels:
-        print('Error in graylevel resizing.')
+        raise('Error in graylevel resizing.')
         # print('graycooc3d_bis.m')
 
     # fin = np.where(ROI > 0)
@@ -1011,14 +1044,14 @@ def GLCM_3D(ROIonly,new_ROIonly=None , normflag = [1,1] , DIRECTION=None, DISTAN
     data = ROIonly.copy()
     temp = data.shape
     if len(temp) < 3:
-        print('Error: This program is designed for 3 dimensional data')
+        raise('Error: This program is designed for 3 dimensional data')
 
     if new_ROIonly is not None:
         # new_ROIonly = np.reshape(new_ROIonly,data.shape,order='F')
         ROI = new_ROIonly.copy()
         temp = ROI.shape
         if len(temp)<3:
-            print('Error: This program is designed for 3 dimensional data (ROI)')
+            raise('Error: This program is designed for 3 dimensional data (ROI)')
     else:
         ROI= np.ones(data.shape)
     
@@ -1032,13 +1065,13 @@ def GLCM_3D(ROIonly,new_ROIonly=None , normflag = [1,1] , DIRECTION=None, DISTAN
     if DIRECTION is not None:
         temp2 = np.array(DIRECTION).astype(np.int32)
         if len(temp2.shape) != 2:
-            print('Error: Direction input is formatted poorly')
+            raise('Error: Direction input is formatted poorly')
 
         if temp2.shape[1] != 3:
-            print('Error: Incorrect number of columns in direction variable')
+            raise('Error: Incorrect number of columns in direction variable')
 
         if np.max(temp2) > 1 or np.min(temp2) < -1 :
-            print('Error: Direction values can only be {-1,0,1}')
+            raise('Error: Direction values can only be {-1,0,1}')
 
         offSet = temp2.copy()
 
@@ -1055,7 +1088,7 @@ def GLCM_3D(ROIonly,new_ROIonly=None , normflag = [1,1] , DIRECTION=None, DISTAN
     if NUMGRAY is not None:
         temp2 = NUMGRAY
         if temp2<1:
-            print('The number of graylevels must be positive')
+            raise('The number of graylevels must be positive')
         # numLevels = temp2.astype(np.uint16)
         numLevels = temp2
 

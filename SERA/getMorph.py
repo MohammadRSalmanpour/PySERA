@@ -1,5 +1,5 @@
 
-from statistics import covariance
+# from statistics import covariance
 from telnetlib import X3PAD
 from scipy.io import savemat, loadmat
 import os
@@ -83,7 +83,7 @@ def getMorph(MorphBox2,MorphROI2,ROIints2, pixelW,sliceS):
         CoM_shift = np.linalg.norm(dd)
 
     except:
-        print('**** ROI is 1D. Brace for problems.....')
+        raise('**** ROI is 1D. Brace for problems.....')
         CoM_shift = np.abs(np.mean(np.squeeze(MorphROI)-np.squeeze(ROIints))) 
     
 
@@ -388,7 +388,7 @@ def getVDs(ROIbox,ROIboxV,pixelW,sliceS,MV,Surface ):
     try:
         _,_,Vombb,Aombb,_ = minboundbox(x*pixelW, y*pixelW, z*sliceS,'volume',1)
     except:
-        print('This is a 2D or 1D ROI. Switch to 2D Convex Hull and Bounding Box calculation.')
+        raise('This is a 2D or 1D ROI. Switch to 2D Convex Hull and Bounding Box calculation.')
         newROIbox = np.squeeze(ROIbox)
         xtmp,ytmp,_=ind2sub(newROIbox)
         try:
@@ -399,7 +399,7 @@ def getVDs(ROIbox,ROIboxV,pixelW,sliceS,MV,Surface ):
             elif ROIbox.shape[0] == 1:
                 _, Aombb, Vombb = minBoundingBox2D(xtmp , ytmp,sliceS,pixelW,pixelW)
             else:
-                print('Min bounding box does not respond (no Convex Hull available). Set OMBB = AABB....')
+                raise('Min bounding box does not respond (no Convex Hull available). Set OMBB = AABB....')
                 arr1 = np.column_stack((nx, ny, nz))
                 arr2 = np.column_stack((pixelW,pixelW,sliceS))
 
@@ -408,7 +408,7 @@ def getVDs(ROIbox,ROIboxV,pixelW,sliceS,MV,Surface ):
                 
             
         except:
-            print('Min bounding box does not respond (probably a 1D ROI). Set OMBB = AABB....')
+            raise('Min bounding box does not respond (probably a 1D ROI). Set OMBB = AABB....')
             arr1 = np.column_stack((nx, ny, nz))
             arr2 = np.column_stack((pixelW,pixelW,sliceS))
             Vombb = np.prod(np.multiply(arr1,arr2))

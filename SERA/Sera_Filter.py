@@ -648,11 +648,11 @@ def mean_filter_folder(sourcefolder, by_slice, BoundaryCondition, FilterSize, de
                                                        ))
 
                     else:
-                        print('Images must be 3D.')
+                        raise('Images must be 3D.')
                 else:
-                    print('You must use an approprate type of input.')
+                    raise('You must use an approprate type of input.')
             except Exception as e:
-                print('Out of Memory or the parameters of registration tool should be selected properly:', e)
+                raise('Out of Memory or the parameters of filtering tool should be selected properly:', e)
     executor.shutdown(wait=True)
 
     return ""
@@ -674,7 +674,7 @@ def mean_filter_folder_Thread(img, by_slice, BoundaryCondition, FilterSize, dest
     if (img[2] == "Dicom"):
         img[2] = "SDicom"
 
-    convert_modalities(voxel_grid, img[1], 'Nifti', img[2], destfolder, img[3], createfolder='False')
+    convert_modalities(voxel_grid, img[1], img[2], img[2], destfolder, img[3], createfolder='False')
 
     return ''
 
@@ -776,8 +776,15 @@ def log_filter(img, by_slice, BoundaryCondition, img_average, riesz_steered, sig
     header = img[1]
 
     #     spacing = (abs(header.affine[0,0]),abs(header.affine[1,1]),abs(header.affine[2,2]))
-    spacing = np.array(header.GetSpacing())[::-1]
+    # spacing = np.array(header.GetSpacing())[::-1]
 
+    if img[2] == 'Nifti':  
+        spacing = np.array(header.GetSpacing())[::-1]
+    elif img[2] == 'Nrrd':  
+        spacing = np.array((header['space directions'][0,0],header['space directions'][1,1],header['space directions'][2,2]))
+    elif img[2] == 'Dicom':  
+        spacing = np.array(header.GetSpacing())    
+    
     mode = BoundaryCondition
 
     voxel_grid = RunLoGFilter(data, spacing,
@@ -819,11 +826,11 @@ def log_filter_folder(sourcefolder, by_slice, BoundaryCondition, CalculateAverag
                                                        ))
 
                     else:
-                        print('Images must be 3D.')
+                        raise('Images must be 3D.')
                 else:
-                    print('You must use an approprate type of input.')
+                    raise('You must use an approprate type of input.')
             except Exception as e:
-                print('Out of Memory or the parameters of registration tool should be selected properly:', e)
+                raise('Out of Memory or the parameters of filtering tool should be selected properly:', e)
     executor.shutdown(wait=True)
 
     return ""
@@ -836,7 +843,7 @@ def log_filter_folder_Thread(img, by_slice, BoundaryCondition, img_average, ries
     if (img[2] == "Dicom"):
         img[2] = "SDicom"
 
-    convert_modalities(voxel_grid, img[1], 'Nifti', img[2], destfolder, img[3], createfolder='False')
+    convert_modalities(voxel_grid, img[1], img[2], img[2], destfolder, img[3], createfolder='False')
 
     return ''
 
@@ -984,11 +991,11 @@ def Laws_filter_folder(sourcefolder, by_slice, BoundaryCondition, Kernel, poolin
                                                        ))
 
                     else:
-                        print('Images must be 3D.')
+                        raise('Images must be 3D.')
                 else:
-                    print('You must use an approprate type of input.')
+                    raise('You must use an approprate type of input.')
             except Exception as e:
-                print('Out of Memory or the parameters of registration tool should be selected properly:', e)
+                raise('Out of Memory or the parameters of filtering tool should be selected properly:', e)
     executor.shutdown(wait=True)
 
     return ""
@@ -1002,7 +1009,7 @@ def Laws_filter_folder_Thread(img, by_slice, BoundaryCondition, Kernel, pooling_
     if (img[2] == "Dicom"):
         img[2] = "SDicom"
 
-    convert_modalities(voxel_grid, img[1], 'Nifti', img[2], destfolder, img[3], createfolder='False')
+    convert_modalities(voxel_grid, img[1], img[2], img[2], destfolder, img[3], createfolder='False')
 
     return ''
 
@@ -1073,7 +1080,14 @@ def gabor_filter(img, by_slice, BoundaryCondition, pooling_method, response, rot
     header = img[1]
 
     #             spacing = (abs(header.affine[0,0]),abs(header.affine[1,1]),abs(header.affine[2,2]))
-    spacing = np.array(header.GetSpacing())[::-1]
+    # spacing = np.array(header.GetSpacing())[::-1]
+    
+    if img[2] == 'Nifti':  
+        spacing = np.array(header.GetSpacing())[::-1]
+    elif img[2] == 'Nrrd':  
+        spacing = np.array((header['space directions'][0,0],header['space directions'][1,1],header['space directions'][2,2]))
+    elif img[2] == 'Dicom':  
+        spacing = np.array(header.GetSpacing()) 
 
     mode = BoundaryCondition
     rot_invariance = rotation_inver
@@ -1166,11 +1180,11 @@ def gabor_filter_folder(sourcefolder, by_slice, BoundaryCondition, pooling_metho
                                                        ))
 
                     else:
-                        print('Images must be 3D.')
+                        raise('Images must be 3D.')
                 else:
-                    print('You must use an approprate type of input.')
+                    raise('You must use an approprate type of input.')
             except Exception as e:
-                print('Out of Memory or the parameters of registration tool should be selected properly:', e)
+                raise('Out of Memory or the parameters of filtering tool should be selected properly:', e)
     executor.shutdown(wait=True)
 
     return ""
@@ -1184,7 +1198,7 @@ def gabor_filter_folder_Thread(img, by_slice, BoundaryCondition, pooling_method,
     if (img[2] == "Dicom"):
         img[2] = "SDicom"
 
-    convert_modalities(voxel_grid, img[1], 'Nifti', img[2], destfolder, img[3], createfolder='False')
+    convert_modalities(voxel_grid, img[1], img[2], img[2], destfolder, img[3], createfolder='False')
 
     return ''
 
@@ -1372,14 +1386,16 @@ def Wavelet_filter(img, by_slice, mode, filter_config, pooling_method, wavelet_f
     # header = img[1]
 
     # stationary_wavelet = False   ####
-
-    is_separable = wavelet_family in pywt.wavelist(kind="discrete")
+    
+    is_separable = wavelet_type in pywt.wavelist(kind="discrete")
 
     if is_separable:
 
         img_voxel_grid = np.zeros(data.shape, dtype=np.float32)
 
-        main_filter_set = get_filter_set_wavelet(filter_configuration=filter_config, wavelet_family=wavelet_family)
+        # main_filter_set = get_filter_set_wavelet(filter_configuration=filter_config, wavelet_family=wavelet_family)
+        main_filter_set = get_filter_set_wavelet(filter_configuration=filter_config, wavelet_family=wavelet_type)
+
         filter_list = main_filter_set.permute_filters(rotational_invariance=rot_invariance,
                                                       require_pre_filter=decomposition_level > 1)
 
@@ -1456,11 +1472,11 @@ def Wavelet_filter_folder(sourcefolder, by_slice, mode, filter_config, pooling_m
                                                        ))
 
                     else:
-                        print('Images must be 3D.')
+                        raise('Images must be 3D.')
                 else:
-                    print('You must use an approprate type of input.')
+                    raise('You must use an approprate type of input.')
             except Exception as e:
-                print('Out of Memory or the parameters of registration tool should be selected properly:', e)
+                raise('Out of Memory or the parameters of filtering tool should be selected properly:', e)
     executor.shutdown(wait=True)
 
     return ""
@@ -1468,12 +1484,13 @@ def Wavelet_filter_folder(sourcefolder, by_slice, mode, filter_config, pooling_m
 
 def Wavelet_filter_folder_Thread(img, by_slice, mode, filter_config, pooling_method, wavelet_family, riesz_steered,
                                  rot_invariance, decomposition_level, filter_size, riesz, wavelet_type, destfolder):
+
     voxel_grid = Wavelet_filter(img, by_slice, mode, filter_config, pooling_method, wavelet_family, riesz_steered,
                                 rot_invariance, decomposition_level, filter_size, riesz, wavelet_type)
 
     if (img[2] == "Dicom"):
         img[2] = "SDicom"
 
-    convert_modalities(voxel_grid, img[1], 'Nifti', img[2], destfolder, img[3], createfolder='False')
+    convert_modalities(voxel_grid, img[1], img[2], img[2], destfolder, img[3], createfolder='False')
 
     return ''
