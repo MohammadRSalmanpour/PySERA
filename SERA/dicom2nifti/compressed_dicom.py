@@ -3,8 +3,10 @@ import os
 import subprocess
 import tempfile
 
-import PythonCode.dicom2nifti.settings as settings
-from PythonCode.dicom2nifti.exceptions import ConversionError
+# import PythonCode.dicom2nifti.settings as settings
+# from PythonCode.dicom2nifti.exceptions import ConversionError
+import dicom2nifti.settings as settings
+from dicom2nifti.exceptions import ConversionError
 
 import pydicom
 

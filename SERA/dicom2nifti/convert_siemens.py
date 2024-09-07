@@ -14,9 +14,12 @@ import numpy
 
 from pydicom.tag import Tag
 
-import PythonCode.dicom2nifti.common as common
-import PythonCode.dicom2nifti.convert_generic as convert_generic
-from PythonCode.dicom2nifti.exceptions import ConversionValidationError, ConversionError
+# import PythonCode.dicom2nifti.common as common
+# import PythonCode.dicom2nifti.convert_generic as convert_generic
+# from PythonCode.dicom2nifti.exceptions import ConversionValidationError, ConversionError
+import dicom2nifti.common as common
+import dicom2nifti.convert_generic as convert_generic
+from dicom2nifti.exceptions import ConversionValidationError, ConversionError
 
 logger = logging.getLogger(__name__)
 
