@@ -9,8 +9,10 @@ import nibabel.affines
 import numpy
 import scipy.ndimage
 
-from PythonCode.dicom2nifti.common import get_nifti_data
-from PythonCode.dicom2nifti import settings
+# from PythonCode.dicom2nifti.common import get_nifti_data
+# from PythonCode.dicom2nifti import settings
+from dicom2nifti.common import get_nifti_data
+from dicom2nifti import settings
 
 
 def resample_single_nifti(input_image, output_nifti):

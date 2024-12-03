@@ -4,7 +4,8 @@ PythonCode.dicom2nifti
 
 @author: abrys
 """
-import PythonCode.dicom2nifti.compressed_dicom as compressed_dicom
+# import PythonCode.dicom2nifti.compressed_dicom as compressed_dicom
+import dicom2nifti.compressed_dicom as compressed_dicom
 
 import os
 import struct
@@ -14,8 +15,10 @@ from pydicom.tag import Tag
 import logging
 import numpy
 
-from PythonCode.dicom2nifti.exceptions import ConversionValidationError, ConversionError
-import PythonCode.dicom2nifti.settings
+# from PythonCode.dicom2nifti.exceptions import ConversionValidationError, ConversionError
+# import PythonCode.dicom2nifti.settings
+from dicom2nifti.exceptions import ConversionValidationError, ConversionError
+import dicom2nifti.settings
 
 logger = logging.getLogger(__name__)
 

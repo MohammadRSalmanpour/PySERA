@@ -6,8 +6,10 @@ PythonCode.dicom2nifti
 """
 import logging
 
-import PythonCode.dicom2nifti.compressed_dicom as compressed_dicom
-from PythonCode.dicom2nifti import convert_hitachi
+# import PythonCode.dicom2nifti.compressed_dicom as compressed_dicom
+# from PythonCode.dicom2nifti import convert_hitachi
+import dicom2nifti.compressed_dicom as compressed_dicom
+from dicom2nifti import convert_hitachi
 
 import os
 import tempfile
@@ -15,15 +17,24 @@ import shutil
 
 from pydicom.tag import Tag
 
-from PythonCode.dicom2nifti.exceptions import ConversionValidationError, ConversionError
-import PythonCode.dicom2nifti.convert_generic as convert_generic
-import PythonCode.dicom2nifti.convert_siemens as convert_siemens
-import PythonCode.dicom2nifti.convert_ge as convert_ge
-import PythonCode.dicom2nifti.convert_philips as convert_philips
-import PythonCode.dicom2nifti.common as common
-import PythonCode.dicom2nifti.image_reorientation as image_reorientation
-import PythonCode.dicom2nifti.settings as settings
-import PythonCode.dicom2nifti.resample as resample
+# from PythonCode.dicom2nifti.exceptions import ConversionValidationError, ConversionError
+# import PythonCode.dicom2nifti.convert_generic as convert_generic
+# import PythonCode.dicom2nifti.convert_siemens as convert_siemens
+# import PythonCode.dicom2nifti.convert_ge as convert_ge
+# import PythonCode.dicom2nifti.convert_philips as convert_philips
+# import PythonCode.dicom2nifti.common as common
+# import PythonCode.dicom2nifti.image_reorientation as image_reorientation
+# import PythonCode.dicom2nifti.settings as settings
+# import PythonCode.dicom2nifti.resample as resample
+from dicom2nifti.exceptions import ConversionValidationError, ConversionError
+import dicom2nifti.convert_generic as convert_generic
+import dicom2nifti.convert_siemens as convert_siemens
+import dicom2nifti.convert_ge as convert_ge
+import dicom2nifti.convert_philips as convert_philips
+import dicom2nifti.common as common
+import dicom2nifti.image_reorientation as image_reorientation
+import dicom2nifti.settings as settings
+import dicom2nifti.resample as resample
 logger = logging.getLogger(__name__)
 
 
