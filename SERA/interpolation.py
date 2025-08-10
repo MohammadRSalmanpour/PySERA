@@ -1,6 +1,4 @@
 
-from pickle import NONE
-from scipy.io import savemat, loadmat
 import numpy as np
 import scipy.ndimage as ndi
 import SimpleITK as sitk

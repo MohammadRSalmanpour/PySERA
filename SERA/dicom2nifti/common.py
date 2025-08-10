@@ -4,7 +4,7 @@ PythonCode.dicom2nifti
 
 @author: abrys
 """
-import PythonCode.dicom2nifti.compressed_dicom as compressed_dicom
+from .compressed_dicom import is_dicom_file, read_file
 
 import os
 import struct
@@ -14,8 +14,8 @@ from pydicom.tag import Tag
 import logging
 import numpy
 
-from PythonCode.dicom2nifti.exceptions import ConversionValidationError, ConversionError
-import PythonCode.dicom2nifti.settings
+from .exceptions import ConversionValidationError, ConversionError
+from .settings import pydicom_read_force
 
 logger = logging.getLogger(__name__)
 
@@ -36,11 +36,11 @@ def read_dicom_directory(dicom_directory, stop_before_pixels=False):
     for root, _, files in os.walk(dicom_directory):
         for dicom_file in files:
             file_path = os.path.join(root, dicom_file)
-            if compressed_dicom.is_dicom_file(file_path):
-                dicom_headers = compressed_dicom.read_file(file_path,
+            if is_dicom_file(file_path):
+                dicom_headers = read_file(file_path,
                                                            defer_size="1 KB",
                                                            stop_before_pixels=stop_before_pixels,
-                                                           force=PythonCode.dicom2nifti.settings.pydicom_read_force)
+                                                           force=pydicom_read_force)
                 if is_valid_imaging_dicom(dicom_headers):
                     dicom_input.append(dicom_headers)
     return dicom_input

@@ -3,8 +3,8 @@ import os
 import subprocess
 import tempfile
 
-import PythonCode.dicom2nifti.settings as settings
-from PythonCode.dicom2nifti.exceptions import ConversionError
+from .settings import gdcmconv_path, pydicom_read_force
+from .exceptions import ConversionError
 
 import pydicom
 
@@ -49,7 +49,7 @@ def _get_gdcmconv():
     Get the full path to gdcmconv.
     If not found raise error
     """
-    gdcmconv_executable = settings.gdcmconv_path
+    gdcmconv_executable = gdcmconv_path
     if gdcmconv_executable is None:
         gdcmconv_executable = _which('gdcmconv')
     if gdcmconv_executable is None:
@@ -93,7 +93,7 @@ def is_dicom_file(filename):
     file_stream.close()
     if data == b'DICM':
         return True
-    if settings.pydicom_read_force:
+    if pydicom_read_force:
         try:
             dicom_headers = pydicom.read_file(filename, defer_size="1 KB", stop_before_pixels=True, force=True)
             if dicom_headers is not None:

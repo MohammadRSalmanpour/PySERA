@@ -15,16 +15,12 @@ import numpy as np
 # import math
 import numpy as np
 # import nrrd
-import matplotlib.pyplot as plt
 # import time
 # import collections
-import numpy as np
 from numpy import cos, pi
-import matplotlib.pyplot as plt
 import pandas as pd
 from random import randint # random function for generate points
 from math import atan2 # calculate theta
-import numpy as np
 # import argparse
 import math
 # import cv2
