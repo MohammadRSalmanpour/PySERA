@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-PythonCode.dicom2nifti
+dicom2nifti
 
 @author: abrys
 """

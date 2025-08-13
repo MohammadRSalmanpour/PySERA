@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-PythonCode.dicom2nifti
+dicom2nifti
 
 @author: abrys
 """
-from .exceptions import ConversionError
+from dicom2nifti.exceptions import ConversionError
 
 import itertools
 import os
@@ -16,8 +16,8 @@ import numpy
 
 from pydicom.tag import Tag
 
-from .common import is_ge, create_affine, set_tr_te, get_volume_pixeldata, write_bval_file
-from .convert_generic import remove_duplicate_slices, remove_localizers_by_imagetype, remove_localizers_by_orientation, dicom_to_nifti
+import dicom2nifti.common as common
+import dicom2nifti.convert_generic as convert_generic
 
 logger = logging.getLogger(__name__)
 
@@ -32,16 +32,16 @@ def dicom_to_nifti(dicom_input, output_file=None):
     :param output_file: the filepath to the output nifti file
     :param dicom_input: list with dicom objects
     """
-    assert is_ge(dicom_input)
+    assert common.is_ge(dicom_input)
 
     # remove duplicate slices based on position and data
-    dicom_input = remove_duplicate_slices(dicom_input)
+    dicom_input = convert_generic.remove_duplicate_slices(dicom_input)
 
     # remove localizers based on image type
-    dicom_input = remove_localizers_by_imagetype(dicom_input)
+    dicom_input = convert_generic.remove_localizers_by_imagetype(dicom_input)
 
     # remove_localizers based on image orientation (only valid if slicecount is validated)
-    dicom_input = remove_localizers_by_orientation(dicom_input)
+    dicom_input = convert_generic.remove_localizers_by_orientation(dicom_input)
 
     logger.info('Reading and sorting dicom files')
     grouped_dicoms = _get_grouped_dicoms(dicom_input)
@@ -51,7 +51,7 @@ def dicom_to_nifti(dicom_input, output_file=None):
         return _4d_to_nifti(grouped_dicoms, output_file)
 
     logger.info('Assuming anatomical data')
-    return dicom_to_nifti(dicom_input, output_file)
+    return convert_generic.dicom_to_nifti(dicom_input, output_file)
 
 
 def _is_4d(grouped_dicoms):
@@ -101,12 +101,12 @@ def _4d_to_nifti(grouped_dicoms, output_file):
 
     logger.info('Creating affine')
     # Create the nifti header info
-    affine, slice_increment = create_affine(grouped_dicoms[0])
+    affine, slice_increment = common.create_affine(grouped_dicoms[0])
 
     logger.info('Creating nifti')
     # Convert to nifti
     nii_image = nibabel.Nifti1Image(full_block, affine)
-    set_tr_te(nii_image, float(grouped_dicoms[0][0].RepetitionTime),
+    common.set_tr_te(nii_image, float(grouped_dicoms[0][0].RepetitionTime),
                      float(grouped_dicoms[0][0].EchoTime))
     logger.info('Saving nifti to disk %s' % output_file)
     # Save to disk
@@ -174,7 +174,7 @@ def _timepoint_to_block(timepoint_dicoms):
     Convert slices to a block of data by reading the headers and appending
     """
     # similar way of getting the block to anatomical however here we are creating the dicom series our selves
-    return get_volume_pixeldata(timepoint_dicoms)
+    return common.get_volume_pixeldata(timepoint_dicoms)
 
 
 def _get_grouped_dicoms(dicom_input):
@@ -272,7 +272,7 @@ def _create_bvals_bvecs(grouped_dicoms, bval_file, bvec_file):
     bvals, bvecs = _get_bvals_bvecs(grouped_dicoms)
 
     # save the found bvecs to the file
-    write_bval_file(bvals, bval_file)
-    write_bval_file(bvecs, bvec_file)
+    common.write_bval_file(bvals, bval_file)
+    common.write_bvec_file(bvecs, bvec_file)
 
     return bvals, bvecs

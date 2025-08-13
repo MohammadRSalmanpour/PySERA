@@ -1,5 +1,15 @@
 
+from scipy.io import savemat, loadmat
+import os
+import numpy as np
+import sys
+import skimage
+import cv2
+import itertools
+import scipy 
+import math
 from SERAutilities import *
+import collections.abc
 
 # -------------------------------------------------------------------------
 # [NGTDM2D, NGTDM3D] = getNGTDMtex(ROI2D,ROI3D,levels2D,levels3D)
@@ -116,8 +126,11 @@ def getNGTDMtextures(NGTDM,countValid,Aarray):
     nValid = len(pValid)
 
     xx = np.dot(np.transpose( Pi) , NGTDM )
-    Coarseness = np.float_power(((   xx    ) + np.finfo(float).eps   ),-1)
-    Coarseness = np.min([Coarseness , np.float_power(10,6)])
+    # Coarseness = np.float_power(((   xx    ) + np.finfo(float).eps   ),-1)
+    # Coarseness = np.min([Coarseness , np.float_power(10,6)])
+    Coarseness = np.float_power(xx + np.finfo(float).eps, -1)
+    Coarseness = float(np.squeeze(Coarseness))
+    Coarseness = np.minimum(Coarseness, np.float_power(10,6))
 
     val = 0
     for i in range(0,nG):

@@ -1,5 +1,14 @@
 
+from scipy.io import savemat, loadmat
+import os
 import numpy as np
+import sys
+import skimage
+import cv2
+import itertools
+import scipy 
+from scipy import integrate
+import matplotlib.pyplot as plt
 
 
 # -------------------------------------------------------------------------
@@ -59,9 +68,9 @@ def getIntVolHist(IntsROI2,ROIBox3D2,BinSize,isReSeg,ResegIntrval,IVHconfig):
             G_minues = G - np.min(G)
             gamma = G_minues.astype(np.uint32) /  (np.max(G) - np.min(G))
 
-            G2 = np.insert(G,0,0)
-
-            Hist = np.histogram(ROIarrayValid,G2)
+            # G2 = np.insert(G,0,0)
+            # Hist = np.histogram(ROIarrayValid,G2)
+            Hist = np.histogram(ROIarrayValid,G)
             HistAc = np.cumsum(Hist[0])
             BinsCenters = G
             V = [1]

@@ -15,12 +15,16 @@ import numpy as np
 # import math
 import numpy as np
 # import nrrd
+import matplotlib.pyplot as plt
 # import time
 # import collections
+import numpy as np
 from numpy import cos, pi
+import matplotlib.pyplot as plt
 import pandas as pd
 from random import randint # random function for generate points
 from math import atan2 # calculate theta
+import numpy as np
 # import argparse
 import math
 # import cv2
@@ -861,8 +865,8 @@ def legendre(n,x,normalize = None):
 
     s0 = np.where(s == 0)[0]
     if len(s0) > 0:
-        y[0,s0] = np.float_power(x,n)
-    
+        # y[0,s0] = np.float_power(x,n)
+        y[0, s0] = np.real_if_close(np.float_power(x, n))    
 
     if (normalize is None) or (normalize == 'unnorm'):
 

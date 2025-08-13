@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-PythonCode.dicom2nifti
+dicom2nifti
 
 @author: abrys
 """
 import logging
 
-from .compressed_dicom import is_dicom_file, read_file
-from .convert_hitachi import dicom_to_nifti
-from .settings import pydicom_read_force
+import dicom2nifti.compressed_dicom as compressed_dicom
+from dicom2nifti import convert_hitachi
 
 import os
 import tempfile
@@ -16,13 +15,15 @@ import shutil
 
 from pydicom.tag import Tag
 
-from .exceptions import ConversionValidationError, ConversionError
-from .convert_siemens import dicom_to_nifti
-from .convert_ge import dicom_to_nifti
-from .convert_philips import dicom_to_nifti
-from .common import read_dicom_directory, is_orthogonal_nifti, is_philips, is_multiframe_dicom, is_siemens, is_ge, is_hitachi
-from .settings import resample
-from .resample import resample_single_nifti
+from dicom2nifti.exceptions import ConversionValidationError, ConversionError
+import dicom2nifti.convert_generic as convert_generic
+import dicom2nifti.convert_siemens as convert_siemens
+import dicom2nifti.convert_ge as convert_ge
+import dicom2nifti.convert_philips as convert_philips
+import dicom2nifti.common as common
+import dicom2nifti.image_reorientation as image_reorientation
+import dicom2nifti.settings as settings
+import dicom2nifti.resample as resample
 logger = logging.getLogger(__name__)
 
 
@@ -72,7 +73,7 @@ def dicom_series_to_nifti(original_dicom_directory, output_file=None, reorient_n
         dicom_directory = os.path.join(temp_directory, 'dicom')
         shutil.copytree(original_dicom_directory, dicom_directory)
 
-        dicom_input = read_dicom_directory(dicom_directory)
+        dicom_input = common.read_dicom_directory(dicom_directory)
 
         return dicom_array_to_nifti(dicom_input, output_file, reorient_nifti)
 
@@ -114,15 +115,15 @@ def dicom_array_to_nifti(dicom_list, output_file=None, reorient_nifti=True):
     vendor = _get_vendor(dicom_list)
 
     if vendor == Vendor.GENERIC:
-        results = dicom_to_nifti(dicom_list, output_file)
+        results = convert_generic.dicom_to_nifti(dicom_list, output_file)
     elif vendor == Vendor.SIEMENS:
-        results = dicom_to_nifti(dicom_list, output_file)
+        results = convert_siemens.dicom_to_nifti(dicom_list, output_file)
     elif vendor == Vendor.GE:
-        results = dicom_to_nifti(dicom_list, output_file)
+        results = convert_ge.dicom_to_nifti(dicom_list, output_file)
     elif vendor == Vendor.PHILIPS:
-        results = dicom_to_nifti(dicom_list, output_file)
+        results = convert_philips.dicom_to_nifti(dicom_list, output_file)
     elif vendor == Vendor.HITACHI:
-        results = dicom_to_nifti(dicom_list, output_file)
+        results = convert_hitachi.dicom_to_nifti(dicom_list, output_file)
     else:
         raise ConversionValidationError("UNSUPPORTED_DATA")
 
@@ -131,9 +132,9 @@ def dicom_array_to_nifti(dicom_list, output_file=None, reorient_nifti=True):
     #     results['NII'] = image_reorientation.reorient_image(results['NII'], results['NII_FILE'])
 
     # resampling needs to be after reorientation
-    if resample:
-        if not is_orthogonal_nifti(results['NII']):
-            results['NII'] = resample_single_nifti(results['NII'], results['NII_FILE'])
+    if settings.resample:
+        if not common.is_orthogonal_nifti(results['NII']):
+            results['NII'] = resample.resample_single_nifti(results['NII'], results['NII_FILE'])
 
     return results
 
@@ -147,8 +148,8 @@ def are_imaging_dicoms(dicom_input):
     """
 
     # if it is philips and multiframe dicom then we assume it is ok
-    if is_philips(dicom_input):
-        if is_multiframe_dicom(dicom_input):
+    if common.is_philips(dicom_input):
+        if common.is_multiframe_dicom(dicom_input):
             return True
 
     # for all others if there is image position patient we assume it is ok
@@ -162,19 +163,19 @@ def _get_vendor(dicom_input):
     Possibilities are fMRI, DTI, Anatomical (if no clear type is found anatomical is used)
     """
     # check if it is siemens
-    if is_siemens(dicom_input):
+    if common.is_siemens(dicom_input):
         logger.info('Found manufacturer: SIEMENS')
         return Vendor.SIEMENS
     # check if it is ge
-    if is_ge(dicom_input):
+    if common.is_ge(dicom_input):
         logger.info('Found manufacturer: GE')
         return Vendor.GE
     # check if it is philips
-    if is_philips(dicom_input):
+    if common.is_philips(dicom_input):
         logger.info('Found manufacturer: PHILIPS')
         return Vendor.PHILIPS
     # check if it is philips
-    if is_hitachi(dicom_input):
+    if common.is_hitachi(dicom_input):
         logger.info('Found manufacturer: HITACHI')
         return Vendor.HITACHI
     # generic by default
@@ -195,11 +196,11 @@ def _get_first_header(dicom_directory):
         for file_name in file_names:
             file_path = os.path.join(root, file_name)
             # check wither it is a dicom file
-            if not is_dicom_file(file_path):
+            if not compressed_dicom.is_dicom_file(file_path):
                 continue
             # read the headers
-            return read_file(file_path,
+            return compressed_dicom.read_file(file_path,
                                               stop_before_pixels=True,
-                                              force=pydicom_read_force)
+                                              force=settings.pydicom_read_force)
     # no dicom files found
     raise ConversionError('NO_DICOM_FILES_FOUND')

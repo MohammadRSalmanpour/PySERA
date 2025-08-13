@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-PythonCode.dicom2nifti
+dicom2nifti
 
 @author: abrys
 """
@@ -9,8 +9,8 @@ import nibabel.affines
 import numpy
 import scipy.ndimage
 
-from .common import get_nifti_data
-from .settings import resample_padding, resample_spline_interpolation_order, resample_padding, resample_padding
+from dicom2nifti.common import get_nifti_data
+from dicom2nifti import settings
 
 
 def resample_single_nifti(input_image, output_nifti):
@@ -104,7 +104,7 @@ def resample_nifti_images(nifti_images, voxel_size=None):
     new_affine = _create_affine(x_axis_world, y_axis_world, z_axis_world, origin, voxel_size)
 
     # Resample each image
-    combined_image_data = numpy.full(new_shape, resample_padding,
+    combined_image_data = numpy.full(new_shape, settings.resample_padding,
                                      dtype=get_nifti_data(nifti_images[0]).dtype)
     for nifti_image in nifti_images:
         image_affine = nifti_image.affine
@@ -115,12 +115,12 @@ def resample_nifti_images(nifti_images, voxel_size=None):
                                                          offset=offset,
                                                          output_shape=new_shape,
                                                          output=get_nifti_data(nifti_image).dtype,
-                                                         order=resample_spline_interpolation_order,
+                                                         order=settings.resample_spline_interpolation_order,
                                                          mode='constant',
-                                                         cval=resample_padding,
+                                                         cval=settings.resample_padding,
                                                          prefilter=False)
-        combined_image_data[combined_image_data == resample_padding] = \
-            resampled_image[combined_image_data == resample_padding]
+        combined_image_data[combined_image_data == settings.resample_padding] = \
+            resampled_image[combined_image_data == settings.resample_padding]
 
     if combined_image_data.ndim > 3:  # do not squeeze single slice data
         combined_image_data = combined_image_data.squeeze()

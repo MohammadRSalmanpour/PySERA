@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-PythonCode.dicom2nifti
+dicom2nifti
 
 @author: abrys
 """
@@ -10,10 +10,10 @@ import numpy
 
 from pydicom.tag import Tag
 
-from .common import validate_slicecount, validate_orientation, validate_orthogonal, sort_dicoms, validate_slice_increment, is_slice_increment_inconsistent, validate_instance_number, get_volume_pixeldata, create_affine, set_tr_te, get_volume_pixeldata, create_affine
-from .settings import validate_slicecount, validate_orientation, validate_orthogonal, validate_slice_increment, validate_instance_number, resample
-from .resample import resample_nifti_images
-from .exceptions import ConversionError, ConversionValidationError
+import dicom2nifti.common as common
+import dicom2nifti.settings as settings
+import dicom2nifti.resample as resample
+from dicom2nifti.exceptions import ConversionError, ConversionValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -39,44 +39,44 @@ def dicom_to_nifti(dicom_input, output_file):
     if len(dicom_input) < 1:
         raise ConversionValidationError('TOO_FEW_SLICES/LOCALIZER')
 
-    if validate_slicecount:
-        validate_slicecount(dicom_input)
+    if settings.validate_slicecount:
+        common.validate_slicecount(dicom_input)
         # remove_localizers based on image orientation (only valid if slicecount is validated)
         dicom_input = remove_localizers_by_orientation(dicom_input)
 
         # validate all the dicom files for correct orientations
-        validate_slicecount(dicom_input)
-    if validate_orientation:
+        common.validate_slicecount(dicom_input)
+    if settings.validate_orientation:
         # validate that all slices have the same orientation
-        validate_orientation(dicom_input)
-    if validate_orthogonal:
+        common.validate_orientation(dicom_input)
+    if settings.validate_orthogonal:
         # validate that we have an orthogonal image (to detect gantry tilting etc)
-        validate_orthogonal(dicom_input)
+        common.validate_orthogonal(dicom_input)
 
     # sort the dicoms
-    dicom_input = sort_dicoms(dicom_input)
+    dicom_input = common.sort_dicoms(dicom_input)
 
     # validate slice increment inconsistent
     slice_increment_inconsistent = False
-    if validate_slice_increment:
+    if settings.validate_slice_increment:
         # validate that all slices have a consistent slice increment
-        validate_slice_increment(dicom_input)
-    elif is_slice_increment_inconsistent(dicom_input):
+        common.validate_slice_increment(dicom_input)
+    elif common.is_slice_increment_inconsistent(dicom_input):
         slice_increment_inconsistent = True
 
-    if validate_instance_number:
+    if settings.validate_instance_number:
         # validate that all slices have a consistent instance_number
-        validate_instance_number(dicom_input)
+        common.validate_instance_number(dicom_input)
 
     # if inconsistent increment and we allow resampling then do the resampling based conversion to maintain the correct geometric shape
-    if slice_increment_inconsistent and resample:
+    if slice_increment_inconsistent and settings.resample:
         nii_image, max_slice_increment = _convert_slice_incement_inconsistencies(dicom_input)
     # do the normal conversion
     else:
         # Get data; originally z,y,x, transposed to x,y,z
-        data = get_volume_pixeldata(dicom_input)
+        data = common.get_volume_pixeldata(dicom_input)
 
-        affine, max_slice_increment, step = create_affine(dicom_input)
+        affine, max_slice_increment, step = common.create_affine(dicom_input)
 
         # Convert to nifti
         if data.ndim > 3:  # do not squeeze single slice data
@@ -88,7 +88,7 @@ def dicom_to_nifti(dicom_input, output_file):
 
     # Set TR and TE if available
     if Tag(0x0018, 0x0080) in dicom_input[0] and Tag(0x0018, 0x0081) in dicom_input[0]:
-        set_tr_te(nii_image, float(dicom_input[0].RepetitionTime), float(dicom_input[0].EchoTime))
+        common.set_tr_te(nii_image, float(dicom_input[0].RepetitionTime), float(dicom_input[0].EchoTime))
 
     # Save to disk
     if output_file is not None:
@@ -243,8 +243,8 @@ def _convert_slice_incement_inconsistencies(dicom_input):
     slice_increments = []
     voxel_sizes = {}
     for dicom_slices in slice_incement_groups:
-        data = get_volume_pixeldata(dicom_slices)
-        affine, _, _ = create_affine(dicom_slices)
+        data = common.get_volume_pixeldata(dicom_slices)
+        affine, _, _ = common.create_affine(dicom_slices)
         if data.ndim > 3:  # do not squeeze single slice data
             data = data.squeeze()
         current_volume = nibabel.Nifti1Image(data, affine)
@@ -257,6 +257,6 @@ def _convert_slice_incement_inconsistencies(dicom_input):
     most_used_increment = min(slice_increments, key=lambda x: abs(x - tenth_percentile_incement))
     voxel_size = voxel_sizes['%.5f' % most_used_increment]
 
-    nifti_volume = resample_nifti_images(slice_incement_niftis, voxel_size=voxel_size)
+    nifti_volume = resample.resample_nifti_images(slice_incement_niftis, voxel_size=voxel_size)
 
     return nifti_volume, max_slice_increment

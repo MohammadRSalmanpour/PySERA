@@ -1,5 +1,11 @@
 
+from scipy.io import savemat, loadmat
+import os
 import numpy as np
+import sys
+import skimage
+import cv2
+import itertools
 import scipy 
 from mahotas.labeled import bwperim
 import math
@@ -429,7 +435,12 @@ def getGLDZM(ROIBox,ROIMask,levels):
                 tmpROI[tmpROI == 0] = np.nan
                 tmpDist = np.multiply(tmpROI , distmap)
 
-                Dist = np.nanmin(np.nanmin(  tmpDist ,axis=0 ))
+                if np.all(np.isnan(tmpDist)):
+                    Dist = np.nan
+                else:
+                    Dist = np.nanmin(tmpDist)
+
+                # Dist = np.nanmin(np.nanmin(  tmpDist ,axis=0 ))
 
                 if math.isnan(Dist) == False:
                     Dist = int(Dist)
@@ -502,7 +513,12 @@ def getGLDZM(ROIBox,ROIMask,levels):
                 tmpROI[tmpROI == 0] = np.nan
                 tmpDist = np.multiply(tmpROI , distmap)
 
-                Dist = np.nanmin(np.nanmin(  tmpDist ,axis=0 ))
+                if np.all(np.isnan(tmpDist)):
+                    Dist = np.nan
+                else:
+                    Dist = np.nanmin(tmpDist)
+
+                # Dist = np.nanmin(np.nanmin(  tmpDist ,axis=0 ))
                 # Dist = np.nanmin(tmpDist ,axis=0)
 
                 if math.isnan(Dist) == False:

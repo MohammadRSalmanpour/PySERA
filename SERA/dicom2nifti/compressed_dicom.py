@@ -3,8 +3,8 @@ import os
 import subprocess
 import tempfile
 
-from .settings import gdcmconv_path, pydicom_read_force
-from .exceptions import ConversionError
+import dicom2nifti.settings as settings
+from dicom2nifti.exceptions import ConversionError
 
 import pydicom
 
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 def read_file(dicom_file, defer_size=None, stop_before_pixels=False, force=False):
     if _is_compressed(dicom_file, force):
-        # https://github.com/icometrix/PythonCode.dicom2nifti/issues/46 thanks to C-nit
+        # https://github.com/icometrix/dicom2nifti/issues/46 thanks to C-nit
         try:
             with tempfile.NamedTemporaryFile(delete=False) as fp:
                 fp.close()
@@ -49,7 +49,7 @@ def _get_gdcmconv():
     Get the full path to gdcmconv.
     If not found raise error
     """
-    gdcmconv_executable = gdcmconv_path
+    gdcmconv_executable = settings.gdcmconv_path
     if gdcmconv_executable is None:
         gdcmconv_executable = _which('gdcmconv')
     if gdcmconv_executable is None:
@@ -93,7 +93,7 @@ def is_dicom_file(filename):
     file_stream.close()
     if data == b'DICM':
         return True
-    if pydicom_read_force:
+    if settings.pydicom_read_force:
         try:
             dicom_headers = pydicom.read_file(filename, defer_size="1 KB", stop_before_pixels=True, force=True)
             if dicom_headers is not None:

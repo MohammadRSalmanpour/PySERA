@@ -1,7 +1,20 @@
 
+# from statistics import covariance
+from telnetlib import X3PAD
+from scipy.io import savemat, loadmat
+import os
+import numpy as np
+import sys
+import skimage
+import cv2
+import itertools
 import scipy 
 import cmath
+import concurrent.futures
+import threading
+from pyhull.convex_hull import ConvexHull
 
+# from skimage.measure import marching_cubes
 from SERAutilities import *
 
 # -------------------------------------------------------------------------
@@ -203,7 +216,8 @@ def getVolume(ROIonly,pixelW,sliceS):
 
 
     # mask = ROIonly[~isnan(ROIonly)] 
-    numberVoxel = np.nansum(ROIonly)
+    # numberVoxel = np.nansum(ROIonly)
+    numberVoxel = np.nansum(ROIonly.astype(np.float64))
     volume = numberVoxel * pixelW * pixelW * sliceS
 
     if hasattr(volume, '__len__') == True:
