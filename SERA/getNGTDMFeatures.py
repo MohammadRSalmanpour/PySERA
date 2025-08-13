@@ -126,8 +126,11 @@ def getNGTDMtextures(NGTDM,countValid,Aarray):
     nValid = len(pValid)
 
     xx = np.dot(np.transpose( Pi) , NGTDM )
-    Coarseness = np.float_power(((   xx    ) + np.finfo(float).eps   ),-1)
-    Coarseness = np.min([Coarseness , np.float_power(10,6)])
+    # Coarseness = np.float_power(((   xx    ) + np.finfo(float).eps   ),-1)
+    # Coarseness = np.min([Coarseness , np.float_power(10,6)])
+    Coarseness = np.float_power(xx + np.finfo(float).eps, -1)
+    Coarseness = float(np.squeeze(Coarseness))
+    Coarseness = np.minimum(Coarseness, np.float_power(10,6))
 
     val = 0
     for i in range(0,nG):

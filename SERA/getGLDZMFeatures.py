@@ -435,7 +435,12 @@ def getGLDZM(ROIBox,ROIMask,levels):
                 tmpROI[tmpROI == 0] = np.nan
                 tmpDist = np.multiply(tmpROI , distmap)
 
-                Dist = np.nanmin(np.nanmin(  tmpDist ,axis=0 ))
+                if np.all(np.isnan(tmpDist)):
+                    Dist = np.nan
+                else:
+                    Dist = np.nanmin(tmpDist)
+
+                # Dist = np.nanmin(np.nanmin(  tmpDist ,axis=0 ))
 
                 if math.isnan(Dist) == False:
                     Dist = int(Dist)
@@ -508,7 +513,12 @@ def getGLDZM(ROIBox,ROIMask,levels):
                 tmpROI[tmpROI == 0] = np.nan
                 tmpDist = np.multiply(tmpROI , distmap)
 
-                Dist = np.nanmin(np.nanmin(  tmpDist ,axis=0 ))
+                if np.all(np.isnan(tmpDist)):
+                    Dist = np.nan
+                else:
+                    Dist = np.nanmin(tmpDist)
+
+                # Dist = np.nanmin(np.nanmin(  tmpDist ,axis=0 ))
                 # Dist = np.nanmin(tmpDist ,axis=0)
 
                 if math.isnan(Dist) == False:

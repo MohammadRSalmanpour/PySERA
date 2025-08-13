@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-PythonCode.dicom2nifti
+dicom2nifti
 
 @author: abrys
 """
@@ -14,9 +14,9 @@ import numpy
 
 from pydicom.tag import Tag
 
-import PythonCode.dicom2nifti.common as common
-import PythonCode.dicom2nifti.convert_generic as convert_generic
-from PythonCode.dicom2nifti.exceptions import ConversionValidationError, ConversionError
+import dicom2nifti.common as common
+import dicom2nifti.convert_generic as convert_generic
+from dicom2nifti.exceptions import ConversionValidationError, ConversionError
 
 logger = logging.getLogger(__name__)
 
@@ -290,7 +290,7 @@ def _classic_get_grouped_dicoms(dicom_input):
 
     return grouped_dicoms
 
-# old function that was replaced by the new one for icometrix/PythonCode.dicom2nifti#70 will keep it for now
+# old function that was replaced by the new one for icometrix/dicom2nifti#70 will keep it for now
 # def _classic_get_grouped_dicoms(dicom_input):
 #     """
 #     Search all dicoms in the dicom directory, sort and validate them
@@ -543,7 +543,7 @@ def _create_bvecs(sorted_dicoms, bvec_file):
     """
     Calculate the bvecs and write the to a bvec file
     # inspired by dicom2nii from mricron
-    # see  http://users.fmrib.ox.ac.uk/~robson/internal/PythonCode.dicom2nifti111.m
+    # see  http://users.fmrib.ox.ac.uk/~robson/internal/dicom2nifti111.m
     """
     if type(sorted_dicoms[0]) is list:
         dicom_headers = sorted_dicoms[0][0]

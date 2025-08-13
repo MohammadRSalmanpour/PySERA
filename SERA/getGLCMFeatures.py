@@ -449,6 +449,7 @@ def InvVar(GLCM,nG):
     I , J = np.meshgrid(np.arange (0,nG) , np.arange(0,nG))
     T = I-J
     aa = np.float_power(T,2)
+    aa[aa == 0] = np.finfo(float).eps
     tmp = np.divide (GLCM , aa )
     tmp2 = np.triu(tmp,1)
     f_invVar = 2 * np.sum(tmp2)

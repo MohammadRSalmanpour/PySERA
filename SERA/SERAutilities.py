@@ -865,8 +865,8 @@ def legendre(n,x,normalize = None):
 
     s0 = np.where(s == 0)[0]
     if len(s0) > 0:
-        y[0,s0] = np.float_power(x,n)
-    
+        # y[0,s0] = np.float_power(x,n)
+        y[0, s0] = np.real_if_close(np.float_power(x, n))    
 
     if (normalize is None) or (normalize == 'unnorm'):
 

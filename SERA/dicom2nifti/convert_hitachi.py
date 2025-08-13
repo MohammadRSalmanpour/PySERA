@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-PythonCode.dicom2nifti
+dicom2nifti
 
 @author: abrys
 """
@@ -8,9 +8,9 @@ import logging
 
 import pydicom.config as pydicom_config
 
-import PythonCode.dicom2nifti.common as common
-import PythonCode.dicom2nifti.convert_generic as convert_generic
-from PythonCode.dicom2nifti.exceptions import ConversionValidationError
+import dicom2nifti.common as common
+import dicom2nifti.convert_generic as convert_generic
+from dicom2nifti.exceptions import ConversionValidationError
 
 pydicom_config.enforce_valid_values = False
 logger = logging.getLogger(__name__)

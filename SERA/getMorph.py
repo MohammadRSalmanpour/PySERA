@@ -216,7 +216,8 @@ def getVolume(ROIonly,pixelW,sliceS):
 
 
     # mask = ROIonly[~isnan(ROIonly)] 
-    numberVoxel = np.nansum(ROIonly)
+    # numberVoxel = np.nansum(ROIonly)
+    numberVoxel = np.nansum(ROIonly.astype(np.float64))
     volume = numberVoxel * pixelW * pixelW * sliceS
 
     if hasattr(volume, '__len__') == True:
