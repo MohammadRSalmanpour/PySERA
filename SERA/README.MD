@@ -5,8 +5,8 @@
 
 for example:
 
-    data_orgina_PATH = r'D:\data\IBSI1 Data\ibsi_1_ct_radiomics_phantom\nifti\image\phantom.nii.gz'
-    Data_RO_PATH = r'D:\data\IBSI1 Data\ibsi_1_ct_radiomics_phantom\nifti\mask\mask.nii.gz'
+    data_orgina_PATH = r'..\data\IBSI1 Data\ibsi_1_ct_radiomics_phantom\nifti\image\phantom.nii.gz'
+    Data_RO_PATH = r'..\data\IBSI1 Data\ibsi_1_ct_radiomics_phantom\nifti\mask\mask.nii.gz'
 
 Note: Your images file can be nifti, nrrd or single dicom (3D dicom).
 3) Choose your hyperparameters in section 2: "Radiomics Framework Settings" ( line 55 to 80 ).
