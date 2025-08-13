@@ -33,28 +33,12 @@ SERA computes a total of **487 radiomic features**, categorized as follows:
 
 ---
 
-## Compliance and Standardization
-SERA adheres to the IBSI definitions and computational guidelines, providing:
-- Reproducible feature calculations across systems
-- Alignment with published research standards
-- Consistent methodology for feature extraction
-
----
-
 ## Access, Questions, and Feedback
 SERA is available **free of charge**.
 For access, questions, or feedback:
 
 **Dr. Mohammad R. Salmanpour**  
 📧 [msalman@bccrc.ca](mailto:msalman@bccrc.ca) | [m.salmanpoor66@gmail.com](mailto:m.salmanpoor66@gmail.com)
-
----
-
-## Installation and Usage
-Please refer to the **README** file located inside the `SERA` package folder for:
-- Installation steps
-- Usage examples
-- Configuration details
 
 ---
 
