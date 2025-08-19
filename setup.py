@@ -34,7 +34,7 @@ setup(
     packages=find_packages(),
     license="MIT",
     classifiers=[
-        "Development Status :: 1 - Stable",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
         "Intended Audience :: Healthcare Industry",
         "Topic :: Scientific/Engineering :: Medical Science Apps.",
