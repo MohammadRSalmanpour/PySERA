@@ -1,0 +1,117 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PySera"
+version = "1.0.0"
+description = "A Python library for radiomics feature extraction with multiprocessing support"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Mohammad R. Salmanpour", email = "M.salmanpoor66@gmail.com" },
+    { name = "Amir Hossein Pouria", email = "amirporia99.1378@gmail.com" },
+    { name = "Mehrdad Oveisi", email = "moveisi@cs.ubc.ca" },
+    { name = "Arman Rahmim", email = "arman.rahmim@ubc.ca" },
+]
+maintainers = [
+    { name = "Mohammad R. Salmanpour", email = "M.salmanpoor66@gmail.com" },
+    { name = "Amir Hossein Pouria", email = "amirporia99.1378@gmail.com" }
+]
+keywords = ["medical-imaging", "Standardized-Radiomics-Feature-Extraction", "Quantitative-Analysis", "IBSI-Standardization", "healthcare"]
+classifiers = [
+    "Development Status :: 1 - stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Healthcare Industry",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "numpy==1.26.4",
+    "pandas>=2.3.1",
+    "scikit-learn>=1.7",
+    "SimpleITK>=2.5.2",
+    "opencv-python>=4.11.0.86",
+    "nibabel>=5.3.2",
+    "pydicom>=3.0.1",
+    "scikit-image>=0.25.2",
+    "openpyxl>=3.1.5",
+    "PyWavelets>=1.8.0",
+    "pynrrd>=1.1.3",
+    "psutil>=7.0.0",
+    "scipy>=1.15.3",
+    "mahotas>=1.4.18",
+    "pyhull>=2015.2.1",
+    "matplotlib>=3.10.5",
+    "Pillow>=11.3.0",
+    "vtk>=9.5.0",
+    "itk>=5.4.4.post1",
+    "rt-utils>=1.2.7",
+    "dcmrtstruct2nii>=5",
+    "ReliefF>=0.1.2",
+    "sklearn-relief>=1.0.0b2",
+    "scikit-optimize>=0.10.2",
+    "scikit-learn-extra>=0.3.0",
+    "kmodes>=0.12.2"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "flake8>=6.0",
+    "mypy>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/MohammadRSalmanpour/PySERA"
+Documentation = "https://pysera.readthedocs.io/"
+Repository = "https://github.com/MohammadRSalmanpour/PySERA.git"
+"Bug Reports" = "https://github.com/MohammadRSalmanpour/PySERA/issues"
+
+[project.scripts]
+pysera = "pysera.cli:main"
+
+[tool.setuptools]
+packages = ["pysera"]
+
+[tool.setuptools.package-data]
+pysera = ["config/*.yaml", "config/*.json"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["pysera"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

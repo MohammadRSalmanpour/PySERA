@@ -1,0 +1,41 @@
+include README.md
+include LICENSE
+include requirements.txt
+include pyproject.toml
+
+# Include examples
+recursive-include examples *.py
+recursive-include examples *.md
+
+# Include configuration files
+recursive-include pysera/config *.yaml
+recursive-include pysera/config *.json
+recursive-include pysera/config *.py
+
+# Include engine files (ViSERA backend)
+recursive-include pysera/engine *.py
+recursive-include pysera/engine *.m
+
+# Include all Python files
+recursive-include pysera *.py
+
+# Exclude compiled Python files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude __pycache__
+global-exclude *.so
+
+# Exclude development files
+exclude .gitignore
+exclude .github
+recursive-exclude .git *
+exclude *.log
+exclude .idea
+recursive-exclude .idea *
+
+# Exclude test and temporary files
+exclude tests
+recursive-exclude tests *
+exclude temp*
+exclude tmp*

@@ -1,0 +1,41 @@
+# Core scientific computing
+numpy==1.26.4
+pandas>=2.3.1
+scipy>=1.15.3
+
+# Medical imaging
+SimpleITK>=2.5.2
+nibabel>=5.3.2
+pydicom>=3.0.1
+pynrrd>=1.1.3
+
+# Image processing
+opencv-python>=4.11.0.86
+scikit-image>=0.25.2
+PyWavelets>=1.8.0
+mahotas>=1.4.18
+
+# Machine learning
+scikit-learn>=1.7
+
+# Visualization and I/O
+matplotlib>=3.10.5
+Pillow>=11.3.0
+openpyxl>=3.1.5
+
+# System utilities
+psutil>=7.0.0
+
+# Geometric computation
+pyhull>=2015.2.1
+
+# Full feature dependencies
+vtk>=9.5.0
+itk>=5.4.4.post1
+rt-utils>=1.2.7
+dcmrtstruct2nii>=5
+ReliefF>=0.1.2
+sklearn-relief>=1.0.0b2
+scikit-optimize>=0.10.2
+scikit-learn-extra>=0.3.0
+kmodes>=0.12.2

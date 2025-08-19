@@ -1,0 +1,4 @@
+[submodule "dependencies/NodeGraphPySide6"]
+	path = dependencies/NodeGraphPySide6
+	url = git@github.com:somso2e/NodeGraphPySide6.git
+	branch = modified_colors
