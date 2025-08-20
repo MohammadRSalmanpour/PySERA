@@ -1729,21 +1729,24 @@ class RadiomicsProcessor:
 
             # Create basic metadata for numpy arrays
             image_metadata = {
-                'format': 'numpy',
-                'spacing': [1.0, 1.0, 1.0],  # Default spacing
-                'origin': [0.0, 0.0, 0.0],  # Default origin
-                'direction': np.eye(3),  # Default direction matrix
-                'shape': image_array.shape
+                'type_file': image_array.dtype,
+                'shape_file': image_array.shape,
+                'format': 'npy',
+                'origin': (0.0, 0.0, 0.0),  # Default origin for numpy arrays
+                'spacing': (1.0, 1.0, 1.0),  # Default spacing for numpy arrays
+                'direction': (1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)  # Default direction matrix
             }
-
+            mask_array_tmp = np.load(mask_array)
             mask_metadata = {
-                'format': 'numpy',
-                'spacing': [1.0, 1.0, 1.0],
-                'origin': [0.0, 0.0, 0.0],
-                'direction': np.eye(3),
-                'shape': mask_array.shape
+                'type_file': mask_array_tmp.dtype,
+                'shape_file': mask_array_tmp.shape,
+                'format': 'npy',
+                'origin': (0.0, 0.0, 0.0),  # Default origin for numpy arrays
+                'spacing': (1.0, 1.0, 1.0),  # Default spacing for numpy arrays
+                'direction': (1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)  # Default direction matrix
             }
-
+            del mask_array_tmp
+            gc.collect()
             # Prepare parameters for SERA processing
             params_copy = self._prepare_sera_parameters(
                 self.params, image_array, image_metadata,

@@ -1,6 +1,6 @@
-# PySera Installation Guide
+# pysera Installation Guide
 
-This guide provides step-by-step instructions for installing the PySera library.
+This guide provides step-by-step instructions for installing the pysera library.
 
 ## Prerequisites
 
@@ -17,7 +17,7 @@ This guide provides step-by-step instructions for installing the PySera library.
 python3 -m venv pysera-env
 source pysera-env/bin/activate
 
-# Install PySera
+# Install pysera
 pip install pysera
 
 # Development tools
@@ -29,7 +29,7 @@ pip install pysera[dev]
 If you have the source code locally:
 
 ```bash
-# Navigate to the PySera directory
+# Navigate to the pysera directory
 cd /path/to/pysera
 
 # Create virtual environment
@@ -39,7 +39,7 @@ source pysera-env/bin/activate
 # Install dependencies
 pip install numpy pandas scipy SimpleITK nibabel pydicom pynrrd scikit-image opencv-python PyWavelets mahotas scikit-learn matplotlib Pillow openpyxl psutil pyhull vtk itk rt-utils dcmrtstruct2nii ReliefF sklearn-relief scikit-optimize scikit-learn-extra kmodes
 
-# Install PySera
+# Install pysera
 pip install .
 ```
 
@@ -127,13 +127,13 @@ brew install python
 
 ## Verification
 
-After installation, verify PySera is working:
+After installation, verify pysera is working:
 
 ```python
 #!/usr/bin/env python3
 import pysera
 
-print(f"PySera version: {pysera.__version__}")
+print(f"pysera version: {pysera.__version__}")
 print(f"Available classes: {pysera.__all__[:5]}...")  # Show first 5 exports
 
 # Test processor creation
@@ -145,7 +145,7 @@ memory_handler = pysera.MemoryLogHandler()
 logger, handler = pysera.setup_logging(memory_handler)
 print("✓ Logging system works")
 
-print("🎉 PySera is ready to use!")
+print("🎉 pysera is ready to use!")
 ```
 
 ## Support
@@ -169,4 +169,4 @@ After successful installation:
 
 ---
 
-*Happy radiomics processing with PySera! 🚀*
+*Happy radiomics processing with pysera! 🚀*

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# PySera Build Script
-# This script helps build and distribute the PySera library
+# pysera Build Script
+# This script helps build and distribute the pysera library
 
 set -e  # Exit on any error
 
-echo "🚀 PySera Build Script"
+echo "🚀 pysera Build Script"
 echo "====================="
 
 # Function to print colored output
@@ -23,7 +23,7 @@ print_error() {
 
 # Check if we're in the right directory
 if [ ! -f "setup.py" ] || [ ! -f "pyproject.toml" ]; then
-    print_error "Error: setup.py or pyproject.toml not found. Run this from the PySera root directory."
+    print_error "Error: setup.py or pyproject.toml not found. Run this from the pysera root directory."
     exit 1
 fi
 
@@ -76,7 +76,7 @@ if [ "$1" = "--install" ]; then
     
     # Test the installation
     print_step "Testing installation..."
-    python -c "import pysera; print(f'✓ PySera {pysera.__version__} imported successfully')"
+    python -c "import pysera; print(f'✓ pysera {pysera.__version__} imported successfully')"
     print_success "Installation test passed"
 fi
 
@@ -88,7 +88,7 @@ echo "   - Source distribution (.tar.gz)"
 echo "   - Wheel distribution (.whl)"
 echo ""
 echo "🚀 To install the built package:"
-echo "   pip install dist/PySera-*.whl"
+echo "   pip install dist/pysera-*.whl"
 echo ""
 echo "📤 To upload to PyPI (when ready):"
 echo "   python -m twine upload dist/*"

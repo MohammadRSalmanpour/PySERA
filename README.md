@@ -168,8 +168,8 @@ mask_array = nib.load("patient002_mask.nii.gz").get_fdata()
 
 # Process the image and mask directly from memory
 result = pysera.process_batch(
-    image=image_array,
-    mask=mask_array,
+    image_input=image_array,
+    mask_input=mask_array,
     output_path="./results"
 )
 
@@ -506,6 +506,10 @@ For detailed release notes, explanations of updates, and technical changes, plea
 
     v1
     ├── v1.0
+    │   ├── v1.0.1 - 2025-08-20
+    │   │   - fixing bug in numpy array file processing in in-memory mode
+    │   │   - change PySera to pysera
+    │   │
     │   └── v1.0.0 - 2025-08-19
     │       - 🛠️Structural modifications
     │       - ⚡Improved image loader 
@@ -561,8 +565,8 @@ amirporia99.1378@gmail.com
 
 ```bibtex
 @software{pysera2025,
-  title={PySera: A Simple Python Library for Radiomics Feature Extraction},
-  author={PySera Team},
+  title={pysera: A Simple Python Library for Radiomics Feature Extraction},
+  author={pysera Team},
   year={2025},
   url={https://github.com/MohammadRSalmanpour/PySERA}
 }

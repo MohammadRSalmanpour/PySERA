@@ -3,9 +3,9 @@
 Radiomics Standalone Processing Pipeline (Legacy Interface)
 
 This script maintains backward compatibility with the original radiomics_standalone.py
-while now using the PySera library under the hood.
+while now using the pysera library under the hood.
 
-For new projects, consider using the PySera library directly:
+For new projects, consider using the pysera library directly:
     import pysera
     processor = pysera.RadiomicsProcessor()
     result = processor.process_batch(image_input, mask_input)
@@ -58,11 +58,11 @@ if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
 try:
-    # Use the new PySera library CLI
+    # Use the new pysera library CLI
     from pysera._cli import main
 except ImportError as e:
-    print(f"Error importing PySera library: {e}")
-    print("Make sure you have installed the PySera library:")
+    print(f"Error importing pysera library: {e}")
+    print("Make sure you have installed the pysera library:")
     print("pip install -e .")
     sys.exit(1)
 

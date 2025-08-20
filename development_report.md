@@ -10,6 +10,10 @@ Each version entry documents new features, optimizations, supported formats, com
         
         v1
         ├── v1.0
+        │   ├── v1.0.1 - 2025-08-20
+        │   │   - fixing bug in numpy array file processing in in-memory mode
+        │   │   - change PySera to pysera
+        │   │
         │   └── v1.0.0 - 2025-08-19
         │       - Optimized memory management by storing large RoIs as float32 NumPy arrays on disk with memory mapping, ensuring efficient management and preventing RAM overflows.  
         │       - Enabled robust feature extraction for very small RoIs (fewer than 10 voxels) using epsilon corrections (𝜀) and synthetic augmentation, supporting cases as small as single-voxel inputs.  

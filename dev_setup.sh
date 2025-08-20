@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# PySera Development Environment Setup Script
-# This script sets up a local development environment for PySera
+# pysera Development Environment Setup Script
+# This script sets up a local development environment for pysera
 
 set -e  # Exit on any error
 
-echo "🚀 PySera Development Environment Setup"
+echo "🚀 pysera Development Environment Setup"
 echo "======================================"
 
 # Function to print colored output
@@ -27,7 +27,7 @@ print_warning() {
 
 # Check if we're in the right directory
 if [ ! -f "setup.py" ] || [ ! -f "pyproject.toml" ]; then
-    print_error "Error: setup.py or pyproject.toml not found. Run this from the PySera root directory."
+    print_error "Error: setup.py or pyproject.toml not found. Run this from the pysera root directory."
     exit 1
 fi
 
@@ -78,10 +78,10 @@ else
     pip install numpy pandas scipy matplotlib openpyxl
 fi
 
-# Install PySera in development mode
-print_step "Installing PySera in development mode..."
+# Install pysera in development mode
+print_step "Installing pysera in development mode..."
 pip install -e .
-print_success "PySera installed in development mode"
+print_success "pysera installed in development mode"
 
 # Install optional development tools
 print_step "Installing development tools..."
@@ -111,7 +111,7 @@ echo "🎉 Development environment setup complete!"
 echo ""
 echo "📋 Summary:"
 echo "   • Virtual environment: venv/"
-echo "   • PySera installed in development mode"
+echo "   • pysera installed in development mode"
 echo "   • Dependencies installed"
 echo "   • Development tools installed"
 echo "   • Test data directory created"
@@ -138,9 +138,9 @@ echo ""
 # Create activation reminder
 cat > activate_dev.sh << 'EOF'
 #!/bin/bash
-# Quick activation script for PySera development environment
+# Quick activation script for pysera development environment
 source venv/bin/activate
-echo "🚀 PySera development environment activated!"
+echo "🚀 pysera development environment activated!"
 echo "Run 'python dev_test.py' to verify everything works."
 EOF
 
@@ -200,4 +200,4 @@ EOF
     print_success ".gitignore created"
 fi
 
-echo "✨ Setup complete! Happy developing with PySera! ✨"
+echo "✨ Setup complete! Happy developing with pysera! ✨"

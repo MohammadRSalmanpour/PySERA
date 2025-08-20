@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CLI interface for PySera library.
+CLI interface for pysera library.
 
 This module provides the command-line interface that wraps the original 
 radiomics_standalone.py functionality while using the library's clean API.
@@ -50,7 +50,7 @@ def setup_logging(memory_handler: Optional[MemoryLogHandler] = None) -> tuple:
 
 def main() -> int:
     """
-    Main entry point for the PySera CLI.
+    Main entry point for the pysera CLI.
     
     This function maintains compatibility with the original radiomics_standalone.py
     while using the new library architecture.

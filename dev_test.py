@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-PySera Development Test Script
+pysera Development Test Script
 
-This script helps developers verify that PySera is working correctly
+This script helps developers verify that pysera is working correctly
 in their local development environment.
 
 Usage:
@@ -41,7 +41,7 @@ def print_warning(message):
     print(f"⚠️  {message}")
 
 def test_basic_imports(verbose=False):
-    """Test basic PySera imports."""
+    """Test basic pysera imports."""
     print_step("Testing basic imports...")
     
     try:
@@ -51,7 +51,7 @@ def test_basic_imports(verbose=False):
             sys.path.insert(0, current_dir)
         
         import pysera
-        print_success("PySera imported successfully")
+        print_success("pysera imported successfully")
         
         if verbose:
             print(f"   Version: {pysera.__version__}")
@@ -60,13 +60,13 @@ def test_basic_imports(verbose=False):
         
         return True
     except ImportError as e:
-        print_error(f"Failed to import PySera: {e}")
+        print_error(f"Failed to import pysera: {e}")
         if verbose:
             traceback.print_exc()
         return False
 
 def test_core_classes(verbose=False):
-    """Test core PySera functionality."""
+    """Test core pysera functionality."""
     print_step("Testing core functionality...")
     
     try:
@@ -348,15 +348,15 @@ def cleanup_test_files():
 
 def main():
     """Main test function."""
-    parser = argparse.ArgumentParser(description='PySera Development Test Script')
+    parser = argparse.ArgumentParser(description='pysera Development Test Script')
     parser.add_argument('--verbose', '-v', action='store_true', 
                        help='Show detailed output')
     parser.add_argument('--full', '-f', action='store_true',
                        help='Run full test suite')
     args = parser.parse_args()
     
-    print_header("PySera Development Test Suite")
-    print("This script verifies that PySera is working correctly in your development environment.")
+    print_header("pysera Development Test Suite")
+    print("This script verifies that pysera is working correctly in your development environment.")
     
     # List of test functions
     tests = [
@@ -399,7 +399,7 @@ def main():
     print(f"📊 Total:  {passed + failed}")
     
     if failed == 0:
-        print("\n🎉 All tests passed! PySera is ready for development.")
+        print("\n🎉 All tests passed! pysera is ready for development.")
         print("\nNext steps:")
         print("1. Try running: cd library_examples && python basic_usage.py")
         print("2. Test CLI: python radiomics_standalone.py --help")

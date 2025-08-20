@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "PySera"
-version = "1.0.0"
+name = "pysera"
+version = "1.0.1"
 description = "A Python library for radiomics feature extraction with multiprocessing support"
 readme = "README.md"
 license = "MIT"

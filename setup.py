@@ -7,7 +7,7 @@ try:
     with open("README.md", "r", encoding="utf-8") as fh:
         long_description = fh.read()
 except FileNotFoundError:
-    long_description = "PySera - A Python library for radiomics feature extraction with multiprocessing support"
+    long_description = "pysera - A Python library for radiomics feature extraction with multiprocessing support"
 
 
 # Read requirements from requirements.txt
@@ -23,8 +23,8 @@ def read_requirements(filename="requirements-library.txt"):
 
 
 setup(
-    name="PySera",
-    version="1.0.0",
+    name="pysera",
+    version="1.0.1",
     author="Mohammad R. Salmanpour, Amir Hossein Pouria",
     author_email="M.salmanpoor66@gmail.com",
     description="A Python library for radiomics feature extraction with multiprocessing support",

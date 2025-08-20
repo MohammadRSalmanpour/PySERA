@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Basic usage library_examples for PySera library.
+Basic usage library_examples for pysera library.
 
-This script demonstrates how to use PySera's simple, focused API with just
+This script demonstrates how to use pysera's simple, focused API with just
 the process_batch function for all radiomics feature extraction needs.
 """
 
@@ -214,9 +214,9 @@ def example_6_comprehensive_analysis():
 
 
 if __name__ == "__main__":
-    print("PySera Library Usage Examples")
+    print("pysera Library Usage Examples")
     print("=" * 50)
-    print(f"PySera version: {pysera.__version__}")
+    print(f"pysera version: {pysera.__version__}")
     print("Simple, focused API - just one function: pysera.process_batch()")
     print("Note: Update file paths in the library_examples to point to your actual data")
     print()
@@ -232,7 +232,7 @@ if __name__ == "__main__":
     print("\n" + "=" * 50)
     print("Examples completed! Check the generated results directories.")
     print()
-    print("✨ PySera API Summary:")
+    print("✨ pysera API Summary:")
     print("   import pysera")
     print("   result = pysera.process_batch(image_input, mask_input, **options)")
     print()
@@ -243,4 +243,4 @@ if __name__ == "__main__":
     print("   • ROI preprocessing and optimization")
     print("   • 400+ radiomics features with 12 extraction modes")
     print()
-    print("📚 For more information, see the PySera documentation.")
+    print("📚 For more information, see the pysera documentation.")

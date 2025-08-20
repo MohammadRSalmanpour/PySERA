@@ -1,5 +1,5 @@
 """
-PySera - A Python library for radiomics feature extraction with multiprocessing support
+pysera - A Python library for radiomics feature extraction with multiprocessing support
 
 This library provides a simple, focused interface for radiomics feature extraction
 from medical imaging data with built-in multiprocessing and logging capabilities.
@@ -32,7 +32,7 @@ Example Usage:
     ... )
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Mohammad R. Salmanpour, Amir Hossein Pouria"
 __email__ = "m.salmanpoor66@gmail.com"
 
@@ -60,7 +60,7 @@ def process_batch(
     """
     Process radiomics feature extraction for single or batch of medical images.
     
-    This is the main function for PySera library that handles all radiomics processing
+    This is the main function for pysera library that handles all radiomics processing
     with multiprocessing and logging capabilities built-in.
     
     Args:
@@ -176,7 +176,7 @@ def process_batch(
     if report:
         memory_handler = MemoryLogHandler()
         logger = _setup_logging(memory_handler=memory_handler)
-        logger.info("Starting PySera radiomics processing")
+        logger.info("Starting pysera radiomics processing")
     
     try:
         # Create processor with logging if enabled
