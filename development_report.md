@@ -10,9 +10,11 @@ Each version entry documents new features, optimizations, supported formats, com
         
         v1
         ├── v1.0
+        │   ├── v1.0.2 - 2025-08-20
+        │   │   - change PySera name to pysera
+        │   │
         │   ├── v1.0.1 - 2025-08-20
         │   │   - fixing bug in numpy array file processing in in-memory mode
-        │   │   - change PySera to pysera
         │   │
         │   └── v1.0.0 - 2025-08-19
         │       - Optimized memory management by storing large RoIs as float32 NumPy arrays on disk with memory mapping, ensuring efficient management and preventing RAM overflows.  

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysera"
-version = "1.0.1"
+version = "1.0.2"
 description = "A Python library for radiomics feature extraction with multiprocessing support"
 readme = "README.md"
 license = "MIT"

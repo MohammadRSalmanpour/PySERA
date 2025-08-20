@@ -32,7 +32,7 @@ Example Usage:
     ... )
 """
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __author__ = "Mohammad R. Salmanpour, Amir Hossein Pouria"
 __email__ = "m.salmanpoor66@gmail.com"
 
