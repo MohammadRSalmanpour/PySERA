@@ -55,6 +55,17 @@ setup(
             "black>=23.0",
             "flake8>=6.0",
             "mypy>=1.0",
+        ],
+        "full": [
+            "vtk>=9.5.0",
+            "itk>=5.4.4.post1",
+            "rt-utils>=1.2.7",
+            "dcmrtstruct2nii>=5",
+            "ReliefF>=0.1.2",
+            "sklearn-relief>=1.0.0b2",
+            "scikit-optimize>=0.10.2",
+            "scikit-learn-extra>=0.3.0",
+            "kmodes>=0.12.2"
         ]
     },
     entry_points={

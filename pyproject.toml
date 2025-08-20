@@ -51,6 +51,10 @@ dependencies = [
     "pyhull>=2015.2.1",
     "matplotlib>=3.10.5",
     "Pillow>=11.3.0",
+]
+
+[project.optional-dependencies]
+full = [
     "vtk>=9.5.0",
     "itk>=5.4.4.post1",
     "rt-utils>=1.2.7",
