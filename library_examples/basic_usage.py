@@ -159,7 +159,6 @@ def example_5_single_core_processing():
             num_workers="1",  # Disable multiprocessing
             feats2out=8,  # Fast feature extraction
             report=False,  # Disable logging for speed
-            apply_preprocessing=False  # Skip preprocessing for speed
         )
         
         if result['success']:

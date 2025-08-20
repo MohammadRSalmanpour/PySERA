@@ -98,7 +98,6 @@ def _add_optional_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         '--apply-preprocessing', 
         action='store_true', 
-        default=True, 
         help='Apply ROI and intensity preprocessing'
     )
     parser.add_argument(

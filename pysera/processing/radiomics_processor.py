@@ -1189,7 +1189,7 @@ class RadiomicsProcessor:
             logger.info(f"[{image_id}] ✓ All {len(processed_rois)} ROIs processed (none skipped)")
 
     def process_batch(self, image_input: Optional[Union[str, np.ndarray]] = None, mask_input: Optional[Union[str, np.ndarray]] = None,
-                     apply_preprocessing: bool = True, min_roi_volume: int = DEFAULT_MIN_ROI_VOLUME,
+                     apply_preprocessing: bool = False, min_roi_volume: int = DEFAULT_MIN_ROI_VOLUME,
                      num_workers: str = "auto", enable_parallelism: bool = True,
                      feats2out: int = DEFAULT_RADIOICS_PARAMS["radiomics_Feats2out"], bin_size: int = DEFAULT_RADIOICS_PARAMS["radiomics_BinSize"], roi_num: int = DEFAULT_RADIOICS_PARAMS["radiomics_ROI_num"],
                      roi_selection_mode: str = DEFAULT_RADIOICS_PARAMS["radiomics_ROI_selection_mode"], feature_value_mode: str = "REAL_VALUE",

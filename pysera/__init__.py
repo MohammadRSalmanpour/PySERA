@@ -45,7 +45,7 @@ def process_batch(
     image_input,
     mask_input,
     output_path=None,
-    apply_preprocessing=True,
+    apply_preprocessing=False,
     min_roi_volume=10,
     num_workers="auto",
     enable_parallelism=True,
@@ -75,7 +75,7 @@ def process_batch(
                                    Defaults to "./output_optimized" if not specified.
         
         apply_preprocessing (bool, optional): Apply ROI and intensity preprocessing.
-                                            Defaults to True.
+                                            Defaults to False.
         
         min_roi_volume (int, optional): Minimum ROI volume threshold for processing.
                                       ROIs smaller than this will be filtered out.
