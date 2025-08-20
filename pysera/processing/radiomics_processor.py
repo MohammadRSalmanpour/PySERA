@@ -1284,7 +1284,7 @@ class RadiomicsProcessor:
                     for img_path, mask_input in zip(image_files, mask_files)]
 
         # Process files
-        use_parallel = (not enable_parallelism and len(image_files) > 1)
+        use_parallel = (enable_parallelism and len(image_files) > 1)
         if not use_parallel:
             logger.info("Using sequential processing")
             all_results = []
@@ -1507,7 +1507,7 @@ class RadiomicsProcessor:
         """Generate output file path and save results."""
         # Generate output filename
         preprocessing_suffix = "_preprocessed" if apply_preprocessing else ""
-        parallel_suffix = "_parallel" if not enable_parallelism and num_images > 1 else "_sequential"
+        parallel_suffix = "_parallel" if enable_parallelism and num_images > 1 else "_sequential"
         timestamp = datetime.now().strftime("%m-%d-%Y_%H%M%S")
 
         output_filename = OUTPUT_FILENAME_TEMPLATE.format(
