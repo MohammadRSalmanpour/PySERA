@@ -132,9 +132,6 @@ Install the PySERA library directly from PyPI:
 
 ```bash
 pip install pysera
-
-# full dependency installation 
-pip install pysera[full]
 ```
 
 ## 📚Library Usage
