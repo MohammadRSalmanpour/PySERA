@@ -508,7 +508,9 @@ For detailed release notes, explanations of updates, and technical changes, plea
 
     v2
     ├── v2.0
-    │   ├── v2.0.0 - 2025-10-20
+    ├── ├── v2.0.1 - 2025-10-20
+    │   │   - remove additional packages
+    │   ├── v2.0.0 - 2025-10-19
     │   │   - ✨Major Feature Expansion, 557 IBSI-compliant radiomics features
     │   │   - 🎯New `categories` parameter for feature category selection
     │   │   - 📐New `dimensions` parameter for 1st, 2D, 2.5D, 3D feature extraction

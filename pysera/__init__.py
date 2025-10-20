@@ -1,4 +1,4 @@
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 __author__ = "Mohammad R. Salmanpour, Amir Hossein Pouria"
 __email__ = "m.salmanpoor66@gmail.com"
 

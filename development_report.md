@@ -10,7 +10,9 @@ Each version entry documents new features, optimizations, supported formats, com
         
         v2
         ├── v2.0
-        │   ├── v2.0.0 - 2025-10-20
+        ├── ├── v2.0.1 - 2025-10-20
+        │   │   - remove additional packages
+        │   ├── v2.0.0 - 2025-10-19
         │   │   - Expanded feature library to 557 IBSI-compliant radiomics features across multiple categories and dimensions, providing comprehensive coverage for advanced radiomics analysis.
         │   │   - Introduced selective feature extraction with `categories` parameter, enabling users to target specific feature types: diagnostics (diag), morphological (morph), intensity peak (ip), first-order statistical (stat), intensity histogram (ih), intensity-volume histogram (ivh), Gray-Level Co-occurrence Matrix (glcm), Gray-Level Run Length Matrix (glrlm), Gray-Level Size Zone Matrix (glszm), Gray-Level Distance Zone Matrix (gldzm), Neighboring Gray-Tone Difference Matrix (ngtdm), Neighboring Gray-Level Dependence Matrix (ngldm), and moment-invariant (mi) features.
         │   │   - Added dimensional control with `dimensions` parameter, supporting first-order (1st), 2D slice-based (2D), 2.5D aggregated (2_5D), and fully volumetric 3D (3D) feature extraction strategies.

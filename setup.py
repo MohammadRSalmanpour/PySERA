@@ -24,7 +24,7 @@ def read_requirements(filename="requirements-library.txt"):
 
 setup(
     name="pysera",
-    version="2.0.0",
+    version="2.0.1",
     author="Mohammad R. Salmanpour, Amir Hossein Pouria",
     author_email="M.salmanpoor66@gmail.com",
     description="pysera (Python-based Standardized Extraction for Radiomics Analysis) is a comprehensive Python library for radiomics feature extraction from medical imaging data. It provides a simple, single-function API with built-in multiprocessing support and comprehensive report capabilities.",
