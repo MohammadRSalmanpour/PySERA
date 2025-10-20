@@ -7,10 +7,10 @@ include pyproject.toml
 recursive-include examples *.py
 recursive-include examples *.md
 
-# Include configuration files
-recursive-include pysera/config *.yaml
-recursive-include pysera/config *.json
-recursive-include pysera/config *.py
+# Include all configuration and JSON files in any subdirectory of pysera
+recursive-include pysera *.yaml
+recursive-include pysera *.json
+recursive-include pysera *.py
 
 # Include engine files (ViSERA backend)
 recursive-include pysera/engine *.py
