@@ -1,0 +1,110 @@
+{
+"profiles": {
+  "Full_IBSI": {
+    "description": "Full extraction with maximum features and reproducibility.",
+    "active_feature_types": [
+      "diag",
+      "1st",
+      "2D",
+      "2_5D",
+      "3D",
+      "mi"
+    ],
+    "active_extractors": [
+      "DiagnosticsExtractor",
+      "MorphologyExtractor",
+      "IntensityPeakExtractor",
+      "StatisticsExtractor",
+      "IntensityHistogramExtractor",
+      "IntensityVolumeHistogramExtractor",
+      "GLCM2DExtractor",
+      "GLCM25DExtractor",
+      "GLCM3DExtractor",
+      "GLRLM2DExtractor",
+      "GLRLM25DExtractor",
+      "GLRLM3DExtractor",
+      "GLSZM2DExtractor",
+      "GLSZM25DExtractor",
+      "GLSZM3DExtractor",
+      "GLDZM2DExtractor",
+      "GLDZM25DExtractor",
+      "GLDZM3DExtractor",
+      "NGTDM2DExtractor",
+      "NGTDM25DExtractor",
+      "NGTDM3DExtractor",
+      "NGLDM2DExtractor",
+      "NGLDM25DExtractor",
+      "NGLDM3DExtractor",
+      "MomentInvariantExtractor"
+    ],
+    "order": [
+      "DiagnosticsExtractor",
+      "MorphologyExtractor",
+      "IntensityPeakExtractor",
+      "StatisticsExtractor",
+      "IntensityHistogramExtractor",
+      "IntensityVolumeHistogramExtractor",
+      "GLCM2DExtractor",
+      "GLCM25DExtractor",
+      "GLCM3DExtractor",
+      "GLRLM2DExtractor",
+      "GLRLM25DExtractor",
+      "GLRLM3DExtractor",
+      "GLSZM2DExtractor",
+      "GLSZM25DExtractor",
+      "GLSZM3DExtractor",
+      "GLDZM2DExtractor",
+      "GLDZM25DExtractor",
+      "GLDZM3DExtractor",
+      "NGTDM2DExtractor",
+      "NGTDM25DExtractor",
+      "NGTDM3DExtractor",
+      "NGLDM2DExtractor",
+      "NGLDM25DExtractor",
+      "NGLDM3DExtractor",
+      "MomentInvariantExtractor"
+    ],
+    "parallelism": "process",
+    "memory_estimate_mb": 4000,
+    "feature_type_mapping": {
+      "diag": [
+        "DiagnosticsExtractor"
+      ],
+      "1st": [
+        "MorphologyExtractor",
+        "IntensityPeakExtractor",
+        "StatisticsExtractor",
+        "IntensityHistogramExtractor",
+        "IntensityVolumeHistogramExtractor"
+      ],
+      "2D": [
+        "GLCM2DExtractor",
+        "GLRLM2DExtractor",
+        "GLSZM2DExtractor",
+        "GLDZM2DExtractor",
+        "NGTDM2DExtractor",
+        "NGLDM2DExtractor"
+      ],
+      "2_5D": [
+        "GLCM25DExtractor",
+        "GLRLM25DExtractor",
+        "GLSZM25DExtractor",
+        "GLDZM25DExtractor",
+        "NGTDM25DExtractor",
+        "NGLDM25DExtractor"
+      ],
+      "3D": [
+        "GLCM3DExtractor",
+        "GLRLM3DExtractor",
+        "GLSZM3DExtractor",
+        "GLDZM3DExtractor",
+        "NGTDM3DExtractor",
+        "NGLDM3DExtractor"
+      ],
+      "mi": [
+        "MomentInvariantExtractor"
+      ]
+    }
+  }
+}
+}

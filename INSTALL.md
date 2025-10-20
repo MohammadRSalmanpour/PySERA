@@ -37,7 +37,7 @@ python3 -m venv pysera-env
 source pysera-env/bin/activate
 
 # Install dependencies
-pip install numpy pandas scipy SimpleITK nibabel pydicom pynrrd scikit-image opencv-python PyWavelets mahotas scikit-learn matplotlib Pillow openpyxl psutil pyhull vtk itk rt-utils dcmrtstruct2nii ReliefF sklearn-relief scikit-optimize scikit-learn-extra kmodes
+pip install numpy pandas scipy SimpleITK nibabel pydicom pynrrd scikit-image opencv-python PyWavelets connected-components-3d mahotas scikit-learn matplotlib Pillow openpyxl psutil pyhull vtk itk rt-utils dcmrtstruct2nii ReliefF sklearn-relief scikit-optimize scikit-learn-extra kmodes
 
 # Install pysera
 pip install .
@@ -47,7 +47,7 @@ pip install .
 
 ### Core Dependencies
 ```bash
-pip install numpy==1.26.4 pandas>=2.3.1 scipy>=1.15.3 SimpleITK>=2.5.2 nibabel>=5.3.2 pydicom>=3.0.1 pynrrd>=1.1.3 opencv-python>=4.11.0.86 scikit-image>=0.25.2 PyWavelets>=1.8.0 mahotas>=1.4.18 scikit-learn>=1.7 matplotlib>=3.10.5 Pillow>=11.3.0 openpyxl>=3.1.5 psutil>=7.0.0 pyhull>=2015.2.1
+pip install numpy>=2.2.6 pandas>=2.3.1 scipy>=1.15.3 SimpleITK>=2.5.2 nibabel>=5.3.2 pydicom>=3.0.1 pynrrd>=1.1.3 opencv-python>=4.11.0.86 scikit-image>=0.25.2 PyWavelets>=1.8.0 mahotas>=1.4.18 scikit-learn>=1.7 matplotlib>=3.10.5 connected-components-3d>=3.25.0 Pillow>=11.3.0 openpyxl>=3.1.5 psutil>=7.0.0 pyhull>=2015.2.1
 ```
 
 

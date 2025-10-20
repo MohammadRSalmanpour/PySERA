@@ -20,9 +20,9 @@ import traceback
 
 def print_header(title):
     """Print a formatted header."""
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"  {title}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
 def print_step(step):
     """Print a test step."""
@@ -52,7 +52,7 @@ def test_basic_imports(verbose=False):
         
         import pysera
         print_success("pysera imported successfully")
-        
+
         if verbose:
             print(f"   Version: {pysera.__version__}")
             print(f"   Author: {pysera.__author__}")
@@ -264,7 +264,7 @@ def test_file_structure(verbose=False):
         'pysera/__init__.py',
         'pysera/_cli.py',
         'pysera/processing/radiomics_processor.py',
-        'pysera/utils/log_logging.py',
+        'pysera/utils/log_record.py',
         'pysera/config/settings.py',
         'setup.py',
         'pyproject.toml',
@@ -305,7 +305,7 @@ def run_full_tests(verbose=False):
                 image_input="nonexistent_image.nii.gz",
                 mask_input="nonexistent_mask.nii.gz",
                 output_path="./test_output",
-                report=False  # Disable logging for test
+                report="none"  # Disable logging for test
             )
             
             # Should return a result dict with success=False
@@ -349,15 +349,15 @@ def cleanup_test_files():
 def main():
     """Main test function."""
     parser = argparse.ArgumentParser(description='pysera Development Test Script')
-    parser.add_argument('--verbose', '-v', action='store_true', 
-                       help='Show detailed output')
+    parser.add_argument('--verbose', '-v', action='store_true',
+                        help='Show detailed output')
     parser.add_argument('--full', '-f', action='store_true',
-                       help='Run full test suite')
+                        help='Run full test suite')
     args = parser.parse_args()
-    
+
     print_header("pysera Development Test Suite")
     print("This script verifies that pysera is working correctly in your development environment.")
-    
+
     # List of test functions
     tests = [
         ("File Structure", test_file_structure),
