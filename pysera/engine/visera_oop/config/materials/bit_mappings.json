@@ -1,0 +1,72 @@
+{
+  "feature_dimensions_mapping": [
+    "diag",
+    "1st",
+    "2D",
+    "2_5D",
+    "3D",
+    "mi"
+  ],
+
+  "extractor_mapping": [
+    "DiagnosticsExtractor",
+    "MorphologyExtractor",
+    "IntensityPeakExtractor",
+    "StatisticsExtractor",
+    "IntensityHistogramExtractor",
+    "IntensityVolumeHistogramExtractor",
+    "GLCM2DExtractor",
+    "GLCM25DExtractor",
+    "GLCM3DExtractor",
+    "GLRLM2DExtractor",
+    "GLRLM25DExtractor",
+    "GLRLM3DExtractor",
+    "GLSZM2DExtractor",
+    "GLSZM25DExtractor",
+    "GLSZM3DExtractor",
+    "GLDZM2DExtractor",
+    "GLDZM25DExtractor",
+    "GLDZM3DExtractor",
+    "NGTDM2DExtractor",
+    "NGTDM25DExtractor",
+    "NGTDM3DExtractor",
+    "NGLDM2DExtractor",
+    "NGLDM25DExtractor",
+    "NGLDM3DExtractor",
+    "MomentInvariantExtractor"
+  ],
+
+  "extractor_group_mapping": [
+    "diag",
+    "morph",
+    "ip",
+    "stat",
+    "ih",
+    "ivh",
+    "glcm",
+    "glrlm",
+    "glszm",
+    "gldzm",
+    "ngtdm",
+    "ngldm",
+    "mi"
+  ],
+
+  "extractor_group_expansion": {
+    "diag": ["DiagnosticsExtractor"],
+    "morph": ["MorphologyExtractor"],
+    "ip": ["IntensityPeakExtractor"],
+    "stat": ["StatisticsExtractor"],
+    "ih": ["IntensityHistogramExtractor"],
+    "ivh": ["IntensityVolumeHistogramExtractor"],
+
+    "glcm": ["GLCM2DExtractor", "GLCM25DExtractor", "GLCM3DExtractor"],
+    "glrlm": ["GLRLM2DExtractor", "GLRLM25DExtractor", "GLRLM3DExtractor"],
+    "glszm": ["GLSZM2DExtractor", "GLSZM25DExtractor", "GLSZM3DExtractor"],
+    "gldzm": ["GLDZM2DExtractor", "GLDZM25DExtractor", "GLDZM3DExtractor"],
+    "ngtdm": ["NGTDM2DExtractor", "NGTDM25DExtractor", "NGTDM3DExtractor"],
+    "ngldm": ["NGLDM2DExtractor", "NGLDM25DExtractor", "NGLDM3DExtractor"],
+
+    "mi": ["MomentInvariantExtractor"]
+  }
+}

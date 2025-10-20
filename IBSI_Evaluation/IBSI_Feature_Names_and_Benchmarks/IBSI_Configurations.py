@@ -1,7 +1,5 @@
-
 # Configuration Zero
 DEFAULT_RADIOICS_PARAMS = {
-    "TOOLTYPE": "Handcrafted radiomic",
     'radiomics_DataType': "CT",
     'radiomics_DiscType': "FBS",
     'radiomics_BinSize': 1,
@@ -22,17 +20,23 @@ DEFAULT_RADIOICS_PARAMS = {
     'radiomics_IVH_Type': 0,
     'radiomics_IVH_DiscCont': 0,
     'radiomics_IVH_binSize': 0,
-    'radiomics_ROI_num': 1,
-    'radiomics_ROI_selection_mode': "per_Img",
+    'radiomics_roi_num': 1,
+    'radiomics_roi_selection_mode': "per_Img",
+    'radiomics_feature_value_mode': "REAL_VALUE",
     'radiomics_isROIsCombined': 0,
-    'radiomics_Feats2out': 1,
-    'radiomics_destfolder': None
+    'radiomics_categories': "all",
+    'radiomics_dimensions': "all",
+    'radiomics_destination_folder': "./output_result",
+    'radiomics_temporary_files_path': "./temporary_files_path",
+    'radiomics_report': "all",
+    'radiomics_min_roi_volume': 10,
+    'radiomics_apply_preprocessing': False,
+    'radiomics_enable_parallelism': True,
+    'radiomics_num_workers': "auto"
 }
-
 
 # Configuration A
 DEFAULT_RADIOICS_PARAMS = {
-    "TOOLTYPE": "Handcrafted radiomic",
     'radiomics_DataType': "CT",
     'radiomics_DiscType': "FBS",
     'radiomics_BinSize': 25,
@@ -53,23 +57,29 @@ DEFAULT_RADIOICS_PARAMS = {
     'radiomics_IVH_Type': 0,
     'radiomics_IVH_DiscCont': 0,
     'radiomics_IVH_binSize': 0,
-    'radiomics_ROI_num': 1,
-    'radiomics_ROI_selection_mode': "per_Img",
+    'radiomics_roi_num': 1,
+    'radiomics_roi_selection_mode': "per_Img",
+    'radiomics_feature_value_mode': "REAL_VALUE",
     'radiomics_isROIsCombined': 0,
-    'radiomics_Feats2out': 1,
-    'radiomics_destfolder': None
+    'radiomics_categories': "all",
+    'radiomics_dimensions': "all",
+    'radiomics_destination_folder': "./output_result",
+    'radiomics_temporary_files_path': "./temporary_files_path",
+    'radiomics_report': "all",
+    'radiomics_min_roi_volume': 10,
+    'radiomics_apply_preprocessing': False,
+    'radiomics_enable_parallelism': True,
+    'radiomics_num_workers': "auto"
 }
-
 
 # Configuration B
 DEFAULT_RADIOICS_PARAMS = {
-    "TOOLTYPE": "Handcrafted radiomic",
     'radiomics_DataType': "CT",
     'radiomics_DiscType': "FBN",
     'radiomics_BinSize': 32,
     'radiomics_isScale': 1,
-    'radiomics_VoxInterp': "linear",
-    'radiomics_ROIInterp': "linear",
+    'radiomics_VoxInterp': "bilinear",
+    'radiomics_ROIInterp': "bilinear",
     'radiomics_isotVoxSize': 2,
     'radiomics_isotVoxSize2D': 2,
     'radiomics_isIsot2D': 1,
@@ -84,23 +94,29 @@ DEFAULT_RADIOICS_PARAMS = {
     'radiomics_IVH_Type': 0,
     'radiomics_IVH_DiscCont': 0,
     'radiomics_IVH_binSize': 0,
-    'radiomics_ROI_num': 1,
-    'radiomics_ROI_selection_mode': "per_Img",
+    'radiomics_roi_num': 1,
+    'radiomics_roi_selection_mode': "per_Img",
+    'radiomics_feature_value_mode': "REAL_VALUE",
     'radiomics_isROIsCombined': 0,
-    'radiomics_Feats2out': 1,
-    'radiomics_destfolder': None
+    'radiomics_categories': "all",
+    'radiomics_dimensions': "all",
+    'radiomics_destination_folder': "./output_result",
+    'radiomics_temporary_files_path': "./temporary_files_path",
+    'radiomics_report': "all",
+    'radiomics_min_roi_volume': 10,
+    'radiomics_apply_preprocessing': False,
+    'radiomics_enable_parallelism': True,
+    'radiomics_num_workers': "auto"
 }
-
 
 # Configuration C
 DEFAULT_RADIOICS_PARAMS = {
-    "TOOLTYPE": "Handcrafted radiomic",
     'radiomics_DataType': "CT",
     'radiomics_DiscType': "FBS",
     'radiomics_BinSize': 25,
     'radiomics_isScale': 1,
-    'radiomics_VoxInterp': "linear",
-    'radiomics_ROIInterp': "linear",
+    'radiomics_VoxInterp': "trilinear",
+    'radiomics_ROIInterp': "trilinear",
     'radiomics_isotVoxSize': 2,
     'radiomics_isotVoxSize2D': 2,
     'radiomics_isIsot2D': 0,
@@ -115,22 +131,29 @@ DEFAULT_RADIOICS_PARAMS = {
     'radiomics_IVH_Type': 0,
     'radiomics_IVH_DiscCont': 0,
     'radiomics_IVH_binSize': 2.5,
-    'radiomics_ROI_num': 1,
-    'radiomics_ROI_selection_mode': "per_Img",
+    'radiomics_roi_num': 1,
+    'radiomics_roi_selection_mode': "per_Img",
+    'radiomics_feature_value_mode': "REAL_VALUE",
     'radiomics_isROIsCombined': 0,
-    'radiomics_Feats2out': 1,
-    'radiomics_destfolder': None
+    'radiomics_categories': "all",
+    'radiomics_dimensions': "all",
+    'radiomics_destination_folder': "./output_result",
+    'radiomics_temporary_files_path': "./temporary_files_path",
+    'radiomics_report': "all",
+    'radiomics_min_roi_volume': 10,
+    'radiomics_apply_preprocessing': False,
+    'radiomics_enable_parallelism': True,
+    'radiomics_num_workers': "auto"
 }
 
 # Configuration D
 DEFAULT_RADIOICS_PARAMS = {
-    "TOOLTYPE": "Handcrafted radiomic",
     'radiomics_DataType': "CT",
     'radiomics_DiscType': "FBN",
     'radiomics_BinSize': 32,
     'radiomics_isScale': 1,
-    'radiomics_VoxInterp': "linear",
-    'radiomics_ROIInterp': "linear",
+    'radiomics_VoxInterp': "trilinear",
+    'radiomics_ROIInterp': "trilinear",
     'radiomics_isotVoxSize': 2,
     'radiomics_isotVoxSize2D': 2,
     'radiomics_isIsot2D': 0,
@@ -145,22 +168,29 @@ DEFAULT_RADIOICS_PARAMS = {
     'radiomics_IVH_Type': 0,
     'radiomics_IVH_DiscCont': 0,
     'radiomics_IVH_binSize': 0,
-    'radiomics_ROI_num': 1,
-    'radiomics_ROI_selection_mode': "per_Img",
+    'radiomics_roi_num': 1,
+    'radiomics_roi_selection_mode': "per_Img",
+    'radiomics_feature_value_mode': "REAL_VALUE",
     'radiomics_isROIsCombined': 0,
-    'radiomics_Feats2out': 1,
-    'radiomics_destfolder': None
+    'radiomics_categories': "all",
+    'radiomics_dimensions': "all",
+    'radiomics_destination_folder': "./output_result",
+    'radiomics_temporary_files_path': "./temporary_files_path",
+    'radiomics_report': "all",
+    'radiomics_min_roi_volume': 10,
+    'radiomics_apply_preprocessing': False,
+    'radiomics_enable_parallelism': True,
+    'radiomics_num_workers': "auto"
 }
 
 # Configuration E
 DEFAULT_RADIOICS_PARAMS = {
-    "TOOLTYPE": "Handcrafted radiomic",
     'radiomics_DataType': "CT",
     'radiomics_DiscType': "FBN",
     'radiomics_BinSize': 32,
     'radiomics_isScale': 1,
-    'radiomics_VoxInterp': "cubic",
-    'radiomics_ROIInterp': "linear",
+    'radiomics_VoxInterp': "tricubic-spline",
+    'radiomics_ROIInterp': "trilinear",
     'radiomics_isotVoxSize': 2,
     'radiomics_isotVoxSize2D': 2,
     'radiomics_isIsot2D': 0,
@@ -175,9 +205,17 @@ DEFAULT_RADIOICS_PARAMS = {
     'radiomics_IVH_Type': 1,
     'radiomics_IVH_DiscCont': 0,
     'radiomics_IVH_binSize': 1000,
-    'radiomics_ROI_num': 1,
-    'radiomics_ROI_selection_mode': "per_Img",
+    'radiomics_roi_num': 1,
+    'radiomics_roi_selection_mode': "per_Img",
+    'radiomics_feature_value_mode': "REAL_VALUE",
     'radiomics_isROIsCombined': 0,
-    'radiomics_Feats2out': 1,
-    'radiomics_destfolder': None
+    'radiomics_categories': "all",
+    'radiomics_dimensions': "all",
+    'radiomics_destination_folder': "./output_result",
+    'radiomics_temporary_files_path': "./temporary_files_path",
+    'radiomics_report': "all",
+    'radiomics_min_roi_volume': 10,
+    'radiomics_apply_preprocessing': False,
+    'radiomics_enable_parallelism': True,
+    'radiomics_num_workers': "auto"
 }

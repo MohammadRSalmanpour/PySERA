@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysera"
-version = "1.0.2"
+version = "2.0.0"
 description = "A Python library for radiomics feature extraction with multiprocessing support"
 readme = "README.md"
 license = "MIT"
@@ -34,7 +34,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "numpy==1.26.4",
+    "numpy>=2.2.6",
     "pandas>=2.3.1",
     "scikit-learn>=1.7",
     "SimpleITK>=2.5.2",
@@ -58,6 +58,7 @@ dependencies = [
     "ReliefF>=0.1.2",
     "sklearn-relief>=1.0.0b2",
     "scikit-optimize>=0.10.2",
+    "connected-components-3d>=3.25.0",
     "scikit-learn-extra>=0.3.0",
     "kmodes>=0.12.2"
 ]

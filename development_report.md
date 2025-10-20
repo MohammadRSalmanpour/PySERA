@@ -8,6 +8,19 @@ Each version entry documents new features, optimizations, supported formats, com
 
 ## Version History
         
+        v2
+        ├── v2.0
+        │   ├── v2.0.0 - 2025-10-20
+        │   │   - Expanded feature library to 557 IBSI-compliant radiomics features across multiple categories and dimensions, providing comprehensive coverage for advanced radiomics analysis.
+        │   │   - Introduced selective feature extraction with `categories` parameter, enabling users to target specific feature types: diagnostics (diag), morphological (morph), intensity peak (ip), first-order statistical (stat), intensity histogram (ih), intensity-volume histogram (ivh), Gray-Level Co-occurrence Matrix (glcm), Gray-Level Run Length Matrix (glrlm), Gray-Level Size Zone Matrix (glszm), Gray-Level Distance Zone Matrix (gldzm), Neighboring Gray-Tone Difference Matrix (ngtdm), Neighboring Gray-Level Dependence Matrix (ngldm), and moment-invariant (mi) features.
+        │   │   - Added dimensional control with `dimensions` parameter, supporting first-order (1st), 2D slice-based (2D), 2.5D aggregated (2_5D), and fully volumetric 3D (3D) feature extraction strategies.
+        │   │   - Integrated deep learning feature extraction with `extraction_mode="deep_feature"` supporting pre-trained models including ResNet50, VGG16, and DenseNet121 for advanced feature representation.
+        │   │   - Implemented callback function system (`callback_fn`) for real-time progress tracking and external notification platform integration, receiving parameters: flag ("START"|"END"), image_id (str), roi_name (str).
+        │   │   - Enhanced performance through optimized OOP architecture with improved RAM management and CPU-efficient parallel processing for large-scale batch operations.
+        │   │   - Developed multi-level reporting system with `report` parameter offering "all" (full details), "info" (essential information), "warning" (warnings only), "error" (errors only), and "none" (no reporting) options.
+        │   │   - Resolved stability issues and enhanced error handling across the feature extraction pipeline.
+        │   │   - Improved documentation with comprehensive examples demonstrating selective feature extraction combinations and deep learning integration workflows.
+        │   │
         v1
         ├── v1.0
         │   ├── v1.0.2 - 2025-08-20
