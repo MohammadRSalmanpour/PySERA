@@ -10,6 +10,8 @@ Each version entry documents new features, optimizations, supported formats, com
         
         v2
         ├── v2.0
+        ├── ├── v2.0.2 - 2025-10-20
+        │   │   - Bug fix (configuration)
         ├── ├── v2.0.1 - 2025-10-20
         │   │   - remove additional packages
         │   ├── v2.0.0 - 2025-10-19
