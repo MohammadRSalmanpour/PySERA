@@ -605,7 +605,7 @@ This study was supported by:
 
 - [🔬 **Qu**antitative **R**adiomolecular **I**maging and **T**herapy (Qurit) Lab, University of British Columbia, Vancouver, BC, Canada](https://www.qurit.ca)  
 - [🏥 BC Cancer Research Institute, Department of Basic and Translational Research, Vancouver, BC, Canada](https://www.bccrc.ca/)  
-- [💻 **Vir**tual **Collaboration (VirCollab) Group, Vancouver, BC, Canada](https://www.vircollab.com)  
+- [💻 **Vir**tual **Collab**oration (VirCollab) Group, Vancouver, BC, Canada](https://www.vircollab.com)  
 - [🏭 **Tec**hnological **Vi**rtual **Co**llaboration **Corp**oration (TECVICO Corp.), Vancouver, BC, Canada](https://www.tecvico.com)  
 We gratefully acknowledge funding from the💰 Natural Sciences and Engineering Research Council of Canada (**NSERC**) Idea to Innovation [**I2I**] Grant **GR034192**.
 ---
