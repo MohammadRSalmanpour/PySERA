@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Development Status](https://img.shields.io/badge/status-stable-green.svg)](https://pypi.org/project/pysera/)
 
-**PySERA** (Python-based Standardized Extraction for Radiomics Analysis), published in "([https://img.shields.io/badge/license-MIT-green.svg](https://pypi.org/project/pysera/))](PySERA)"  is a comprehensive Python library for radiomics feature extraction from medical imaging data. It provides a **simple, single-function API** with built-in multiprocessing support, comprehensive report capabilities, and optimized performance through OOP architecture, RAM optimization, and CPU-efficient parallel processing. PySERA supports both **traditional handcrafted radiomics** (557 IBSI-compliant features) and **deep learning-based feature extraction** using pre-trained models like ResNet50, VGG16, and DenseNet121.
+**PySERA** (Python-based Standardized Extraction for Radiomics Analysis), published in "([PySERA](https://pypi.org/project/pysera/))"  is a comprehensive Python library for radiomics feature extraction from medical imaging data. It provides a **simple, single-function API** with built-in multiprocessing support, comprehensive report capabilities, and optimized performance through OOP architecture, RAM optimization, and CPU-efficient parallel processing. PySERA supports both **traditional handcrafted radiomics** (557 IBSI-compliant features) and **deep learning-based feature extraction** using pre-trained models like ResNet50, VGG16, and DenseNet121.
 
 ## 🔍 Table of Contents
 - [🧩IBSI (Image Biomarker Standardisation Initiative) Standardization-1.0](#IBSI-Standardization)
