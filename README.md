@@ -23,7 +23,7 @@
 
 - [📂Data Structure Requirements](#data-structure-requirements)
 - [📋PySERA Parameters Reference](#pysera-parameters-reference)
-- [📊Parameter Compatibility](#parameter-compatibility)
+- [📊Common Parameters](#common-parameters)
 - [📚API Reference](#api-reference)
 - [📊Output Structure](#output-structure)
 - [🔢Feature Extraction Modes](#feature-extraction-modes)
@@ -434,9 +434,9 @@ For batch processing or multi-DICOM inputs, the folder structure for images and 
 | **radiomics_IVH_DiscCont**  | int    | 1                      | Defines IVH continuity: {0: Discrete (CT), 1: Continuous (CT, PET; for FBS)}.                                  |
 | **radiomics_IVH_binSize**   | float    | 2.0                    | Sets the bin size for the IVH in applicable configurations (FBN with setting 1, or when IVH_DiscCont is enabled).                                                   |
 
-## 📊Parameter Compatibility
+## 📊Common Parameters
 
-Parameter compatibility across different extraction modes.
+Common parameters across different extraction modes for handcrafted or deep radiomics features.
 
 | Parameter | Handcrafted Feature Mode | Deep Learning Feature Mode |
 |-----------|-------------------------|---------------------------|
