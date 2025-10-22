@@ -660,6 +660,11 @@ class RadiomicsProcessor:
             # Always keep PatientID (use the first one)
             agg_result = {"PatientID": df_group["PatientID"].iloc[0]}
 
+            # If per_region mode: add the label name (ROI)
+            if mode == "per_region":
+                roi_name = extract_roi_group(df_group["ROI"].iloc[0])
+                agg_result["ROI"] = roi_name
+
             if self.extraction_mode == "deep_feature":
                 # Simple mean across all features
                 for col in df_group.columns:
@@ -685,13 +690,11 @@ class RadiomicsProcessor:
                     continue
 
                 if col in AGGREGATED_FEATURES_BLACK_LIST:
-                    # Use the first available value (not max)
                     first_valid_idx = np.where(~np.isnan(values))[0]
                     agg_result[col] = (
                         values[first_valid_idx[0]] if len(first_valid_idx) > 0 else np.nan
                     )
                 elif col in AGGREGATED_FEATURES_WHITE_LIST:
-                    # Weighted average (ignore NaNs properly)
                     valid_mask = ~np.isnan(values)
                     if valid_mask.any():
                         weights = volumes[valid_mask]
@@ -700,7 +703,6 @@ class RadiomicsProcessor:
                     else:
                         agg_result[col] = np.nan
                 else:
-                    # Sum (ignoring NaNs)
                     agg_result[col] = np.nansum(values)
 
             return pd.Series(agg_result)
@@ -711,6 +713,12 @@ class RadiomicsProcessor:
             .apply(aggregate_group, include_groups=False)
             .reset_index(drop=True)
         )
+
+        # === Ensure ROI column is right after PatientID ===
+        if mode == "per_region" and "ROI" in aggregated_df.columns:
+            cols = aggregated_df.columns.tolist()
+            cols.insert(cols.index("PatientID") + 1, cols.pop(cols.index("ROI")))
+            aggregated_df = aggregated_df[cols]
 
         # === Save results ===
         with pd.ExcelWriter(output_path, engine="openpyxl") as writer:

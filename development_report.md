@@ -10,6 +10,8 @@ Each version entry documents new features, optimizations, supported formats, com
         
         v2
         ├── v2.1
+        │   ├── v2.1.1 - 2025-10-22
+        │   │   - Bug fix
         ├── ├── v2.1.0 - 2025-10-22
         │   │   - Bug fix (configuration)
         │   │   - add aggregation_lesion parameter for aggregating radiomics features

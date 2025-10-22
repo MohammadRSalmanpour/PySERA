@@ -23,6 +23,7 @@
 
 - [📂Data Structure Requirements](#data-structure-requirements)
 - [📋PySERA Parameters Reference](#pysera-parameters-reference)
+- [📊Parameter Compatibility](#parameter-compatibility)
 - [📚API Reference](#api-reference)
 - [📊Output Structure](#output-structure)
 - [🔢Feature Extraction Modes](#feature-extraction-modes)
@@ -275,16 +276,16 @@ If you just want to run the CLI without installing the library into Python,the s
 ```bash
 # Process single files
 python radiomics_standalone.py \
-    --image_input image.nii.gz \
-    --mask_input mask.nii.gz \
+    --image-input image.nii.gz \
+    --mask-input mask.nii.gz \
     --output ./results
 
 # Batch processing (folders)
 python radiomics_standalone.py \
-    --image_input ./images \
-    --mask_input ./masks \
+    --image-input ./images \
+    --mask-input ./masks \
     --output ./results \
-    --num_workers 4
+    --num-workers 4
 ```
 
 
@@ -416,8 +417,8 @@ For batch processing or multi-DICOM inputs, the folder structure for images and 
 | **radiomics_DataType**      | str    |  `"OTHER"`                 | Image modality type (CT / PET / MRI / OTHER).                               |
 | **radiomics_DiscType**      | str    | `"FBS"`                 | Specifies the discretization type used for gray-level calculation — either "FBN" (fixed bin numbers) or "FBS" (fixed bin size or fixed bin width). |
 | **radiomics_isScale**       | int    | 0                      | Determines whether image resampling is performed. Set to 1 to enable resampling or 0 to retain the original voxel dimensions.              |
-| **radiomics_VoxInterp**     | str    | `"Nearest"`              | Defines the interpolation type used for image resampling. Accepted values include `"Nearest"`, `"linear"`, `"bilinear"`, `"trilinear"`, `"tricubic-spline"`, `"None"`.                |
-| **radiomics_ROIInterp**     | str    | `"Nearest"`              | Specifies the interpolation type for ROI resampling (`"Nearest"`, `"linear"`, `"bilinear"`, `"trilinear"`, `"tricubic-spline"`, `"None"`.)                                       |
+| **radiomics_VoxInterp**     | str    | `"Nearest"`              | Defines the interpolation type used for image resampling. Accepted values include `"Nearest"`, `"linear"`, `"bilinear"`, `"trilinear"`, `"tricubic-spline"`, `"cubic"`, `"bspline"`, `"None"`.                |
+| **radiomics_ROIInterp**     | str    | `"Nearest"`              | Specifies the interpolation type for ROI resampling (`"Nearest"`, `"linear"`, `"bilinear"`, `"trilinear"`, `"tricubic-spline"`, `"cubic"`, `"bspline"`, `"None"`.)                                       |
 | **radiomics_isotVoxSize**   | int    | 2                      | Sets the new isotropic voxel size for 3D resampling, applied equally to the X, Y, and Z dimensions.                               |
 | **radiomics_isotVoxSize2D** | int    | 2                      | Defines the voxel size for resampling in 2D mode, keeping the Z dimension unchanged while rescaling X and Y.                                |
 | **radiomics_isIsot2D**      | int    | 0                      | Indicates whether to resample to isotropic 2D voxels (1) or isotropic 3D voxels (0). Applicable mainly for first-order features, as higher-order 2D features always use the original slice thickness.                           |
@@ -433,7 +434,32 @@ For batch processing or multi-DICOM inputs, the folder structure for images and 
 | **radiomics_IVH_DiscCont**  | int    | 1                      | Defines IVH continuity: {0: Discrete (CT), 1: Continuous (CT, PET; for FBS)}.                                  |
 | **radiomics_IVH_binSize**   | float    | 2.0                    | Sets the bin size for the IVH in applicable configurations (FBN with setting 1, or when IVH_DiscCont is enabled).                                                   |
 
+## 📊Parameter Compatibility
 
+Parameter compatibility across different extraction modes.
+
+| Parameter | Handcrafted Feature Mode | Deep Learning Feature Mode |
+|-----------|-------------------------|---------------------------|
+| **image_input** | ✓ | ✓ |
+| **mask_input** | ✓ | ✓ |
+| **output_path** | ✓ | ✓ |
+| **num_workers** | ✓ | ✓ |
+| **apply_preprocessing** | ✓ | ✓ |
+| **enable_parallelism** | ✓ | ✓ |
+| **min_roi_volume** | ✓ | ✓ |
+| **bin_size** | ✓ | ✕ |
+| **roi_selection_mode** | ✓ | ✓ |
+| **roi_num** | ✓ | ✓ |
+| **feature_value_mode** | ✓ | ✕ |
+| **categories** | ✓ | ✕ |
+| **dimensions** | ✓ | ✕ |
+| **aggregation_lesion** | ✓ | ✓ |
+| **callback_fn** | ✓ | ✓ |
+| **extraction_mode** | ✓ | ✓ |
+| **deep_learning_model** | ✕ | ✓ |
+| **temporary_files_path** | ✓ | ✓ |
+| **report** | ✓ | ✓ |
+| **IBSI_based_parameters** | ✓ | ✕ |
 
 ## 📚API Reference
 
@@ -539,6 +565,8 @@ For detailed release notes, explanations of updates, and technical changes, plea
 
     v2
     ├── v2.1
+    │   ├── v2.1.1 - 2025-10-22
+    │   │   - Bug fix
     │   ├── v2.1.0 - 2025-10-22
     │   │   - Bug fix (configuration)
     │   │   - add aggregation_lesion parameter for aggregating radiomics features
