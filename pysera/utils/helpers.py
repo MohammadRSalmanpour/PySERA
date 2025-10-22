@@ -531,7 +531,6 @@ def merge_cli_overrides(args, IBSI_based_parameters):
         'radiomics_IVH_Type': args.ivh_type,
         'radiomics_IVH_DiscCont': args.ivh_disc_cont,
         'radiomics_IVH_binSize': args.ivh_bin_size,
-        'radiomics_isROIsCombined': args.is_rois_combined,
     }
 
     cli_overrides = {k: v for k, v in cli_overrides.items() if v is not None}

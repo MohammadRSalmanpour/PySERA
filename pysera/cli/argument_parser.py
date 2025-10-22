@@ -226,10 +226,6 @@ def _add_optional_arguments(parser: argparse.ArgumentParser) -> None:
                         default=DEFAULT_RADIOICS_PARAMS["radiomics_IVH_binSize"],
                         help='radiomics_IVH_binSize (float)')
 
-    parser.add_argument('--is-rois-combined', dest='is_rois_combined', type=int, choices=[0, 1],
-                        default=DEFAULT_RADIOICS_PARAMS["radiomics_isROIsCombined"],
-                        help='radiomics_isROIsCombined (0 or 1)')
-
 
 def _format_feature_modes_help() -> str:
     help_parts = []
