@@ -253,14 +253,18 @@ class VolumePreparationPipeline:
 
         # Outlier removal (3σ over valid voxels only)
         if bool(self._get("remove_outliers")):
-            mu = np.nanmean(inten)
-            sd = np.nanstd(inten)
-            if np.isfinite(sd) and sd > 0.0:
-                low = mu - 3.0 * sd
-                high = mu + 3.0 * sd
-                out = (inten < low) | (inten > high)
-                inten[out] = np.nan
-
+            valid = np.isfinite(inten)
+            if not np.any(valid):
+                self.log.warning("No valid voxels found during outlier removal; skipping 3σ filtering.")
+            else:
+                mu = np.nanmean(inten)
+                sd = np.nanstd(inten)
+                if np.isfinite(sd) and sd > 0.0:
+                    low = mu - 3.0 * sd
+                    high = mu + 3.0 * sd
+                    out = (inten < low) | (inten > high)
+                    inten[out] = np.nan
+        
         # Optional rounding (e.g., CT integer intensities)
         if bool(self._get("apply_rounding")):
             np.rint(inten, out=inten)

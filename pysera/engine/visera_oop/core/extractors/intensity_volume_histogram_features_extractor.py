@@ -198,16 +198,18 @@ class IntensityVolumeHistogramExtractor(BaseFeatureExtractor):
         fractional_volume: np.ndarray = self._ivh_cache[roi_index]["frac_volume"]
         intensity_bins: np.ndarray = self._ivh_cache[roi_index]["bins"]
 
-        matching_indices: np.ndarray = np.where(np.less_equal(fractional_volume, target_vf))[0]
+        matching_indices: np.ndarray = np.squeeze(np.where(np.less_equal(fractional_volume, target_vf)))
 
         if matching_indices.size == 0:
             if self.feature_value_mode == "APPROXIMATE_VALUE":
-                np.append(matching_indices, np.finfo(np.float64).eps)
+                fractional_volume_synth = np.append(fractional_volume, np.finfo(np.float64).eps)
+                matching_indices: np.ndarray = np.where(np.less_equal(fractional_volume_synth, target_vf))[0]
+                intensity_bins: np.ndarray = np.append(intensity_bins, int(intensity_bins[-1]+1))
             else:       # REAL_VALUE
                 logger.warning(f"Small ROI causing empty fractional volume.")
                 return np.nan
 
-        return float(intensity_bins[int(matching_indices[0])])
+        return float(intensity_bins[int(np.atleast_1d(matching_indices)[0])])
 
     # -------- Feature getters --------
     def get_ivh_v10(self, roi_index: int) -> float:

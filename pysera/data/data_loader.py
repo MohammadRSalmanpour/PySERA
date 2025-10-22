@@ -46,8 +46,8 @@ class DataLoader:
 
     def convert(
             self,
-            image_path: str,
-            mask_path: str,
+            image_input: str | np.ndarray,
+            mask_input: str | np.ndarray,
     ) -> Tuple[
         Optional[np.ndarray],
         Optional[Dict],
@@ -61,21 +61,24 @@ class DataLoader:
         - Applies optional preprocessing
         - Returns processed arrays and metadata
         """
-        img_fmt = detect_file_format(image_path)
-        mask_fmt = detect_file_format(mask_path)
+        if isinstance(image_input, np.ndarray) and isinstance(mask_input, np.ndarray):
+            return image_input, None, self.filter_rois(mask_array=mask_input), None
+
+        img_fmt = detect_file_format(image_input)
+        mask_fmt = detect_file_format(mask_input)
 
         logger.info(f"Image format: {img_fmt}, Mask format: {mask_fmt}")
 
-        img_arr, img_meta, img_sitk = load_image(image_path, img_fmt)
+        img_arr, img_meta, img_sitk = load_image(image_input, img_fmt)
         if img_arr is None:
             return None, None, None, None
 
         mask_data, mask_meta, combined_mask = self.load_mask(
-            mask_path,
+            mask_input,
             mask_fmt,
             img_arr.shape,
             img_sitk,
-            image_path
+            image_input
         )
 
         if mask_data is None:

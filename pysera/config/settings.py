@@ -34,8 +34,8 @@ DEFAULT_RADIOICS_PARAMS = {
     'radiomics_roi_selection_mode': "per_Img",
     'radiomics_feature_value_mode': "REAL_VALUE",
     'radiomics_isROIsCombined': 0,
-    'radiomics_categories': "all",
-    'radiomics_dimensions': "all",
+    'radiomics_categories': "diag,morph,glcm,glrlm,glszm,ngtdm,ngldm",
+    'radiomics_dimensions': "1st,2d",
     'radiomics_destination_folder': "./output_result",
     'radiomics_temporary_files_path': "./temporary_files_path",
     'radiomics_report': "all",
@@ -59,6 +59,9 @@ DEFAULT_EXTRACTION_MODES = "handcrafted_feature"
 # deep learning model
 DEEP_LEARNING_MODELS = ["resnet50", "vgg16", "densenet121"]
 DEFAULT_DEEP_LEARNING_MODELS = "resnet50"
+
+# aggregation lesion default value
+DEFAULT_AGGREGATION_LESION = False
 
 # Intensity preprocessing thresholds
 INTENSITY_PERCENTILE_LOW = 1
@@ -89,6 +92,41 @@ ROI_SELECTION_MODES = {
 # Valid ROI number range
 MIN_ROI_NUM = 1
 MAX_ROI_NUM = 1000
+
+# features should be or should not be aggregated
+AGGREGATED_FEATURES_BLACK_LIST = [
+        "img_dim_x_init_img", "img_dim_y_init_img", "img_dim_z_init_img",
+        "vox_dim_x_init_img", "vox_dim_y_init_img", "vox_dim_z_init_img",
+        "mean_int_init_img", "min_int_init_img", "max_int_init_img",
+        "img_dim_x_interp_img", "img_dim_y_interp_img", "img_dim_z_interp_img",
+        "vox_dim_x_interp_img", "vox_dim_y_interp_img", "vox_dim_z_interp_img",
+        "mean_int_interp_img", "min_int_interp_img", "max_int_interp_img",
+        "int_mask_dim_x_init_roi", "int_mask_dim_y_init_roi", "int_mask_dim_z_init_roi",
+        "int_mask_bb_dim_x_init_roi", "int_mask_bb_dim_y_init_roi", "int_mask_bb_dim_z_init_roi",
+        "morph_mask_bb_dim_x_init_roi", "morph_mask_bb_dim_y_init_roi", "morph_mask_bb_dim_z_init_roi",
+        "int_mask_vox_count_init_roi", "morph_mask_vox_count_init_roi",
+        "int_mask_mean_int_init_roi", "int_mask_min_int_init_roi", "int_mask_max_int_init_roi",
+        "int_mask_dim_x_interp_roi", "int_mask_dim_y_interp_roi", "int_mask_dim_z_interp_roi",
+        "int_mask_bb_dim_x_interp_roi", "int_mask_bb_dim_y_interp_roi", "int_mask_bb_dim_z_interp_roi",
+        "morph_mask_bb_dim_x_interp_roi", "morph_mask_bb_dim_y_interp_roi", "morph_mask_bb_dim_z_interp_roi",
+        "int_mask_vox_count_interp_roi", "morph_mask_vox_count_interp_roi",
+        "int_mask_mean_int_interp_roi", "int_mask_min_int_interp_roi", "int_mask_max_int_interp_roi",
+        "int_mask_dim_x_reseg_roi", "int_mask_dim_y_reseg_roi", "int_mask_dim_z_reseg_roi",
+        "int_mask_bb_dim_x_reseg_roi", "int_mask_bb_dim_y_reseg_roi", "int_mask_bb_dim_z_reseg_roi",
+        "morph_mask_bb_dim_x_reseg_roi", "morph_mask_bb_dim_y_reseg_roi", "morph_mask_bb_dim_z_reseg_roi",
+        "int_mask_vox_count_reseg_roi", "morph_mask_vox_count_reseg_roi",
+        "int_mask_mean_int_reseg_roi", "int_mask_min_int_reseg_roi", "int_mask_max_int_reseg_roi",
+    ]
+
+AGGREGATED_FEATURES_WHITE_LIST = [
+            "morph_volume_mesh",
+            "morph_volume_count",
+            "morph_surface_area",
+            "morph_max_3d_diameter",
+            "morph_major_axis_length",
+            "morph_minor_axis_length",
+            "morph_least_axis_length",
+        ]
 
 # =============================================================================
 # FILE FORMATS AND EXTENSIONS

@@ -141,6 +141,11 @@ def _add_optional_arguments(parser: argparse.ArgumentParser) -> None:
         help=f'selection of deep learning model to use (default: {DEFAULT_DEEP_LEARNING_MODELS})'
     )
     parser.add_argument(
+        '--aggregation-lesion',
+        action='store_true',
+        help=f'enable aggregation lesion of ROIs'
+    )
+    parser.add_argument(
         '--optional-params',
         type=str,
         default=None,

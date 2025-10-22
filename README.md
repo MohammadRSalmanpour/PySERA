@@ -4,20 +4,23 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Development Status](https://img.shields.io/badge/status-stable-green.svg)](https://pypi.org/project/pysera/)
 
-**PySERA** (Python-based Standardized Extraction for Radiomics Analysis) is a comprehensive Python library for radiomics feature extraction from medical imaging data. It provides a **simple, single-function API** with built-in multiprocessing support, comprehensive report capabilities, and optimized performance through OOP architecture, RAM optimization, and CPU-efficient parallel processing.
+**PySERA** (Python-based Standardized Extraction for Radiomics Analysis) is a comprehensive Python library for radiomics feature extraction from medical imaging data. It provides a **simple, single-function API** with built-in multiprocessing support, comprehensive report capabilities, and optimized performance through OOP architecture, RAM optimization, and CPU-efficient parallel processing. PySERA supports both **traditional handcrafted radiomics** (557 IBSI-compliant features) and **deep learning-based feature extraction** using pre-trained models like ResNet50, VGG16, and DenseNet121.
 
 ## 🔍 Table of Contents
 - [🧩IBSI (Image Biomarker Standardisation Initiative) Standardization-1.0](#IBSI-Standardization)
 - [🛠️Key Features](#key-features)
-- [📥Installation](#installation)
-  - [🌐GitHub Installation](#github-installation)
-  - [💻Python Script - Command Line Interface (CLI)](#python-script---command-line-interface-cli)
-  - [📦Library Installation via pip](#library-installation-via-pip)
+- [🤖Deep Learning Feature Extraction](#deep-learning-feature-extraction)
 - [📚Library Usage](#library-usage)
   - [📂Single File Processing](#single-file-processing)
   - [🧠In-Memory Array Processing](#in-memory-array-processing)
   - [⚡Parallel Batch Processing](#parallel-batch-processing)
+  - [🤖Deep Features Extraction](#deep-features-extraction)
   - [🔧Advanced Configuration](#advanced-configuration)
+- [📥Installation](#installation)
+  - [🌐GitHub Installation](#github-installation)
+  - [💻Python Script - Command Line Interface (CLI)](#python-script---command-line-interface-cli)
+  - [📦Library Installation via pip](#library-installation-via-pip)
+
 - [📂Data Structure Requirements](#data-structure-requirements)
 - [📋PySERA Parameters Reference](#pysera-parameters-reference)
 - [📚API Reference](#api-reference)
@@ -59,74 +62,18 @@ That's it! 🎉 All the complexity of multiprocessing, error & warning reports, 
 - **Comprehensive Report**: Excel export functionality for detailed analysis
 - **Extensive Features**: 557 IBSI-compliant radiomics features across multiple categories (morphological, statistical, texture, etc.) and dimensions (1st, 2D, 2.5D, 3D)
 - **Medical Image Optimized**: Designed for CT, MRI, PET, SPECT, X-Ray, Ultrasound, and other medical imaging modalities.
+- **Dual Extraction Modes**: Both traditional IBSI-compliant radiomics (557 features) and deep learning features (ResNet50, VGG16, DenseNet121)
 
-## 📥Installation
+## 🤖Deep Learning Feature Extraction
 
-PySERA can be installed as a Python library for integration into your projects or as a standalone script for command-line usage. It supports Windows, macOS, and Linux. Below are the installation options.
+PySERA supports advanced **deep learning-based** feature extraction alongside traditional radiomics, providing multiple pre-trained models for comprehensive feature representation. When using **extraction_mode="deep_feature"**, the categories parameter is automatically handled by the **deep learning model**. Deep features are extracted in 3D dimension by default for comprehensive volumetric analysis. All deep learning features are extracted specifically from the ROI regions defined by the mask and model outputs provide complementary feature representations to traditional radiomics.
 
-### 🌐GitHub Installation 
+**Available Deep Learning Models**:
 
-For users who want to develop with the source code or run PySERA as a standalone command-line tool (CLI) without installing it as a Python package, you can clone the repository from GitHub.
-This gives you access to the standalone script radiomics_standalone.py and all example files. After installing the dependencies, you can run the script directly (see the [💻Python Script - Command Line Interface (CLI)](#python-script---command-line-interface-cli) section).
-
-```bash
-# Clone the repository
-git clone https://github.com/MohammadRSalmanpour/PySERA.git
-cd pysera
-```
-### macOS/Linux Installation
-#### Quick Setup (Recommended):
-
-```bash
-# Quick setup (creates a virtual environment and installs everything)
-./dev_setup.sh
-```
-#### Manual Setup:
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -e .
-
-```
-### Windows Setup
-#### Quick Setup (Recommended):
-
-```bash
-# Quick setup
-./dev_setup.sh
-```
-
-#### Manual Setup
-
-```bash
-
-python -m venv venv
-.\venv\Scripts\activate
-cd PySERA
-pip install -r requirements.txt
-
-```
-
-### 💻Python Script - Command Line Interface (CLI)
-
-If you just want to run the CLI without installing the library into Python,the standalone script 'radiomics_standalone.py' provides a command-line interface for radiomics processing :
-
-```bash
-# Process single files
-python radiomics_standalone.py \
-    --image_input image.nii.gz \
-    --mask_input mask.nii.gz \
-    --output ./results
-
-# Batch processing (folders)
-python radiomics_standalone.py \
-    --image_input ./images \
-    --mask_input ./masks \
-    --output ./results \
-    --num_workers 4
-```
-
+- **`resnet50`** - 2047 features: Residual Network with 50 layers, balanced performance and accuracy
+- **`vgg16`** - 511 features: Visual Geometry Group with 16 layers, strong hierarchical feature representation  
+- **`densenet121`** - 1023 features: Dense Convolutional Network with 121 layers, efficient feature reuse
+- 
 ### 📦Library Installation via pip
 
 Install the PySERA library directly from PyPI:
@@ -200,6 +147,38 @@ print(f"Processed {result['processed_files']} files")
 print(f"Total processing time: {result['processing_time']:.2f} seconds")
 ```
 
+### 🤖Deep Features Extraction
+
+
+```python
+import pysera
+
+# Process multiple files with 4 CPU cores
+result = pysera.process_batch(
+    image_input="./patient_scans",
+    mask_input="./patient_masks", 
+    output_path="./results",
+
+    # Deep learning configuration
+    extraction_mode="deep_feature",      # Enable deep learning features
+    deep_learning_model="resnet50",      # Use ResNet50 model (2047 features)
+
+    roi_num=5,                           # Number of ROIs to process
+    roi_selection_mode="per_Img",        # ROI selection strategy
+
+
+    # Logging options
+    report="warning"            # Report detail level: "all" (full processing details), 
+                              # "info" (essential information), "warning" (warnings only), 
+                              # "error" (errors only), "none" (no reporting). Default: "all"
+
+)
+
+print(f"Processed {result['processed_files']} files")
+print(f"Total processing time: {result['processing_time']:.2f} seconds")
+```
+
+
 ## 🔧Advanced Configuration
 
 ```python
@@ -219,10 +198,10 @@ result = pysera.process_batch(
     categories="glcm, glrlm, glszm",  # Extract specific texture feature categories
     dimensions="1st, 2_5d, 3d",       # Extract features in 1st order, 2.5D and 3D dimensions
     # Alternative examples for categories and dimensions:
-    # categories="all",                 # Extract all 557 features (default)
+    # categories="all",                 # Extract all 557 features
     # categories="stat, morph, glcm",   # Statistical, morphological and GLCM features
     # dimensions="2D",                  # Extract only 2D features
-    # dimensions="all",                 # Extract features in all dimensions (default)
+    # dimensions="all",                 # Extract features in all dimensions
     
     bin_size=25,               # Texture analysis bin size
     roi_num=2,                # Number of ROIs to process
@@ -246,6 +225,68 @@ result = pysera.process_batch(
                               # "error" (errors only), "none" (no reporting). Default: "all"
 )
 ```
+
+## 📥Installation
+
+PySERA can be installed as a Python library for integration into your projects or as a standalone script for command-line usage. It supports Windows, macOS, and Linux. Below are the installation options.
+
+### 🌐GitHub Installation 
+
+For users who want to develop with the source code or run PySERA as a standalone command-line tool (CLI) without installing it as a Python package, you can clone the repository from GitHub.
+This gives you access to the standalone script radiomics_standalone.py and all example files. After installing the dependencies, you can run the script directly (see the [💻Python Script - Command Line Interface (CLI)](#python-script---command-line-interface-cli) section).
+
+```bash
+# Clone the repository
+git clone https://github.com/MohammadRSalmanpour/PySERA.git
+cd pysera
+```
+### macOS/Linux Installation
+#### Quick Setup (Recommended):
+
+```bash
+# Quick setup (creates a virtual environment and installs everything)
+./dev_setup.sh
+```
+#### Manual Setup:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -e .
+
+```
+### Windows Setup
+
+#### Manual Setup
+
+```bash
+
+python -m venv venv
+.\venv\Scripts\activate
+cd PySERA
+pip install -r requirements.txt
+
+```
+
+### 💻Python Script - Command Line Interface (CLI)
+
+If you just want to run the CLI without installing the library into Python,the standalone script 'radiomics_standalone.py' provides a command-line interface for radiomics processing :
+
+```bash
+# Process single files
+python radiomics_standalone.py \
+    --image_input image.nii.gz \
+    --mask_input mask.nii.gz \
+    --output ./results
+
+# Batch processing (folders)
+python radiomics_standalone.py \
+    --image_input ./images \
+    --mask_input ./masks \
+    --output ./results \
+    --num_workers 4
+```
+
 
 
 ## 📂Data Structure Requirements
@@ -343,27 +384,28 @@ For batch processing or multi-DICOM inputs, the folder structure for images and 
 ### 📋PySERA Parameters Reference
 
 
-| Parameter            | Type        | Default         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-|----------------------|-------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **image_input**       | str / .npy  | Required        | Path to the image file, directory, or NumPy file containing the image data.                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| **mask_input**        | str / .npy  | Required        | Path to the mask file, directory, or NumPy file defining the regions of interest.                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| **output_path**      | str         |  `"./output_result"` | Directory where the processing results will be saved.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **num_workers**      | str         | `"auto"`            | Number of CPU cores to use for processing. If auto, uses all available cores.                                                                                                                                                                                                                                                                                                                                                                                                                        
-|  **apply_preprocessing** | bool        | False           | If True, rounds mask array values to nearest integers. If False, uses raw mask values without rounding. |                                                                                                                                                                                                                                                                                                 
-| **enable_parallelism**  | bool        | True            | If True, enables parallel processing for the analysis.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| **min_roi_volume**      | int         | 10              | Minimum volume threshold for regions of interest (ROI).                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| **bin_size**            | int         | 25              | Bin size used for texture analysis.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| **roi_selection_mode**  | str         | `"per_Img"`          | **ROI selection strategy:**<br>- **"per_Img"** (default): Selects the top `roi_num` ROIs per image based on size, regardless of label category.<br>  • Suitable for single or dominant lesions per scan.<br>  • Preserves original spatial relationships.<br>- **"per_region"**: Selects up to `roi_num` ROIs separately for each label category, ensuring balanced representation across regions.<br>  • Useful in multi-lesion, multi-label, or longitudinal studies.<br>  • Requires consistent ROI labeling across datasets.<br> |
-| **roi_num**             | int         | 10              | Number of ROIs to process.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| **feature_value_mode**  | str         | `"REAL_VALUE"`     | Strategy for handling NaN values. Options:`"APPROXIMATE_VALUE"` or `"REAL_VALUE"`. **"APPROXIMATE_VALUE"**: Replaces NaN features with substitutes (e.g., very small constants like `1e-30` or synthetic masks) to maintain pipeline continuity.<br>- **"REAL_VALUE"** (default): Keeps NaN values whenever feature extraction fails (e.g., small ROI, numerical instability), preserving the raw outcome without substitution.<br>                                                                                                     |
-| **categories**          | str         | `"all"`            | Feature categories to extract. Choices: "diag" (diagnostics), "morph" (morphological/shape), "ip" (intensity peak), "stat" (first-order statistical), "ih" (intensity histogram), "ivh" (intensity-volume histogram), "glcm" (Gray-Level Co-occurrence Matrix), "glrlm" (Gray-Level Run Length Matrix), "glszm" (Gray-Level Size Zone Matrix), "gldzm" (Gray-Level Distance Zone Matrix), "ngtdm" (Neighboring Gray-Tone Difference Matrix), "ngldm" (Neighboring Gray-Level Dependence Matrix), "mi" (moment-invariant). Example: "glcm, glrlm". Default "all" extracts all 557 features. |
-| **dimensions**          | str         | `"all"`           | Spatial dimensions for feature extraction. Choices: "1st" (first-order intensity-based features), "2D" (features extracted per 2D slice), "2_5D" (features aggregated across slices with limited inter-slice context), "3D" (fully volumetric features across entire ROI). Example: "1st, 2_5d, 3d". Combine with categories for specific feature sets. |
-| **callback_fn**          | function    | None            | Callback function for external notifications. Receives parameters: flag (`"START"`\|`"END"`), image_id (str), roi_name (str). Useful for integration with notification platforms. |
-| **extraction_mode**      | str         | `"handcrafted_feature"` | Feature extraction mode. Options: `"handcrafted_feature"` (traditional radiomics), `"deep_feature"` (deep learning features).  |
-| **deep_learning_model**  | str         | `"resnet50"`    | Deep learning model for feature extraction when extraction_mode="deep_feature". Options:`"resnet50"`, `"vgg16"`, `"densenet121". |
-| **temporary_files_path** | str         |`"./temporary_files_path"`  | Directory for caching intermediate NumPy masks during DICOM-RT (RTSTRUCT) processing. Prevents memory spikes by writing per-ROI masks to disk and streaming them on demand. Automatically created if missing; contents are automatically cleared after processing. Not used for other image formats. |
-| **report**              | str         | `"all"`           | Report detail level: "all" (full processing details), "info" (essential information), "warning" (warnings only), "error" (errors only), "none" (no reporting). Default: "all". |
-| **IBSI_based_parameters** | dict / JSON | See defaults    | Advanced configuration parameters. See the table below for detailed descriptions. |
+| Parameter            | Type        | Default                                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|----------------------|-------------|---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **image_input**       | str / .npy  | Required                                    | Path to the image file, directory, or NumPy file containing the image data.                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **mask_input**        | str / .npy  | Required                                    | Path to the mask file, directory, or NumPy file defining the regions of interest.                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| **output_path**      | str         | `"./output_result"`                         | Directory where the processing results will be saved.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| **num_workers**      | str         | `"auto"`                                    | Number of CPU cores to use for processing. If auto, uses all available cores.                                                                                                                                                                                                                                                                                                                                                                                                                        
+|  **apply_preprocessing** | bool        | False                                       | If True, rounds mask array values to nearest integers. If False, uses raw mask values without rounding. |                                                                                                                                                                                                                                                                                                 
+| **enable_parallelism**  | bool        | True                                        | If True, enables parallel processing for the analysis.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| **min_roi_volume**      | int         | 10                                          | Minimum volume threshold for regions of interest (ROI).                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| **bin_size**            | int         | 25                                          | Bin size used for texture analysis.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **roi_selection_mode**  | str         | `"per_Img"`                                 | **ROI selection strategy:**<br>- **"per_Img"** (default): Selects the top `roi_num` ROIs per image based on size, regardless of label category.<br>  • Suitable for single or dominant lesions per scan.<br>  • Preserves original spatial relationships.<br>- **"per_region"**: Selects up to `roi_num` ROIs separately for each label category, ensuring balanced representation across regions.<br>  • Useful in multi-lesion, multi-label, or longitudinal studies.<br>  • Requires consistent ROI labeling across datasets.<br> |
+| **roi_num**             | int         | 10                                          | Number of ROIs to process.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| **feature_value_mode**  | str         | `"REAL_VALUE"`                              | Strategy for handling NaN values. Options:`"APPROXIMATE_VALUE"` or `"REAL_VALUE"`. **"APPROXIMATE_VALUE"**: Replaces NaN features with substitutes (e.g., very small constants like `1e-30` or synthetic masks) to maintain pipeline continuity.<br>- **"REAL_VALUE"** (default): Keeps NaN values whenever feature extraction fails (e.g., small ROI, numerical instability), preserving the raw outcome without substitution.<br>                                                                                                     |
+| **categories**          | str         | `"diag,morph,glcm,glrlm,glszm,ngtdm,ngldm"` | Feature categories to extract. Choices: "diag" (diagnostics), "morph" (morphological/shape), "ip" (intensity peak), "stat" (first-order statistical), "ih" (intensity histogram), "ivh" (intensity-volume histogram), "glcm" (Gray-Level Co-occurrence Matrix), "glrlm" (Gray-Level Run Length Matrix), "glszm" (Gray-Level Size Zone Matrix), "gldzm" (Gray-Level Distance Zone Matrix), "ngtdm" (Neighboring Gray-Tone Difference Matrix), "ngldm" (Neighboring Gray-Level Dependence Matrix), "mi" (moment-invariant). Example: "glcm, glrlm". |
+| **dimensions**          | str         | `"1st,2d"`                                  | Spatial dimensions for feature extraction. Choices: "1st" (first-order intensity-based features), "2D" (features extracted per 2D slice), "2_5D" (features aggregated across slices with limited inter-slice context), "3D" (fully volumetric features across entire ROI). Example: "1st, 2_5d, 3d". Combine with categories for specific feature sets. |
+| **aggregation_lesion**  | bool        | False                                       | When enabled, this parameter performs lesion-level feature aggregation across ROIs belonging to the same image or anatomical region, depending on the `roi_selection_mode` setting. Specifically, if `roi_selection_mode` is set to `"per_Img"`, aggregation is performed by PatientID; if set to `"per_region"`, grouping is based on both PatientID and label ID. Feature aggregation is conducted on a per-feature basis. For the `"deep_feature"` extraction mode, all features are averaged. For morphological descriptors, including `morph_volume_mesh`, `morph_volume_count`, `morph_surface_area`, `morph_max_3d_diameter`, `morph_major_axis_length`, `morph_minor_axis_length`, and `morph_least_axis_length`, a weighted average based on `morph_volume_mesh` is applied. `Diagnostic` features are selected from the largest lesion, while all remaining features are summed across ROIs. Missing values are excluded from the aggregation process. |
+| **callback_fn**          | function    | None                                        | Callback function for external notifications. Receives parameters: flag (`"START"`\|`"END"`), image_id (str), roi_name (str). Useful for integration with notification platforms. |
+| **extraction_mode**      | str         | `"handcrafted_feature"`                     | Feature extraction mode. Options: `"handcrafted_feature"` (traditional radiomics), `"deep_feature"` (deep learning features).  |
+| **deep_learning_model**  | str         | `"resnet50"`                                | Deep learning model for feature extraction when extraction_mode="deep_feature". Options:`"resnet50"`, `"vgg16"`, `"densenet121". |
+| **temporary_files_path** | str         | `"./temporary_files_path"`                  | Directory for caching intermediate NumPy masks during DICOM-RT (RTSTRUCT) processing. Prevents memory spikes by writing per-ROI masks to disk and streaming them on demand. Automatically created if missing; contents are automatically cleared after processing. Not used for other image formats. |
+| **report**              | str         | `"all"`                                     | Report detail level: "all" (full processing details), "info" (essential information), "warning" (warnings only), "error" (errors only), "none" (no reporting). Default: "all". |
+| **IBSI_based_parameters** | dict / JSON | See defaults                                | Advanced configuration parameters. See the table below for detailed descriptions. |
 
 
 #### 🔧Advanced configuration parameters (IBSI_based_parameters)
@@ -486,16 +528,6 @@ Example use cases:
 9. **Memory Optimization**: PySERA's OOP architecture automatically manages RAM utilization during large-scale batch operations
 10. **Logging Optimization**: Use `report="info"` or `report="warning"` to reduce logging overhead in production environments while maintaining essential monitoring
 
-## 🤖 Deep Learning Feature Extraction
-
-PySERA supports advanced **deep learning-based** feature extraction alongside traditional radiomics, providing multiple pre-trained models for comprehensive feature representation. When using **extraction_mode="deep_feature"**, the categories parameter is automatically handled by the **deep learning model**. Deep features are extracted in 3D dimension by default for comprehensive volumetric analysis. All deep learning features are extracted specifically from the ROI regions defined by the mask and model outputs provide complementary feature representations to traditional radiomics.
-
-**Available Deep Learning Models**:
-
-- **`resnet50`** - 2047 features: Residual Network with 50 layers, balanced performance and accuracy
-- **`vgg16`** - 511 features: Visual Geometry Group with 16 layers, strong hierarchical feature representation  
-- **`densenet121`** - 1023 features: Dense Convolutional Network with 121 layers, efficient feature reuse
-
 ### Get Help
 
 - **Installation Issues**: See [INSTALL.md](INSTALL.md)
@@ -507,10 +539,15 @@ For detailed release notes, explanations of updates, and technical changes, plea
 👉 [Development Report](https://github.com/MohammadRSalmanpour/PySERATest/blob/main/development_report.md)
 
     v2
-    ├── v2.0
-    ├── ├── v2.0.2 - 2025-10-20
+    ├── v2.1
+    │   ├── v2.1.0 - 2025-10-22
     │   │   - Bug fix (configuration)
-    ├── ├── v2.0.1 - 2025-10-20
+    │   │   - add aggregation_lesion parameter for aggregating radiomics features
+    │   │   - update parameter default
+    ├── v2.0
+    │   ├── v2.0.2 - 2025-10-20
+    │   │   - bug fix (configuration)
+    │   ├── v2.0.1 - 2025-10-20
     │   │   - remove additional packages
     │   ├── v2.0.0 - 2025-10-19
     │   │   - ✨Major Feature Expansion, 557 IBSI-compliant radiomics features

@@ -634,10 +634,9 @@ def convert_dimensions_bit_map(dimensions: str) -> str:
     """Convert comma-separated dimension names to a binary bit map string with first and last bits always 1."""
     dim_set = {dim.strip().lower() for dim in dimensions.split(',')}
     all_dims = _load_bit_mappings("feature_dimensions_mapping")
-    all_key = DEFAULT_RADIOICS_PARAMS["radiomics_dimensions"].lower()
 
     # If 'all' is present → all bits 1
-    if all_key in dim_set:
+    if "all" in dim_set:
         return "1" * len(all_dims)
 
     # Construct middle bits only
@@ -655,10 +654,9 @@ def convert_categories_bit_map(categories: str) -> str:
     cat_set = set(cat.strip().lower() for cat in categories.split(','))
 
     all_cats = _load_bit_mappings("extractor_group_mapping")
-    all_key = DEFAULT_RADIOICS_PARAMS["radiomics_categories"].lower()
 
     # If "all" dimensions selected → all bits = 1
-    if all_key in cat_set:
+    if "all" in cat_set:
         return "1" * len(all_cats)
 
     # Build binary map efficiently

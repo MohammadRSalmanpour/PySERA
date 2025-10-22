@@ -38,6 +38,7 @@ def main() -> int:
             report=args.report,
             extraction_mode=args.extraction_mode,
             deep_learning_model=args.deep_learning_model,
+            aggregation_lesion=args.aggregation_lesion,
             IBSI_based_parameters=IBSI_based_parameters
         )
 
