@@ -33,7 +33,6 @@ DEFAULT_RADIOICS_PARAMS = {
     'radiomics_roi_num': 10,
     'radiomics_roi_selection_mode': "per_Img",
     'radiomics_feature_value_mode': "REAL_VALUE",
-    'radiomics_isROIsCombined': 0,
     'radiomics_categories': "diag,morph,glcm,glrlm,glszm,ngtdm,ngldm",
     'radiomics_dimensions': "1st,2d",
     'radiomics_destination_folder': "./output_result",

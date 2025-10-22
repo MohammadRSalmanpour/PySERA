@@ -432,7 +432,6 @@ For batch processing or multi-DICOM inputs, the folder structure for images and 
 | **radiomics_IVH_Type**      | int    | 3                      | {0: Definite (PET, CT), 1: Arbitrary (MRI, SPECT), 2: 1000 bins, 3: same discretization as histogram (CT)}.                         |
 | **radiomics_IVH_DiscCont**  | int    | 1                      | Defines IVH continuity: {0: Discrete (CT), 1: Continuous (CT, PET; for FBS)}.                                  |
 | **radiomics_IVH_binSize**   | float    | 2.0                    | Sets the bin size for the IVH in applicable configurations (FBN with setting 1, or when IVH_DiscCont is enabled).                                                   |
-| **radiomics_isROIsCombined**| int    | 0                      |Indicates whether multiple ROIs (e.g., multiple tumors) should be combined into a single region for analysis.                         |
 
 
 
