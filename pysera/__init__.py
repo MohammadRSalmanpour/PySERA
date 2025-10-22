@@ -1,5 +1,5 @@
-__version__ = "2.1.0"
-__author__ = "Mohammad R. Salmanpour, Amir Hossein Pouria"
+__version__ = "2.1.1"
+__author__ = "Dr. Salmanpour, A.H. Pouria"
 __email__ = "m.salmanpoor66@gmail.com"
 
 from typing import Any, Dict, Optional, Union, Callable
