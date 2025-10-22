@@ -12,10 +12,11 @@ import pandas as pd
 from ..config.settings import (
     DEFAULT_RADIOICS_PARAMS,
     OUTPUT_FILENAME_TEMPLATE, get_visera_pythoncode_path, get_default_output_path, DEFAULT_EXTRACTION_MODES,
-    EXTRACTION_MODES, DEEP_LEARNING_MODELS, DEFAULT_DEEP_LEARNING_MODELS
+    EXTRACTION_MODES, DEEP_LEARNING_MODELS, DEFAULT_DEEP_LEARNING_MODELS, DEFAULT_AGGREGATION_LESION,
+    AGGREGATED_FEATURES_BLACK_LIST, AGGREGATED_FEATURES_WHITE_LIST
 )
 from ..data.data_loader import find_connected_rois, DataLoader
-from ..preprocessing.data_preprocessing import apply_image_intensity_preprocessing, apply_mask_roundup
+from ..preprocessing.data_preprocessing import apply_mask_roundup
 from ..utils.helpers import (
     match_image_mask_pairs, ensure_directory_exists, find_input_files, remove_temp_file, convert_dimensions_bit_map,
     convert_categories_bit_map
@@ -116,16 +117,6 @@ def _create_results_dataframe(image_id: str, all_features: List[Dict]) -> Option
         return None
 
 
-def _finalize_results(all_results: List[pd.DataFrame], output_path: str) -> Dict[str, Any]:
-    final_df = pd.concat(all_results, ignore_index=True)
-
-    # Save results
-    with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
-        final_df.to_excel(writer, sheet_name="Radiomics_Features", index=False)
-
-    return {"out": ["Radiomics", final_df, output_path, output_path]}
-
-
 class RadiomicsProcessor:
     """A robust processor for batch radiomic feature extraction and parameter management."""
 
@@ -148,6 +139,7 @@ class RadiomicsProcessor:
             callback_fn: Optional[Callable[..., None]] = None,
             extraction_mode: str = DEFAULT_EXTRACTION_MODES,
             deep_learning_model: str = DEFAULT_DEEP_LEARNING_MODELS,
+            aggregation_lesion: bool = DEFAULT_AGGREGATION_LESION,
             IBSI_based_parameters: Optional[Dict[str, Any]] = None,
     ) -> None:
         """
@@ -160,6 +152,7 @@ class RadiomicsProcessor:
         ensure_directory_exists(self.output_path)
         self.memory_handler = memory_handler
         self.callback_fn = None
+        self.aggregation_lesion = aggregation_lesion
 
         # initiate extraction mode
         if extraction_mode is not None and extraction_mode in EXTRACTION_MODES:
@@ -288,7 +281,7 @@ class RadiomicsProcessor:
 
         # Generate output file and finalize results
         output_path = self._generate_output_file(folder_name, len(image_files))
-        saved_results = _finalize_results(results, output_path)
+        saved_results = self._finalize_results(results, output_path)
 
         # Save parameters and logs
         self.save_parameters(output_path)
@@ -357,10 +350,19 @@ class RadiomicsProcessor:
             Optional[pd.DataFrame]:
         try:
             output_folder = self.params["radiomics_destination_folder"]
-            rp = RadiomicsProcessor(output_path=output_folder, memory_handler=None)
+
+            rp = RadiomicsProcessor(
+                output_path=output_folder,
+                memory_handler=None,
+                aggregation_lesion=self.aggregation_lesion,
+                extraction_mode=self.extraction_mode
+            )
+
+            rp.deep_learning_extractor = self.deep_learning_extractor
             rp.params = self.params
             if self.callback_fn is not None:
                 rp.callback_fn = self.callback_fn
+
             return rp.process_file_pair(image_path, mask_path)
 
         except Exception as e:
@@ -394,8 +396,8 @@ class RadiomicsProcessor:
                 temporary_files_path=self.params["radiomics_temporary_files_path"],
                 apply_preprocessing=self.params["radiomics_apply_preprocessing"],
             )
-            image_array, image_metadata, mask, mask_metadata = loader.convert(image_path=image_path,
-                                                                              mask_path=mask_path)
+            image_array, image_metadata, mask, mask_metadata = loader.convert(image_input=image_path,
+                                                                              mask_input=mask_path)
             # clean loader from memory
             del loader
 
@@ -423,6 +425,14 @@ class RadiomicsProcessor:
             # processed_image = apply_image_intensity_preprocessing(image_array, mask_array)
             mask_array = apply_mask_roundup(mask_array)
 
+        loader = DataLoader(
+            roi_num=self.params["radiomics_roi_num"],
+            roi_selection_mode=self.params["radiomics_roi_selection_mode"],
+            min_roi_volume=self.params["radiomics_min_roi_volume"],
+            temporary_files_path=self.params["radiomics_temporary_files_path"],
+            apply_preprocessing=self.params["radiomics_apply_preprocessing"],
+        )
+        image_array, _, mask_array, _ = loader.convert(image_input=image_array, mask_input=mask_array)
         image_id = f"numpy_array_{datetime.now().strftime('%Y_%m_%d_%H%M%S')}"
 
         image_meta = self._make_default_array_metadata(processed_image)
@@ -436,7 +446,7 @@ class RadiomicsProcessor:
 
         output_filename = f"radiomics_features_numpy_{datetime.now().strftime('%Y_%m_%d_%H%M%S')}.xlsx"
         output_path = os.path.join(self.output_path, output_filename)
-        final = _finalize_results([df], output_path)
+        final = self._finalize_results([df], output_path)
         self.save_parameters(output_path)
         if self.memory_handler:
             logs = self.memory_handler.get_logs()
@@ -617,6 +627,96 @@ class RadiomicsProcessor:
                 )
         except Exception as exc:
             logger.error(f"error in extracting ROI: {exc}")
+
+    def _finalize_results(self, all_results: List[pd.DataFrame], output_path: str) -> Dict[str, Any]:
+
+        # === Concatenate all results ===
+        final_df = pd.concat(all_results, ignore_index=True)
+
+        # === Early exit if no aggregation is required ===
+        if not getattr(self, "aggregation_lesion", False):
+            with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
+                final_df.to_excel(writer, sheet_name="Radiomics_Features", index=False)
+            return {"out": ["Radiomics", final_df, output_path, output_path]}
+
+        # === Grouping logic ===
+        mode = self.params["radiomics_roi_selection_mode"]
+
+        def extract_roi_group(roi_value: str) -> str:
+            """Extracts the group identifier from ROI string."""
+            if pd.isna(roi_value):
+                return "unknown"
+            return str(roi_value).split("_lesion_")[0]
+
+        if mode == "per_Img":
+            final_df["GroupKey"] = final_df["PatientID"]
+        else:  # "per_region"
+            final_df["GroupKey"] = (
+                    final_df["PatientID"].astype(str) + "_" + final_df["ROI"].apply(extract_roi_group)
+            )
+
+        # === Aggregation logic ===
+        def aggregate_group(df_group: pd.DataFrame) -> pd.Series:
+            # Always keep PatientID (use the first one)
+            agg_result = {"PatientID": df_group["PatientID"].iloc[0]}
+
+            if self.extraction_mode == "deep_feature":
+                # Simple mean across all features
+                for col in df_group.columns:
+                    if col in ["PatientID", "ROI", "GroupKey"]:
+                        continue
+                    agg_result[col] = df_group[col].mean(skipna=True)
+                return pd.Series(agg_result)
+
+            # Radiomics feature aggregation
+            volume_col = "morph_volume_mesh"
+            volumes = (
+                df_group[volume_col].fillna(0).to_numpy()
+                if volume_col in df_group else np.ones(len(df_group))
+            )
+
+            for col in df_group.columns:
+                if col in ["PatientID", "ROI", "GroupKey"]:
+                    continue
+
+                values = df_group[col].to_numpy(dtype=float)
+                if np.all(np.isnan(values)):
+                    agg_result[col] = np.nan
+                    continue
+
+                if col in AGGREGATED_FEATURES_BLACK_LIST:
+                    # Use the first available value (not max)
+                    first_valid_idx = np.where(~np.isnan(values))[0]
+                    agg_result[col] = (
+                        values[first_valid_idx[0]] if len(first_valid_idx) > 0 else np.nan
+                    )
+                elif col in AGGREGATED_FEATURES_WHITE_LIST:
+                    # Weighted average (ignore NaNs properly)
+                    valid_mask = ~np.isnan(values)
+                    if valid_mask.any():
+                        weights = volumes[valid_mask]
+                        vals = values[valid_mask]
+                        agg_result[col] = np.average(vals, weights=weights)
+                    else:
+                        agg_result[col] = np.nan
+                else:
+                    # Sum (ignoring NaNs)
+                    agg_result[col] = np.nansum(values)
+
+            return pd.Series(agg_result)
+
+        # === Apply aggregation ===
+        aggregated_df = (
+            final_df.groupby("GroupKey", group_keys=False)
+            .apply(aggregate_group, include_groups=False)
+            .reset_index(drop=True)
+        )
+
+        # === Save results ===
+        with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
+            aggregated_df.to_excel(writer, sheet_name="Radiomics_Features", index=False)
+
+        return {"out": ["Radiomics", aggregated_df, output_path, output_path]}
 
     def invoke_callback_fn(
             self,

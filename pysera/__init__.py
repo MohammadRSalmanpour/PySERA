@@ -1,4 +1,4 @@
-__version__ = "2.0.2"
+__version__ = "2.1.0"
 __author__ = "Mohammad R. Salmanpour, Amir Hossein Pouria"
 __email__ = "m.salmanpoor66@gmail.com"
 
@@ -30,6 +30,7 @@ def process_batch(
         callback_fn: Optional[Callable[..., None]] = None,
         extraction_mode: str = DEFAULT_EXTRACTION_MODES,
         deep_learning_model: str = DEFAULT_DEEP_LEARNING_MODELS,
+        aggregation_lesion: bool = False,
         IBSI_based_parameters: Optional[Dict[str, Any]] = None,
 ):
     import time
@@ -61,6 +62,7 @@ def process_batch(
             report=report,
             extraction_mode=extraction_mode,
             deep_learning_model=deep_learning_model,
+            aggregation_lesion=aggregation_lesion,
             IBSI_based_parameters=IBSI_based_parameters
         )
 

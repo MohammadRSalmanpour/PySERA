@@ -13,6 +13,7 @@ from typing import Any, Dict, Optional, Tuple
 from pysera.engine.visera_oop.core.sparsity.view_planner import DataView
 from pysera.processing.synthesize_RoIs import synthesize_coords, synthesize_values
 from pysera.engine.visera_oop.core.base_feature_extractor import BaseFeatureExtractor
+from pysera.engine.visera_oop.core.base_feature_extractor import safe_sqrt, safe_divide
 
 logger = logging.getLogger("Dev_logger")
 
@@ -492,7 +493,7 @@ class MorphologicalFeaturesExtractor(BaseFeatureExtractor):
         intensities = image[finite_mask].astype(np.float64)
         num_voxels = intensities.size
 
-        if num_voxels < 2:
+        if num_voxels < 2 and self.feature_value_mode == 'REAL_VALUE':
             return {"moran_i": np.nan, "geary_c": np.nan}
 
         # Scale coordinates by voxel spacing
@@ -1035,7 +1036,10 @@ class MorphologicalFeaturesExtractor(BaseFeatureExtractor):
         volume_aee = (4.0 / 3.0) * np.pi * axis_a * axis_b * axis_c
 
         if volume_aee <= 0:
-            return np.nan
+            if self.feature_value_mode == 'APPROXIMATE_VALUE':
+                return float(safe_divide(mesh_data["Volume"], volume_aee))
+            else:   # 'REAL_VALUE'
+                return np.nan
 
         return float(mesh_data["Volume"] / volume_aee)
 
@@ -1063,8 +1067,14 @@ class MorphologicalFeaturesExtractor(BaseFeatureExtractor):
         if self.feature_value_mode == "APPROXIMATE_VALUE":
             return float(safe_divide(mesh_data["Area"], area_aee))
 
-        if area_aee is None or not np.isfinite(area_aee) or area_aee <= 0:
+        if area_aee is None or not np.isfinite(area_aee):
             return np.nan
+
+        if area_aee <= 0:
+            if self.feature_value_mode == "APPROXIMATE_VALUE":
+                return float(safe_divide(mesh_data["Area"], area_aee))
+            else:
+                return np.nan
 
         return float(mesh_data["Area"] / area_aee)
 

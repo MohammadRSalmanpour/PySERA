@@ -54,7 +54,6 @@ def example_2_batch_processing_with_multiprocessing():
             output_path="./batch_results",
             num_workers="4",  # Use 4 CPU cores for parallel processing
             min_roi_volume=10,  # Minimum ROI volume threshold
-            feats2out=2,  # Feature extraction mode: 1st+3D+2.5D
             apply_preprocessing=True,
             report="info"
         )
@@ -86,7 +85,7 @@ def example_3_high_performance_processing():
             mask_input="path/to/mask.nii.gz",
             output_path="./high_performance_results",
             num_workers="auto",  # Use all available CPU cores
-            feats2out=5,  # Extract all features + Moment (most comprehensive)
+            dimensions="1st",  # Extract all features + Moment (most comprehensive)
             apply_preprocessing=True,
             report="info"
         )
@@ -128,7 +127,7 @@ def example_4_custom_configuration():
             output_path="./custom_results",
             bin_size=32,  # Custom bin size
             roi_num=5,  # Process top 5 ROIs
-            feats2out=8,  # Extract only 1st order features (fast)
+            categories="morph,glcm",  # Extract only 1st order features (fast)
             min_roi_volume=100,  # Higher threshold
             roi_selection_mode="per_region",  # Group ROIs by color/label
             feature_value_mode="REAL_VALUE",  # More precise computation
@@ -157,7 +156,8 @@ def example_5_single_core_processing():
             mask_input="path/to/mask.nii.gz",
             output_path="./single_core_results",
             num_workers="1",  # Disable multiprocessing
-            feats2out=8,  # Fast feature extraction
+            categories="diag,glrlm",  # Fast feature extraction
+            dimensions="2d,2_5d",
             report="none",  # Disable logging for speed
         )
 
@@ -186,7 +186,6 @@ def example_6_comprehensive_analysis():
             mask_input="path/to/mask.nii.gz",
             output_path="./comprehensive_results",
             num_workers="4",
-            feats2out=5,  # All features + Moment
             bin_size=25,
             roi_num=10,
             min_roi_volume=4,  # Include small ROIs

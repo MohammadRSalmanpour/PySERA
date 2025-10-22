@@ -9,6 +9,11 @@ Each version entry documents new features, optimizations, supported formats, com
 ## Version History
         
         v2
+        ├── v2.1
+        ├── ├── v2.1.0 - 2025-10-22
+        │   │   - Bug fix (configuration)
+        │   │   - add aggregation_lesion parameter for aggregating radiomics features
+        │   │   - update parameter default
         ├── v2.0
         ├── ├── v2.0.2 - 2025-10-20
         │   │   - Bug fix (configuration)

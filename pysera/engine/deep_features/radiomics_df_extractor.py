@@ -101,7 +101,7 @@ class DeepLearningRadiomicsProcessor:
     Provides CNN-based feature extraction using selected pre-trained models.
     """
 
-    def __init__(self, selected_model: str = "all"):
+    def __init__(self, selected_model: str = "resnet50"):
         """
         Initialize the Deep Learning radiomics processor.
 
