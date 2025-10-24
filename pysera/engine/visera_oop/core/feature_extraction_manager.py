@@ -898,7 +898,7 @@ class FeatureExtractionManager:
         Run all enabled feature extractors on all ROIs and bin sizes,
         while logging memory usage and cache size continuously.
         """
-        results: Dict[str, Any] = {image_name: []}
+        results: Dict[str, Any] = {image_name: [], "roi_approximate_volume": (np.bincount(self.roi_masks[0].ravel()))[1]}
         proc = psutil.Process()
 
         wall_start = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")

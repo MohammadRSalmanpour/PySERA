@@ -4,18 +4,18 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysera"
-version = "2.1.1"
+version = "2.1.2"
 description = "A Python library for radiomics feature extraction with multiprocessing support"
 readme = "README.md"
 license = "MIT"
 authors = [
-    { name = "Dr. Salmanpour", email = "M.salmanpoor66@gmail.com" },
+    { name = "Dr. Mohammad R. Salmanpour", email = "M.salmanpoor66@gmail.com" },
     { name = "Amir Hossein Pouria", email = "amirporia99.1378@gmail.com" },
     { name = "Mehrdad Oveisi", email = "moveisi@cs.ubc.ca" },
     { name = "Arman Rahmim", email = "arman.rahmim@ubc.ca" },
 ]
 maintainers = [
-    { name = "Dr. Salmanpour", email = "M.salmanpoor66@gmail.com" },
+    { name = "Dr. Mohammad R. Salmanpour", email = "M.salmanpoor66@gmail.com" },
     { name = "A.H. Pouria", email = "amirporia99.1378@gmail.com" }
 ]
 keywords = ["medical-imaging", "Standardized-Radiomics-Feature-Extraction", "Quantitative-Analysis", "IBSI-Standardization", "healthcare"]
@@ -25,14 +25,11 @@ classifiers = [
     "Intended Audience :: Healthcare Industry",
     "Topic :: Scientific/Engineering :: Medical Science Apps.",
     "Topic :: Scientific/Engineering :: Image Processing",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "numpy>=2.0.0",
     "pandas>=2.3.1",
@@ -110,7 +107,7 @@ line_length = 88
 known_first_party = ["pysera"]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true

@@ -37,14 +37,14 @@ if command -v python >/dev/null 2>&1; then
     python_version=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
     echo "Python version: $python_version"
     
-    if python -c "import sys; sys.exit(0 if sys.version_info >= (3, 8) else 1)"; then
-        print_success "Python version is compatible (3.8+)"
+    if python -c "import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)"; then
+        print_success "Python version is compatible (3.10+)"
     else
-        print_error "Python 3.8+ required. Current version: $python_version"
+        print_error "Python 3.10+ required. Current version: $python_version"
         exit 1
     fi
 else
-    print_error "Python 3 not found. Please install Python 3.8+"
+    print_error "Python 3 not found. Please install Python 3.10+"
     exit 1
 fi
 

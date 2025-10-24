@@ -567,6 +567,7 @@ class RadiomicsProcessor:
                 for v in extraction_result.values():
                     if isinstance(v, list) and v and "value" in v[0]:
                         feature_dictionary = v[0]["value"]
+                        feature_dictionary["roi_approximate_volume"] = extraction_result["roi_approximate_volume"]
                         break
             else:
                 feature_dictionary = extraction_result
@@ -635,6 +636,11 @@ class RadiomicsProcessor:
 
         # === Early exit if no aggregation is required ===
         if not getattr(self, "aggregation_lesion", False):
+
+            # Remove the approximate volume column if present
+            if "roi_approximate_volume" in final_df.columns:
+                final_df = final_df.drop(columns=["roi_approximate_volume"])
+
             with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
                 final_df.to_excel(writer, sheet_name="Radiomics_Features", index=False)
             return {"out": ["Radiomics", final_df, output_path, output_path]}
@@ -674,14 +680,14 @@ class RadiomicsProcessor:
                 return pd.Series(agg_result)
 
             # Radiomics feature aggregation
-            volume_col = "morph_volume_mesh"
+            volume_col = "roi_approximate_volume"
             volumes = (
                 df_group[volume_col].fillna(0).to_numpy()
                 if volume_col in df_group else np.ones(len(df_group))
             )
 
             for col in df_group.columns:
-                if col in ["PatientID", "ROI", "GroupKey"]:
+                if col in ["PatientID", "ROI", "GroupKey", "roi_approximate_volume"]:
                     continue
 
                 values = df_group[col].to_numpy(dtype=float)
@@ -695,6 +701,8 @@ class RadiomicsProcessor:
                         values[first_valid_idx[0]] if len(first_valid_idx) > 0 else np.nan
                     )
                 elif col in AGGREGATED_FEATURES_WHITE_LIST:
+                    agg_result[col] = np.nansum(values)
+                else:
                     valid_mask = ~np.isnan(values)
                     if valid_mask.any():
                         weights = volumes[valid_mask]
@@ -702,8 +710,6 @@ class RadiomicsProcessor:
                         agg_result[col] = np.average(vals, weights=weights)
                     else:
                         agg_result[col] = np.nan
-                else:
-                    agg_result[col] = np.nansum(values)
 
             return pd.Series(agg_result)
 

@@ -4,7 +4,7 @@ This guide provides step-by-step instructions for installing the pysera library.
 
 ## Prerequisites
 
-- Python 3.8 or higher
+- Python 3.10 or higher
 - pip package manager
 - Virtual environment (recommended)
 
@@ -152,7 +152,7 @@ print("🎉 pysera is ready to use!")
 
 If you encounter installation issues:
 
-1. Check Python version: `python3 --version` (should be 3.8+)
+1. Check Python version: `python3 --version` (should be 3.10+)
 2. Check pip version: `pip --version`
 3. Try installing in a fresh virtual environment
 4. Check the GitHub issues page for known problems
