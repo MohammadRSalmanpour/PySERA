@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Development Status](https://img.shields.io/badge/status-stable-green.svg)](https://pypi.org/project/pysera/)
 
-**PySERA** (Python-based Standardized Extraction for Radiomics Analysis) is a comprehensive Python library for radiomics feature extraction from medical imaging data. It provides a **simple, single-function API** with built-in multiprocessing support, comprehensive report capabilities, and optimized performance through OOP architecture, RAM optimization, and CPU-efficient parallel processing. PySERA supports both **traditional handcrafted radiomics** (557 features including 487 IBSI-compliant, 60 diagnostic, and 10 moment-invariant features) and **deep learning-based feature extraction** using pre-trained models like ResNet50, VGG16, and DenseNet121.
+**PySERA** (Python-based Standardized Extraction for Radiomics Analysis), published in "[PySERA](https://pypi.org/project/pysera/)"  is a comprehensive Python library for radiomics feature extraction from medical imaging data. It provides a **simple, single-function API** with built-in multiprocessing support, comprehensive report capabilities, and optimized performance through OOP architecture, RAM optimization, and CPU-efficient parallel processing. PySERA supports both **traditional handcrafted radiomics** (557  features including 487 IBSI-compliant, 60 diagnostic, and 10 moment-invariant features) and **deep learning-based feature extraction** using pre-trained models like ResNet50, VGG16, and DenseNet121.
 
 ## 🔍 Table of Contents
 - [🧩IBSI (Image Biomarker Standardisation Initiative) Standardization-1.0](#IBSI-Standardization)
@@ -23,7 +23,7 @@
 
 - [📂Data Structure Requirements](#data-structure-requirements)
 - [📋PySERA Parameters Reference](#pysera-parameters-reference)
-- [📊Parameter Compatibility](#parameter-compatibility)
+- [📊Common Parameters](#common-parameters)
 - [📚API Reference](#api-reference)
 - [📊Output Structure](#output-structure)
 - [🔢Feature Extraction Modes](#feature-extraction-modes)
@@ -438,9 +438,9 @@ For batch processing or multi-DICOM inputs, the folder structure for images and 
 | **radiomics_IVH_DiscCont**  | int    | 1                      | Defines IVH continuity: {0: Discrete (CT), 1: Continuous (CT, PET; for FBS)}.                                  |
 | **radiomics_IVH_binSize**   | float    | 2.0                    | Sets the bin size for the IVH in applicable configurations (FBN with setting 1, or when IVH_DiscCont is enabled).                                                   |
 
-## 📊Parameter Compatibility
+## 📊Common Parameters
 
-Parameter compatibility across different extraction modes.
+Common parameters across different extraction modes for handcrafted or deep radiomics features.
 
 | Parameter | Handcrafted Feature Mode | Deep Learning Feature Mode |
 |-----------|-------------------------|---------------------------|
@@ -681,7 +681,7 @@ This study was supported by:
 
 - [🔬 **Qu**antitative **R**adiomolecular **I**maging and **T**herapy (Qurit) Lab, University of British Columbia, Vancouver, BC, Canada](https://www.qurit.ca)  
 - [🏥 BC Cancer Research Institute, Department of Basic and Translational Research, Vancouver, BC, Canada](https://www.bccrc.ca/)  
-- [💻 **Vir**tual **Collaboration (VirCollab) Group, Vancouver, BC, Canada](https://www.vircollab.com)  
+- [💻 **Vir**tual **Collab**oration (VirCollab) Group, Vancouver, BC, Canada](https://www.vircollab.com)  
 - [🏭 **Tec**hnological **Vi**rtual **Co**llaboration **Corp**oration (TECVICO Corp.), Vancouver, BC, Canada](https://www.tecvico.com)  
 We gratefully acknowledge funding from the💰 Natural Sciences and Engineering Research Council of Canada (**NSERC**) Idea to Innovation [**I2I**] Grant **GR034192**.
 ---
