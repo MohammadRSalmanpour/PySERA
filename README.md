@@ -1,10 +1,10 @@
 # PySERA: Python-Based Standardized Extraction for Radiomics Analysis – Python Radiomics Script and Library
 
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Development Status](https://img.shields.io/badge/status-stable-green.svg)](https://pypi.org/project/pysera/)
 
-**PySERA** (Python-based Standardized Extraction for Radiomics Analysis) is a comprehensive Python library for radiomics feature extraction from medical imaging data. It provides a **simple, single-function API** with built-in multiprocessing support, comprehensive report capabilities, and optimized performance through OOP architecture, RAM optimization, and CPU-efficient parallel processing. PySERA supports both **traditional handcrafted radiomics** (557 IBSI-compliant features) and **deep learning-based feature extraction** using pre-trained models like ResNet50, VGG16, and DenseNet121.
+**PySERA** (Python-based Standardized Extraction for Radiomics Analysis) is a comprehensive Python library for radiomics feature extraction from medical imaging data. It provides a **simple, single-function API** with built-in multiprocessing support, comprehensive report capabilities, and optimized performance through OOP architecture, RAM optimization, and CPU-efficient parallel processing. PySERA supports both **traditional handcrafted radiomics** (557 features including 487 IBSI-compliant, 60 diagnostic, and 10 moment-invariant features) and **deep learning-based feature extraction** using pre-trained models like ResNet50, VGG16, and DenseNet121.
 
 ## 🔍 Table of Contents
 - [🧩IBSI (Image Biomarker Standardisation Initiative) Standardization-1.0](#IBSI-Standardization)
@@ -30,6 +30,7 @@
 - [📁Supported File Formats](#supported-file-formats)
 - [🎯Library Examples](#library-examples)
 - [⚡Performance Tips](#performance-tips)
+- [🖥️Integration of PySERA to GUI](#integration-of-pysera-to-gui)
 - [❓Troubleshooting](#troubleshooting)
 - [🕒Version History](#Version-History)
 - [📬Contact](#contact)
@@ -61,7 +62,10 @@ That's it! 🎉 All the complexity of multiprocessing, error & warning reports, 
 - **Multi-format Support**: NIfTI, DICOM, NRRD, RTSTRUCT, NumPy arrays, and more
 - **Automatic Multiprocessing**: Built-in parallel processing for maximum performance
 - **Comprehensive Report**: Excel export functionality for detailed analysis
-- **Extensive Features**: 557 IBSI-compliant radiomics features across multiple categories (morphological, statistical, texture, etc.) and dimensions (1st, 2D, 2.5D, 3D)
+- **Extensive Features**: 557 total radiomics features across multiple categories (morphological, statistical, texture, etc.) and dimensions (1st, 2D, 2.5D, 3D) including:
+  - **487 IBSI-compliant features** (standardized radiomics)
+  - **60 diagnostic features** (image quality and metadata)
+  - **10 moment-invariant features** (shape descriptors) 
 - **Medical Image Optimized**: Designed for CT, MRI, PET, SPECT, X-Ray, Ultrasound, and other medical imaging modalities.
 - **Dual Extraction Modes**: Both traditional IBSI-compliant radiomics (557 features) and deep learning features (ResNet50, VGG16, DenseNet121)
 
@@ -553,6 +557,10 @@ Example use cases:
 9. **Memory Optimization**: PySERA's OOP architecture automatically manages RAM utilization during large-scale batch operations
 10. **Logging Optimization**: Use `report="info"` or `report="warning"` to reduce logging overhead in production environments while maintaining essential monitoring
 
+## 🖥️Integration of PySERA to GUI
+
+**PySERA** will be available as a 3D Slicer extension in the near future, providing seamless radiomics feature extraction within the popular medical imaging platform. Additionally, PySERA currently serves as the core feature extraction engine for **Radiuma**, another product in our suite that offers a comprehensive graphical interface for radiomics analysis.
+
 ### Get Help
 
 - **Installation Issues**: See [INSTALL.md](INSTALL.md)
@@ -565,6 +573,8 @@ For detailed release notes, explanations of updates, and technical changes, plea
 
     v2
     ├── v2.1
+    │   ├── v2.1.2 - 2025-10-24
+    │   │   - Bug fix
     │   ├── v2.1.1 - 2025-10-22
     │   │   - Bug fix
     │   ├── v2.1.0 - 2025-10-22
@@ -577,7 +587,7 @@ For detailed release notes, explanations of updates, and technical changes, plea
     │   ├── v2.0.1 - 2025-10-20
     │   │   - remove additional packages
     │   ├── v2.0.0 - 2025-10-19
-    │   │   - ✨Major Feature Expansion, 557 IBSI-compliant radiomics features
+    │   │   - ✨Major Feature Expansion, 557 features including 487 IBSI-compliant, 60 diagnostic, and 10 moment-invariant features
     │   │   - 🎯New `categories` parameter for feature category selection
     │   │   - 📐New `dimensions` parameter for 1st, 2D, 2.5D, 3D feature extraction
     │   │   - 🤖`extraction_mode="deep_feature"` with ResNet50, VGG16, DenseNet121

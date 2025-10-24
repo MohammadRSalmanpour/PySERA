@@ -5,7 +5,6 @@ import random
 
 logger = logging.getLogger("Dev_logger")
 
-
 def synthesis_small_RoI(volume, mask, background='NaN', target_num=10):
     """
     Expand a small region of interest (RoI) by adding jittered points
