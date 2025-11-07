@@ -10,6 +10,10 @@ Each version entry documents new features, optimizations, supported formats, com
         
         v2
         ├── v2.1
+        │   ├── v2.1.3 - 2025-11-07
+        │   │   - Bug fix
+        │   │   - modify default cpu core allocation
+        │   │   - remove additional packages
         │   ├── v2.1.2 - 2025-10-24
         │   │   - Bug fix
         │   ├── v2.1.1 - 2025-10-22
@@ -51,7 +55,7 @@ Each version entry documents new features, optimizations, supported formats, com
         │       - Enhanced Excel output with two new tabs: Parameters (record of all parameters used) and Warnings and Errors (detailed runtime issues).  
         │       - Added flexible RoI selection controls:  
         │            • roi_num: defines how many RoIs to select.  
-        │            • roi_selection_mode: supports per_Img and per_region strategies.  
+        │            • roi_selection_mode: supports per_img and per_region strategies.  
         │       - Exposed radiomics parameters as configurable arguments, replacing hardcoded values.  
         │       - Implemented automatic padding to resolve image and mask dimension mismatches.  
         │       - Improved RoI naming in Excel outputs by including both label and lesion information when available.  

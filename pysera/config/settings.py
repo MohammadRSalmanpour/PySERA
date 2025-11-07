@@ -31,7 +31,7 @@ DEFAULT_RADIOICS_PARAMS = {
     'radiomics_IVH_DiscCont': 1,
     'radiomics_IVH_binSize': 2,
     'radiomics_roi_num': 10,
-    'radiomics_roi_selection_mode': "per_Img",
+    'radiomics_roi_selection_mode': "per_img",
     'radiomics_feature_value_mode': "REAL_VALUE",
     'radiomics_categories': "diag,morph,glcm,glrlm,glszm,ngtdm,ngldm",
     'radiomics_dimensions': "1st,2d",
@@ -84,7 +84,7 @@ MAX_WORKERS = 32
 
 # ROI selection modes
 ROI_SELECTION_MODES = {
-    "per_Img": "Select ROIs per image (ignore color grouping)",
+    "per_img": "Select ROIs per image (ignore color grouping)",
     "per_region": "Group ROIs by color first, then select from each group"
 }
 

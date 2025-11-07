@@ -268,7 +268,7 @@ class DataLoader:
             logger.warning("No lesions found for selection.")
             return []
 
-        if self.roi_selection_mode == "per_Img":
+        if self.roi_selection_mode == "per_img":
             # Global top N lesions
             return sorted(all_meta, key=lambda x: x["volume"], reverse=True)[:self.roi_num]
 
@@ -377,7 +377,7 @@ class DataLoader:
             for label_value in unique_labels:
                 output_mask += self.process_label(mask_array, label_value)
 
-        elif self.roi_selection_mode == "per_Img":
+        elif self.roi_selection_mode == "per_img":
             candidates = []
             for label_value in unique_labels:
                 labeled_mask, roi_ids = find_connected_rois(mask_array, label_value)
@@ -401,7 +401,7 @@ class DataLoader:
                 output_mask += recreate_mask(labeled_mask, [idx], label_value)
 
         else:
-            raise ValueError("roi_selection_mode must be 'per_Img' or 'per_region'")
+            raise ValueError("roi_selection_mode must be 'per_img' or 'per_region'")
 
         return output_mask.astype(mask_array.dtype)
 

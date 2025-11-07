@@ -199,8 +199,6 @@ def test_dependency_imports(verbose=False):
         'numpy': 'numpy',
         'pandas': 'pandas', 
         'scipy': 'scipy',
-        'matplotlib': 'matplotlib',
-        'PIL': 'Pillow',
         'cv2': 'opencv-python',
         'openpyxl': 'openpyxl'
     }

@@ -75,7 +75,7 @@ if [ -f "requirements-library.txt" ]; then
     print_success "Library dependencies installed"
 else
     print_warning "requirements-library.txt not found, installing basic dependencies..."
-    pip install numpy pandas scipy matplotlib openpyxl
+    pip install numpy pandas scipy openpyxl
 fi
 
 # Install pysera in development mode
@@ -132,7 +132,6 @@ echo ""
 echo "📖 Documentation:"
 echo "   • Development guide: DEVELOPMENT.md"
 echo "   • Main README: README.md"
-echo "   • Installation guide: INSTALL.md"
 echo ""
 
 # Create activation reminder

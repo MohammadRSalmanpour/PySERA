@@ -4,13 +4,12 @@ from typing import Optional
 
 import numpy as np
 
-
 try:
     import torch
     import torchvision.models as models
     import torchvision.transforms as transforms
     from torch.utils.data import Dataset, DataLoader
-
+    import torch.nn.functional as F
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
@@ -29,28 +28,34 @@ class MedicalImageDataset(Dataset):
         return 1  # Single image-mask pair
 
     def __getitem__(self, idx):
-        # Extract ROI from image using mask
-        image = self.image_data.copy()
-        mask = self.mask_data.copy()
+        image = self.image_data.astype(np.float32)
+        mask = self.mask_data.astype(np.float32)
 
-        # Apply mask to extract ROI
+        # --- Apply mask to extract ROI ---
         roi_image = image * (mask > 0)
 
-        # Normalize to [0, 1] range
-        if roi_image.max() > roi_image.min():
-            roi_image = (roi_image - roi_image.min()) / (roi_image.max() - roi_image.min())
+        # --- Normalize to [0, 1] ---
+        vmin, vmax = np.min(roi_image), np.max(roi_image)
+        if vmax > vmin:
+            roi_image = (roi_image - vmin) / (vmax - vmin)
+        else:
+            roi_image = np.zeros_like(roi_image, dtype=np.float32)
 
-        # Convert to 2D (take middle slice)
+        # --- Select the slice with the largest ROI area instead of middle slice ---
         if len(roi_image.shape) == 3:
-            middle_slice = roi_image.shape[2] // 2
-            roi_image = roi_image[:, :, middle_slice]
+            mask_sum = mask.sum(axis=(0, 1))
+            best_slice = int(np.argmax(mask_sum))
+            roi_image = roi_image[:, :, best_slice]
 
-        # Convert to RGB (3 channels)
-        roi_image_rgb = np.stack([roi_image] * 3, axis=0)
+        # --- Convert to RGB (3 channels) ---
+        roi_image_rgb = np.stack([roi_image] * 3, axis=0)  # (3, H, W)
+        roi_tensor = torch.from_numpy(roi_image_rgb).float().unsqueeze(0)  # add batch dim temporarily for resize
 
-        # Convert to tensor
-        roi_tensor = torch.FloatTensor(roi_image_rgb)
+        # --- Resize safely using torch interpolate ---
+        roi_tensor = F.interpolate(roi_tensor, size=(224, 224), mode='bilinear', align_corners=False)
+        roi_tensor = roi_tensor.squeeze(0)  # remove batch dimension (C, H, W)
 
+        # --- Normalize with ImageNet stats ---
         if self.transform:
             roi_tensor = self.transform(roi_tensor)
 
@@ -95,19 +100,9 @@ def _extract_features_from_model(model, model_name, image_tensor):
 
 
 class DeepLearningRadiomicsProcessor:
-    """
-    Deep Learning radiomics processor for ViSERA.
-
-    Provides CNN-based feature extraction using selected pre-trained models.
-    """
+    """Deep Learning radiomics processor for ViSERA."""
 
     def __init__(self, selected_model: str = "resnet50"):
-        """
-        Initialize the Deep Learning radiomics processor.
-
-        Args:
-            selected_model (str): One of {"all", "resnet50", "vgg16", "densenet121"}.
-        """
         if not TORCH_AVAILABLE:
             raise ImportError("PyTorch is required for deep learning radiomics")
 
@@ -118,17 +113,13 @@ class DeepLearningRadiomicsProcessor:
         self.selected_model = selected_model.lower()
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         logging.info(f"Using device: {self.device}")
-
-        # Initialize only selected models
         self._initialize_models()
 
     def _initialize_models(self):
         """Initialize pre-trained CNN models for feature extraction."""
-        self.transform = transforms.Compose([
-            transforms.Resize((224, 224)),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                 std=[0.229, 0.224, 0.225])
-        ])
+        # Only normalization transform; resize now done manually
+        self.transform = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                              std=[0.229, 0.224, 0.225])
 
         def _safe_load(model_func, weights, model_name):
             try:
@@ -144,7 +135,6 @@ class DeepLearningRadiomicsProcessor:
                 model.to(self.device)
                 return model
 
-        # Conditionally load models
         if self.selected_model in {"resnet50", "all"}:
             self.resnet50 = _safe_load(models.resnet50, models.ResNet50_Weights.IMAGENET1K_V1, "ResNet50")
         else:
@@ -161,7 +151,6 @@ class DeepLearningRadiomicsProcessor:
             self.densenet121 = None
 
     def _extract_deep_features(self, image_data, mask_data, patient_id, roi_name):
-        """Extract deep learning features from the selected model(s)."""
         try:
             dataset = MedicalImageDataset(image_data, mask_data, self.transform)
             dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
@@ -175,11 +164,10 @@ class DeepLearningRadiomicsProcessor:
                 if self.selected_model in {"vgg16", "all"}:
                     all_features.update(_extract_features_from_model(self.vgg16, "VGG16", image_tensor))
                 if self.selected_model in {"densenet121", "all"}:
-                    all_features.update(
-                        _extract_features_from_model(self.densenet121, "DenseNet121", image_tensor))
+                    all_features.update(_extract_features_from_model(self.densenet121, "DenseNet121", image_tensor))
 
-                logging.info(f"[%s] roi_name: '%s' Extracted {len(all_features)} deep learning features", patient_id,
-                             roi_name)
+                logging.info(f"[%s] roi_name: '%s' Extracted %d deep learning features",
+                             patient_id, roi_name, len(all_features))
 
             return all_features
         except Exception as e:
@@ -188,20 +176,16 @@ class DeepLearningRadiomicsProcessor:
 
     def process_single_image_pair(self, image_array: np.ndarray, mask_array: np.ndarray,
                                   image_name: Optional[str] = None, roi_name: Optional[str] = None):
-        """
-        Process a single image-mask pair using deep learning.
-        """
         try:
             patient_id = image_name or "unknown_patient"
-            logging.info(f"[%s] roi_name: '%s' Processing deep learning radiomics using {self.selected_model}",
-                         patient_id, roi_name)
+            logging.info(f"[%s] roi_name: '%s' Processing deep learning radiomics using %s",
+                         patient_id, roi_name, self.selected_model)
 
             deep_features = self._extract_deep_features(image_array, mask_array, patient_id, roi_name)
-
             if not deep_features:
-                logging.error(f"[%s] roi_name: '%s' : No deep learning features extracted", patient_id, roi_name)
+                logging.error(f"[%s] roi_name: '%s' : No deep learning features extracted",
+                              patient_id, roi_name)
                 return None
-
             return deep_features
         except Exception as e:
             logging.error(f"Error in deep learning processing for {image_name}: {e}")
@@ -218,6 +202,4 @@ def deep_learning_feature_extractor(selected_model: str = "resnet50"):
     if not TORCH_AVAILABLE:
         logging.error("PyTorch is required for deep learning radiomics")
         return None
-
-    processor = DeepLearningRadiomicsProcessor(selected_model=selected_model)
-    return processor
+    return DeepLearningRadiomicsProcessor(selected_model=selected_model)
