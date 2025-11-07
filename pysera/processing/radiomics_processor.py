@@ -312,8 +312,13 @@ class RadiomicsProcessor:
     def _process_parallel(self, image_files: list[str], mask_files: list[str]) -> List[pd.DataFrame]:
         """Process image-mask pairs in parallel using multiple workers."""
 
-        workers = min(os.cpu_count() or 1, len(image_files)) if self.params["radiomics_num_workers"] == "auto" else int(
-            self.params["radiomics_num_workers"])
+        if self.params["radiomics_num_workers"] == "auto":
+            total_cores = os.cpu_count() or 1
+            allocated_cores = max(1, int(total_cores * 0.7))
+            workers = min(allocated_cores, len(image_files))
+        else:
+            workers = int(self.params["radiomics_num_workers"])
+
         logger.info("Processing in parallel with %d workers", workers)
 
         original_handler = self.memory_handler
@@ -654,7 +659,7 @@ class RadiomicsProcessor:
                 return "unknown"
             return str(roi_value).split("_lesion_")[0]
 
-        if mode == "per_Img":
+        if mode == "per_img":
             final_df["GroupKey"] = final_df["PatientID"]
         else:  # "per_region"
             final_df["GroupKey"] = (

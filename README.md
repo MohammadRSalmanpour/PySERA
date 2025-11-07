@@ -23,7 +23,7 @@
 
 - [📂Data Structure Requirements](#data-structure-requirements)
 - [📋PySERA Parameters Reference](#pysera-parameters-reference)
-- [📊Common Parameters](#common-parameters)
+- [📊Parameter Compatibility](#parameter-compatibility)
 - [📚API Reference](#api-reference)
 - [📊Output Structure](#output-structure)
 - [🔢Feature Extraction Modes](#feature-extraction-modes)
@@ -78,7 +78,7 @@ PySERA supports advanced **deep learning-based** feature extraction alongside tr
 - **`resnet50`** - 2047 features: Residual Network with 50 layers, balanced performance and accuracy
 - **`vgg16`** - 511 features: Visual Geometry Group with 16 layers, strong hierarchical feature representation  
 - **`densenet121`** - 1023 features: Dense Convolutional Network with 121 layers, efficient feature reuse
-- 
+  
 ### 📦Library Installation via pip
 
 Install the PySERA library directly from PyPI:
@@ -169,7 +169,7 @@ result = pysera.process_batch(
     deep_learning_model="resnet50",      # Use ResNet50 model (2047 features)
 
     roi_num=5,                           # Number of ROIs to process
-    roi_selection_mode="per_Img",        # ROI selection strategy
+    roi_selection_mode="per_img",        # ROI selection strategy
 
 
     # Logging options
@@ -394,17 +394,17 @@ For batch processing or multi-DICOM inputs, the folder structure for images and 
 | **image_input**       | str / .npy  | Required                                    | Path to the image file, directory, or NumPy file containing the image data.                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | **mask_input**        | str / .npy  | Required                                    | Path to the mask file, directory, or NumPy file defining the regions of interest.                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | **output_path**      | str         | `"./output_result"`                         | Directory where the processing results will be saved.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **num_workers**      | str         | `"auto"`                                    | Number of CPU cores to use for processing. If auto, uses all available cores.                                                                                                                                                                                                                                                                                                                                                                                                                        
+| **num_workers**      | str         | `"auto"`                                    | Number of CPU cores used for processing. If set to "auto", it will use 70% of the total available CPU cores, rounded down (e.g., 5.7 becomes 5).                                                                                                                                                                                                                                                                                                                                                                                                                        
 |  **apply_preprocessing** | bool        | False                                       | If True, rounds mask array values to nearest integers. If False, uses raw mask values without rounding. |                                                                                                                                                                                                                                                                                                 
 | **enable_parallelism**  | bool        | True                                        | If True, enables parallel processing for the analysis.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | **min_roi_volume**      | int         | 10                                          | Minimum volume threshold for regions of interest (ROI).                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| **bin_size**            | int         | 25                                          | Bin size used for texture analysis.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| **roi_selection_mode**  | str         | `"per_Img"`                                 | **ROI selection strategy:**<br>- **"per_Img"** (default): Selects the top `roi_num` ROIs per image based on size, regardless of label category.<br>  • Suitable for single or dominant lesions per scan.<br>  • Preserves original spatial relationships.<br>- **"per_region"**: Selects up to `roi_num` ROIs separately for each label category, ensuring balanced representation across regions.<br>  • Useful in multi-lesion, multi-label, or longitudinal studies.<br>  • Requires consistent ROI labeling across datasets.<br> |
+| **bin_size**            | int         | 25                                          | **Number of bins** used for texture analysis in gray-level discretization. This determines how many intensity levels the image is divided into for feature computation. Note: This parameter specifies the *number* of bins                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **roi_selection_mode**  | str         | `"per_img"`                                 | **ROI selection strategy:**<br>- **"per_Img"** (default): Selects the top `roi_num` ROIs per image based on size, regardless of label category.<br>  • Suitable for single or dominant lesions per scan.<br>  • Preserves original spatial relationships.<br>- **"per_region"**: Selects up to `roi_num` ROIs separately for each label category, ensuring balanced representation across regions.<br>  • Useful in multi-lesion, multi-label, or longitudinal studies.<br>  • Requires consistent ROI labeling across datasets.<br> |
 | **roi_num**             | int         | 10                                          | Number of ROIs to process.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | **feature_value_mode**  | str         | `"REAL_VALUE"`                              | Strategy for handling NaN values. Options:`"APPROXIMATE_VALUE"` or `"REAL_VALUE"`. **"APPROXIMATE_VALUE"**: Replaces NaN features with substitutes (e.g., very small constants like `1e-30` or synthetic masks) to maintain pipeline continuity.<br>- **"REAL_VALUE"** (default): Keeps NaN values whenever feature extraction fails (e.g., small ROI, numerical instability), preserving the raw outcome without substitution.<br>                                                                                                     |
 | **categories**          | str         | `"diag,morph,glcm,glrlm,glszm,ngtdm,ngldm"` | Feature categories to extract. Choices: "diag" (diagnostics), "morph" (morphological/shape), "ip" (intensity peak), "stat" (first-order statistical), "ih" (intensity histogram), "ivh" (intensity-volume histogram), "glcm" (Gray-Level Co-occurrence Matrix), "glrlm" (Gray-Level Run Length Matrix), "glszm" (Gray-Level Size Zone Matrix), "gldzm" (Gray-Level Distance Zone Matrix), "ngtdm" (Neighboring Gray-Tone Difference Matrix), "ngldm" (Neighboring Gray-Level Dependence Matrix), "mi" (moment-invariant). Example: "glcm, glrlm". |
 | **dimensions**          | str         | `"1st,2d"`                                  | Spatial dimensions for feature extraction. Choices: "1st" (first-order intensity-based features), "2D" (features extracted per 2D slice), "2_5D" (features aggregated across slices with limited inter-slice context), "3D" (fully volumetric features across entire ROI). Example: "1st, 2_5d, 3d". Combine with categories for specific feature sets. |
-| **aggregation_lesion**  | bool        | False                                       | When enabled, this parameter performs lesion-level feature aggregation across ROIs belonging to the same image or anatomical region, depending on the `roi_selection_mode` setting. Specifically, if `roi_selection_mode` is set to `"per_Img"`, aggregation is performed by PatientID; if set to `"per_region"`, grouping is based on both PatientID and label ID. Feature aggregation is conducted on a per-feature basis. For the `"deep_feature"` extraction mode, all features are averaged. For morphological descriptors, including `morph_volume_mesh`, `morph_volume_count`, `morph_surface_area`, `morph_max_3d_diameter`, `morph_major_axis_length`, `morph_minor_axis_length`, and `morph_least_axis_length`, a weighted average based on `morph_volume_mesh` is applied. `Diagnostic` features are selected from the largest lesion, while all remaining features are summed across ROIs. Missing values are excluded from the aggregation process. |
+| **aggregation_lesion**  | bool        | False                                       | When enabled, this parameter performs lesion-level feature aggregation across ROIs belonging to the same image or anatomical region, depending on the `roi_selection_mode` setting. Specifically, if `roi_selection_mode` is set to `"per_img"`, aggregation is performed by PatientID; if set to `"per_region"`, grouping is based on both PatientID and label ID. Feature aggregation is conducted on a per-feature basis. For the `"deep_feature"` extraction mode, all features are averaged. For morphological descriptors, including `morph_volume_mesh`, `morph_volume_count`, `morph_surface_area`, `morph_max_3d_diameter`, `morph_major_axis_length`, `morph_minor_axis_length`, and `morph_least_axis_length`, a weighted average based on `morph_volume_mesh` is applied. `Diagnostic` features are selected from the largest lesion, while all remaining features are summed across ROIs. Missing values are excluded from the aggregation process. |
 | **callback_fn**          | function    | None                                        | Callback function for external notifications. Receives parameters: flag (`"START"`\|`"END"`), image_id (str), roi_name (str). Useful for integration with notification platforms. |
 | **extraction_mode**      | str         | `"handcrafted_feature"`                     | Feature extraction mode. Options: `"handcrafted_feature"` (traditional radiomics), `"deep_feature"` (deep learning features).  |
 | **deep_learning_model**  | str         | `"resnet50"`                                | Deep learning model for feature extraction when extraction_mode="deep_feature". Options:`"resnet50"`, `"vgg16"`, `"densenet121". |
@@ -436,11 +436,11 @@ For batch processing or multi-DICOM inputs, the folder structure for images and 
 | **radiomics_qntz**          | str    |`"Uniform"`              | Sets the quantization strategy for fixed bin number discretization. Options are "Uniform" or "Lloyd" (for Max-Lloyd quantization).                              |
 | **radiomics_IVH_Type**      | int    | 3                      | {0: Definite (PET, CT), 1: Arbitrary (MRI, SPECT), 2: 1000 bins, 3: same discretization as histogram (CT)}.                         |
 | **radiomics_IVH_DiscCont**  | int    | 1                      | Defines IVH continuity: {0: Discrete (CT), 1: Continuous (CT, PET; for FBS)}.                                  |
-| **radiomics_IVH_binSize**   | float    | 2.0                    | Sets the bin size for the IVH in applicable configurations (FBN with setting 1, or when IVH_DiscCont is enabled).                                                   |
+| **radiomics_IVH_binSize**   | float    | 2.0                    | for Intensity-Volume Histogram (different from `bin_size` parameter which specifies number of bins). Sets the width of each bin in intensity units. Sets the bin size for the IVH in applicable configurations (FBN with setting 1, or when IVH_DiscCont is enabled).                                                   |
 
-## 📊Common Parameters
+## 📊Parameter Compatibility
 
-Common parameters across different extraction modes for handcrafted or deep radiomics features.
+Parameter compatibility across different extraction modes.
 
 | Parameter | Handcrafted Feature Mode | Deep Learning Feature Mode |
 |-----------|-------------------------|---------------------------|
@@ -563,7 +563,6 @@ Example use cases:
 
 ### Get Help
 
-- **Installation Issues**: See [INSTALL.md](INSTALL.md)
 - **Examples**: Run `python examples/basic_usage.py`
 
 ## 🕒Version History
@@ -573,6 +572,10 @@ For detailed release notes, explanations of updates, and technical changes, plea
 
     v2
     ├── v2.1
+    │   ├── v2.1.3 - 2025-11-07
+    │   │   - Bug fix
+    │   │   - modify default cpu core allocation
+    │   │   - remove additional packages
     │   ├── v2.1.2 - 2025-10-24
     │   │   - Bug fix
     │   ├── v2.1.1 - 2025-10-22
@@ -681,7 +684,7 @@ This study was supported by:
 
 - [🔬 **Qu**antitative **R**adiomolecular **I**maging and **T**herapy (Qurit) Lab, University of British Columbia, Vancouver, BC, Canada](https://www.qurit.ca)  
 - [🏥 BC Cancer Research Institute, Department of Basic and Translational Research, Vancouver, BC, Canada](https://www.bccrc.ca/)  
-- [💻 **Vir**tual **Collab**oration (VirCollab) Group, Vancouver, BC, Canada](https://www.vircollab.com)  
+- [💻 **Vir**tual **Collaboration (VirCollab) Group, Vancouver, BC, Canada](https://www.vircollab.com)  
 - [🏭 **Tec**hnological **Vi**rtual **Co**llaboration **Corp**oration (TECVICO Corp.), Vancouver, BC, Canada](https://www.tecvico.com)  
 We gratefully acknowledge funding from the💰 Natural Sciences and Engineering Research Council of Canada (**NSERC**) Idea to Innovation [**I2I**] Grant **GR034192**.
 ---
